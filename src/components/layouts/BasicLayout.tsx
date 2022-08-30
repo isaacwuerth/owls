@@ -4,15 +4,12 @@ import {
     Avatar,
     Box,
     Container,
-    createTheme,
     Menu,
     MenuItem, styled,
     Toolbar,
     Tooltip,
-    Typography, useTheme,
-    withStyles
+    Typography
 } from "@mui/material";
-import AdbIcon from '@mui/icons-material/Adb';
 import {Logo} from "../Logo";
 import IconButton from '@mui/material/IconButton';
 

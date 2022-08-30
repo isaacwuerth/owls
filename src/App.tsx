@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import DataGridDemo from "./components/events/EventsList";
 import {RecoilRoot} from "recoil";
 import BasicLayout from './components/layouts/BasicLayout';

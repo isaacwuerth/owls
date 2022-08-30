@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
-import {useRecoilState, useRecoilValue} from "recoil";
+import {DataGrid, GridColDef} from '@mui/x-data-grid';
+import {useRecoilValue} from "recoil";
 import {eventListState} from "../../atoms/EventAtom.";
 
 
