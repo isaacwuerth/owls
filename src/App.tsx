@@ -1,26 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect} from 'react';
+import DataGridDemo from "./components/events/EventsList";
+import {RecoilRoot} from "recoil";
+import BasicLayout from './components/layouts/BasicLayout';
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Owls Internal
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <RecoilRoot>
+            <BasicLayout>
+                <div className="App">
+                    <DataGridDemo/>
+                </div>
+            </BasicLayout>
+        </RecoilRoot>
+    );
 }
 
 export default App;
