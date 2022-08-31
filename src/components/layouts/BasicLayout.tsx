@@ -1,9 +1,9 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {
     AppBar,
     Avatar,
     Box,
-    Container,
+    Container, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
     Menu,
     MenuItem, styled,
     Toolbar,
@@ -12,12 +12,30 @@ import {
 } from "@mui/material";
 import {Logo} from "../Logo";
 import IconButton from '@mui/material/IconButton';
+import {NavItems} from "../../Nav";
+import {Link} from "react-router-dom";
+import {Logout, Settings} from "@mui/icons-material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import {useRecoilValue} from "recoil";
+import {profileAtom} from "../../atoms/ProfileAtom";
+import {ProfileAvatar} from "../ProfileAvatar";
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const drawerWidth = 240;
 
+type AppBarMenuItem = {
+    name: string
+    uri: string
+    icon: ReactElement
+}
 
+const AppBarMenuItems: AppBarMenuItem[] = [
+    {name: "Profil", uri: "profile", icon: <AccountCircleIcon fontSize="small"/>},
+    {name: "Einstellungen", uri: "settings", icon: <Settings fontSize="small"/>},
+    {name: "Logout", uri: "logout", icon: <Logout fontSize="small"/>}
+]
 
 function BasicLayout({children}: React.PropsWithChildren) {
+    const profile = useRecoilValue(profileAtom)
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
@@ -26,13 +44,13 @@ function BasicLayout({children}: React.PropsWithChildren) {
         setAnchorElUser(null);
     };
 
-    const SpacingBox = styled(Box)(({ theme }) => ({
+    const SpacingBox = styled(Box)(({theme}) => ({
         ...theme.mixins.toolbar,
     }));
 
     return (
-        <>
-            <AppBar>
+        <Box sx={{display: 'flex'}}>
+            <AppBar sx={{zIndex: 1201}}>
                 <Box>
                     <Toolbar style={{top: 0}}>
                         <Logo/>
@@ -41,7 +59,6 @@ function BasicLayout({children}: React.PropsWithChildren) {
                             component="a"
                             href="/"
                             sx={{
-                                flexGrow: 1,
                                 mr: 2,
                                 display: {xs: 'none', md: 'flex'},
                                 fontFamily: 'monospace',
@@ -53,10 +70,11 @@ function BasicLayout({children}: React.PropsWithChildren) {
                         >
                             LOGO
                         </Typography>
+                        <Box sx={{flex: 1}}/>
                         <Box>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                    <ProfileAvatar/>
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -75,21 +93,46 @@ function BasicLayout({children}: React.PropsWithChildren) {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>
-                                ))}
+                                {
+                                    AppBarMenuItems.map(value => (
+                                        <MenuItem component={Link} to={value.uri} onClick={handleCloseUserMenu}>
+                                            <ListItemIcon>{value.icon}</ListItemIcon>
+                                            {value.name}
+                                        </MenuItem>
+                                    ))
+                                }
+
+
                             </Menu>
                         </Box>
                     </Toolbar>
                 </Box>
             </AppBar>
-            <SpacingBox/>
-            <Container sx={{marginTop: '50px'}}>
+            <Box component="nav" sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}}}>
+                <Drawer variant="permanent" open
+                        sx={{'& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth}}}>
+                    <Toolbar/>
+                    <List>
+                        {NavItems.map((text, index) => (
+                            <ListItem key={text.key} disablePadding>
+                                <ListItemButton component={Link} to={text.uri}>
+                                    <ListItemIcon>{text.icon}</ListItemIcon>
+                                    <ListItemText primary={text.name}/>
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Drawer>
+            </Box>
+
+            <Box
+                component="main"
+                sx={{flexGrow: 1, p: 3, width: {sm: `calc(100% - ${drawerWidth}px)`}}}
+            >
+                <SpacingBox/>
                 {children}
-            </Container>
-        </>
+            </Box>
+        </Box>
     );
 }
 

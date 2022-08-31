@@ -26,7 +26,7 @@ const columns: GridColDef[] = [
     }
 ];
 
-export default function DataGridDemo() {
+export default function EventsList() {
     const events = useRecoilValue(eventListState)
     return (
         <Box sx={{height: 400, width: '100%'}}>

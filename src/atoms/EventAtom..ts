@@ -6,7 +6,7 @@ const sampleData: GeneralEvent[] = [
     {id: 1, title: "Event 1", start: new Date(), end: addDays(new Date(), 10)}
 ]
 
-export const eventListState = atom({
+export const eventListState = atom<GeneralEvent[]>({
     key: 'eventListState',
     default: sampleData,
 });

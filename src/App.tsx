@@ -1,18 +1,32 @@
 import React from 'react';
-import DataGridDemo from "./components/events/EventsList";
+import EventsList from "./components/events/EventsList";
 import {RecoilRoot} from "recoil";
 import BasicLayout from './components/layouts/BasicLayout';
-
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {DashboardPage} from "./components/pages/DashboardPage";
+import {EventsPage} from "./components/pages/EventsPage";
+import {ProfilPage} from "./components/pages/ProfilPage";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import {EventPage} from "./components/pages/EventPage";
 
 function App() {
     return (
-        <RecoilRoot>
-            <BasicLayout>
-                <div className="App">
-                    <DataGridDemo/>
-                </div>
-            </BasicLayout>
-        </RecoilRoot>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <RecoilRoot>
+                <BrowserRouter>
+                    <BasicLayout>
+                        <Routes>
+                            <Route index element={<DashboardPage/>}/>
+                            <Route path="events/:id" element={<EventPage/>}/>
+                            <Route path="events" element={<EventsPage/>}/>
+                            <Route path="profile" element={<ProfilPage/>}/>
+                        </Routes>
+                    </BasicLayout>
+                </BrowserRouter>
+            </RecoilRoot>
+        </LocalizationProvider>
+
     );
 }
 
