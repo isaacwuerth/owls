@@ -1,17 +1,16 @@
-import React from 'react';
-import EventsList from "./components/events/EventsList";
-import {RecoilRoot} from "recoil";
-import BasicLayout from './components/layouts/BasicLayout';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {DashboardPage} from "./components/pages/DashboardPage";
-import {EventsPage} from "./components/pages/EventsPage";
-import {ProfilPage} from "./components/pages/ProfilPage";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import {LocalizationProvider} from "@mui/x-date-pickers";
-import {EventPage} from "./components/pages/EventPage";
+import React from 'react'
+import { RecoilRoot } from 'recoil'
+import BasicLayout from './components/layouts/BasicLayout'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { DashboardPage } from './components/pages/DashboardPage'
+import { EventsPage } from './components/pages/EventsPage'
+import { ProfilPage } from './components/pages/ProfilPage'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { EventPage } from './components/pages/EventPage'
 
-function App() {
-    return (
+export default function App () {
+  return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <RecoilRoot>
                 <BrowserRouter>
@@ -27,7 +26,5 @@ function App() {
             </RecoilRoot>
         </LocalizationProvider>
 
-    );
+  )
 }
-
-export default App;

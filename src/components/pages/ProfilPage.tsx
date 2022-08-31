@@ -1,58 +1,40 @@
-import {
-    Avatar,
-    Box, Button,
-    Card,
-    CardContent, CardHeader,
-    FormControl,
-    FormHelperText, Grid,
-    Input,
-    InputLabel,
-    TextField,
-    Typography
-} from "@mui/material";
-import {useForm, Controller} from "react-hook-form";
-import {ProfilModel} from "../../model/ProfilModel";
-import {useRecoilState, useRecoilValue} from "recoil";
-import {profileAtom} from "../../atoms/ProfileAtom";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SendIcon from "@mui/icons-material/Send";
-import React, {useEffect} from "react";
-import {ProfileAvatar} from "../ProfileAvatar";
-import {AvatarUpload} from "../Profile/AvatarUpload";
-import {DatePicker} from "@mui/x-date-pickers/DatePicker";
-import MuiPhoneNumber from "material-ui-phone-number-2";
-import libphonenumber from "google-libphonenumber"
-import {IsValidPhoneNumber} from "../../utils/PhoneValidation";
-import CountrySelect from "../Profile/CountrySelect";
+import { Box, Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material'
+import { Controller, useForm } from 'react-hook-form'
+import { ProfilModel } from '../../model/ProfilModel'
+import { useRecoilState } from 'recoil'
+import { profileAtom } from '../../atoms/ProfileAtom'
+import DeleteIcon from '@mui/icons-material/Delete'
+import SendIcon from '@mui/icons-material/Send'
+import React from 'react'
+import { AvatarUpload } from '../Profile/AvatarUpload'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import MuiPhoneNumber from 'material-ui-phone-number-2'
+import { IsValidPhoneNumber } from '../../utils/PhoneValidation'
+import CountrySelect from '../Profile/CountrySelect'
 
-const spacing = 3
+export function ProfilPage () {
+  const [profile, setProfileState] = useRecoilState(profileAtom)
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState
+  } = useForm<ProfilModel>({
+    defaultValues: profile
+  })
 
-export function ProfilPage() {
-    const [profile, setProfileState] = useRecoilState(profileAtom)
-    const {
-        control,
-        handleSubmit,
-        reset,
-        formState,
-        setFocus,
-        getFieldState,
-        formState: {errors}
-    } = useForm<ProfilModel>({
-        defaultValues: profile
-    })
+  const onSubmit = (profile: ProfilModel) => {
+    setProfileState(profile)
+    console.log(profile)
+  }
 
-    const onSubmit = (profile: ProfilModel) => {
-        setProfileState(profile)
-        console.log(profile)
-    }
-
-    return (
+  return (
         <>
 
             <Card>
                 <CardContent>
                     <Typography variant="h2">Profil</Typography>
-                    <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
+                    <Box component={'form'} onSubmit={handleSubmit(onSubmit)}>
                         <Grid container direction='column' spacing={3}>
                             <Grid item columnSpacing={3}>
                                 <AvatarUpload/>
@@ -64,22 +46,22 @@ export function ProfilPage() {
                                     name="eMail"
                                     defaultValue={profile.eMail}
                                     rules={{
-                                        required: {
-                                            value: true,
-                                            message: "This is mandatory"
-                                        },
-                                        pattern: {
-                                            value: /\S+@\S+\.\S+/,
-                                            message: "Entered value does not match email format"
-                                        }
+                                      required: {
+                                        value: true,
+                                        message: 'This is mandatory'
+                                      },
+                                      pattern: {
+                                        value: /\S+@\S+\.\S+/,
+                                        message: 'Entered value does not match email format'
+                                      }
                                     }}
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <TextField
                                             fullWidth
                                             label="E-Mail"
                                             type="email"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Please put a email in"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Please put a email in'}
                                             {...field}
                                         />
                                     )}
@@ -91,19 +73,19 @@ export function ProfilPage() {
                                     name="firstName"
                                     defaultValue={profile.firstName}
                                     rules={{
-                                        required: true,
-                                        minLength: {
-                                            value: 1,
-                                            message: "Bitte im min einen Buchstaben eingeben"
-                                        }
+                                      required: true,
+                                      minLength: {
+                                        value: 1,
+                                        message: 'Bitte im min einen Buchstaben eingeben'
+                                      }
                                     }}
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <TextField
                                             fullWidth
                                             label="Vorname"
                                             type="text"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Bitte einen Vornamen eingeben"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Bitte einen Vornamen eingeben'}
                                             {...field}
                                         />
                                     )}
@@ -115,19 +97,19 @@ export function ProfilPage() {
                                     name="lastName"
                                     defaultValue={profile.lastName}
                                     rules={{
-                                        required: true,
-                                        minLength: {
-                                            value: 1,
-                                            message: "Bitte im min einen Buchstaben eingeben"
-                                        }
+                                      required: true,
+                                      minLength: {
+                                        value: 1,
+                                        message: 'Bitte im min einen Buchstaben eingeben'
+                                      }
                                     }}
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <TextField
                                             fullWidth
                                             label="Geburtstag"
                                             type="text"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Bitte einen Geburtstags eingeben"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Bitte einen Geburtstags eingeben'}
                                             {...field}
                                         />
                                     )}
@@ -137,13 +119,13 @@ export function ProfilPage() {
                                 <Controller
                                     control={control}
                                     name="birthday"
-                                    defaultValue={profile.birthday ? profile.birthday : null}
-                                    render={({field}) => (
+                                    defaultValue={(profile.birthday != null) ? profile.birthday : null}
+                                    render={({ field }) => (
                                         <DatePicker
                                             label="Geburtstag"
                                             renderInput={(params) => <TextField
                                                 error={Boolean(formState.errors[field.name])}
-                                                helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Bitte einen Nachnamen eingeben"}
+                                                helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Bitte einen Nachnamen eingeben'}
                                                 {...params}
                                             />}
                                             {...field}
@@ -156,8 +138,8 @@ export function ProfilPage() {
                                     control={control}
                                     name="homephone"
                                     defaultValue={profile.homephone}
-                                    rules={{validate: value => value && IsValidPhoneNumber(value)}}
-                                    render={({field}) => (
+                                    rules={{ validate: value => value && IsValidPhoneNumber(value) }}
+                                    render={({ field }) => (
                                         <MuiPhoneNumber
                                             defaultCountry='ch'
                                             variant='outlined'
@@ -165,10 +147,10 @@ export function ProfilPage() {
                                             disableDropdown
                                             label="Private Telefonnummer"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Ihr Festnetzanschluss"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihr Festnetzanschluss'}
                                             onChange={(value) => {
-                                                if (value === '+41' || String(value).length <= 3) field.onChange(undefined)
-                                                field.onChange(value)
+                                              if (value === '+41' || String(value).length <= 3) field.onChange(undefined)
+                                              field.onChange(value)
                                             }}
                                             value={field.value}
                                         />
@@ -180,8 +162,8 @@ export function ProfilPage() {
                                     control={control}
                                     name="homephone"
                                     defaultValue={profile.mobilephone}
-                                    rules={{validate: value => value && IsValidPhoneNumber(value)}}
-                                    render={({field}) => (
+                                    rules={{ validate: value => value && IsValidPhoneNumber(value) }}
+                                    render={({ field }) => (
                                         <MuiPhoneNumber
                                             defaultCountry='ch'
                                             variant='outlined'
@@ -189,10 +171,10 @@ export function ProfilPage() {
                                             disableDropdown
                                             label="Private Telefonnummer"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Ihr Mobile Telefonnummer"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihr Mobile Telefonnummer'}
                                             onChange={(value) => {
-                                                if (value === '+41' || String(value).length <= 3) field.onChange(undefined)
-                                                field.onChange(value)
+                                              if (value === '+41' || String(value).length <= 3) field.onChange(undefined)
+                                              field.onChange(value)
                                             }}
                                             value={field.value}
                                         />
@@ -204,13 +186,13 @@ export function ProfilPage() {
                                     control={control}
                                     name="street"
                                     defaultValue={profile.street}
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <TextField
                                             fullWidth
                                             label="Strasse und Hausnummer"
                                             type="text"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Ihre private Addresse für den Briefversand"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihre private Addresse für den Briefversand'}
                                             {...field}
                                         />
                                     )}
@@ -221,13 +203,13 @@ export function ProfilPage() {
                                     control={control}
                                     name="postcode"
                                     defaultValue={profile.postcode}
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <TextField
                                             fullWidth
                                             label="PLZ"
                                             type="text"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Die Postleitzahl ihrer Wohnorts"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Die Postleitzahl ihrer Wohnorts'}
                                             {...field}
                                         />
                                     )}
@@ -238,13 +220,13 @@ export function ProfilPage() {
                                     control={control}
                                     name="city"
                                     defaultValue={profile.city}
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <TextField
                                             fullWidth
                                             label="Wohnort"
                                             type="text"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Ihr Wohnort"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihr Wohnort'}
                                             {...field}
                                         />
                                     )}
@@ -255,12 +237,12 @@ export function ProfilPage() {
                                     control={control}
                                     name="country"
                                     defaultValue={profile.country}
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <CountrySelect
                                             fullWidth
                                             label="Land"
                                             error={Boolean(formState.errors[field.name])}
-                                            helperText={Boolean(formState.errors[field.name]) ? formState.errors[field.name]?.message : "Das Land ihrers Wohnorts"}
+                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Das Land ihrers Wohnorts'}
                                             {...field}
                                         />
                                     )}
@@ -269,24 +251,24 @@ export function ProfilPage() {
                         </Grid>
                     </Box>
 
-                    <Box style={{display: "flex", justifyContent: "center"}}>
+                    <Box style={{ display: 'flex', justifyContent: 'center' }}>
                         <Button type="reset"
                                 variant="outlined"
                                 startIcon={<DeleteIcon/>}
                                 onClick={() => reset()}
-                                style={{width: "100%", margin: "5px"}}>
+                                style={{ width: '100%', margin: '5px' }}>
                             Abort
                         </Button>
                         <Button type="submit"
                                 variant="contained"
                                 endIcon={<SendIcon/>}
                                 onClick={handleSubmit(onSubmit)}
-                                style={{width: "100%", margin: "5px"}}>
+                                style={{ width: '100%', margin: '5px' }}>
                             Run
                         </Button>
                     </Box>
                 </CardContent>
             </Card>
         </>
-    )
+  )
 }

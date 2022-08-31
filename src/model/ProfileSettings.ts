@@ -1,7 +1,7 @@
 export class ProfileSettings {
-    language: string
+  language: string
 
-    constructor(language: string) {
-        this.language = language;
-    }
+  constructor (language: string) {
+    this.language = language
+  }
 }

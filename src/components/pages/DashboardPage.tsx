@@ -1,6 +1,6 @@
 
-export function DashboardPage() {
-    return (
+export function DashboardPage () {
+  return (
         <>Dashboard</>
-    )
+  )
 }

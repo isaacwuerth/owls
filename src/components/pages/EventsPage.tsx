@@ -1,7 +1,7 @@
-import EventsList from "../events/EventsList";
+import EventsList from '../events/EventsList'
 
-export function EventsPage() {
-    return (
+export function EventsPage () {
+  return (
         <EventsList/>
-    )
+  )
 }

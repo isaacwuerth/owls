@@ -1,1 +1,1 @@
-export class NoDataError extends Error{}
+export class NoDataError extends Error {}
