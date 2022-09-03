@@ -4,7 +4,6 @@ import {
   Card, CardContent, CardHeader,
   Chip,
   SelectChangeEvent,
-  Stack,
   styled,
   Tab,
   Table,
@@ -216,10 +215,16 @@ export function EventPage () {
   return (
     <>
       <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant='h2'>{event.title}</Typography>
-        <Stack>
-          <Button variant='contained'>Bearbeiten</Button>
-        </Stack>
+        <Grid2 container style={{ width: '100%' }}>
+          <Grid2 xs={12} alignItems='end' md={8}>
+            <Typography variant='h2'>{event.title}</Typography>
+          </Grid2>
+          <Grid2 xs={12} alignItems='end' md={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center' }}>
+              <Button variant='contained'>Bearbeiten</Button>
+            </Box>
+          </Grid2>
+        </Grid2>
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
