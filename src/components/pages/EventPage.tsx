@@ -3,7 +3,7 @@ import {
   Button,
   Card, CardContent, CardHeader,
   Chip,
-  Container, SelectChangeEvent,
+  SelectChangeEvent,
   Stack,
   styled,
   Tab,
@@ -214,7 +214,7 @@ export function EventPage () {
   }
 
   return (
-    <Container>
+    <>
       <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant='h2'>{event.title}</Typography>
         <Stack>
@@ -328,6 +328,6 @@ export function EventPage () {
           </Box>
         </Card>
       </TabPanel>
-    </Container>
+    </>
   )
 }

@@ -154,7 +154,7 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
 
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3 }}
+        sx={{ flexGrow: 1, p: 3, padding: 0 }}
         // sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <SpacingBox/>
