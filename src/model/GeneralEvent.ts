@@ -1,16 +1,18 @@
-import { Person } from './Person'
 import { ParticipantState } from '../enum/ParticipantState'
+import firebase from 'firebase/compat/app'
+import Timestamp = firebase.firestore.Timestamp
 
 export interface Participant {
-  id: number
-  person: Person
+  id: string
+  eid: string
+  uid: string
   state: ParticipantState
+  fullname: string
 }
 
 export interface GeneralEvent {
-  id?: number
+  id: string
   title: string
-  start: Date
-  end: Date
-  participants: Participant[]
+  start: Timestamp
+  end: Timestamp
 }

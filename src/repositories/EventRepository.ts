@@ -1,9 +1,9 @@
 import { BaseRepository } from './base/BaseRepository'
 import { GeneralEvent } from '../model/GeneralEvent'
-import { firestore } from '../firebase'
+import { Database } from 'firebase/database'
 
 export class EventRepository extends BaseRepository<GeneralEvent> {
-  constructor () {
-    super('events', firestore)
+  constructor (db: Database) {
+    super('events', db)
   }
 }

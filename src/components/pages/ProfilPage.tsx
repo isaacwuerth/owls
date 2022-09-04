@@ -40,7 +40,6 @@ export function ProfilPage () {
                                 <AvatarUpload/>
                             </Grid>
                             <Grid item>
-
                                 <Controller
                                     control={control}
                                     name="eMail"

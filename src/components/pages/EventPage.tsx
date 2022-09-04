@@ -1,7 +1,7 @@
 import {
   Box,
   Button,
-  Card, CardContent, CardHeader,
+  Card,
   Chip,
   SelectChangeEvent,
   styled,
@@ -12,23 +12,20 @@ import {
   TableContainer,
   TableRow,
   Tabs,
-  Typography,
-  useTheme
+  Typography
 } from '@mui/material'
-import { SyntheticEvent, useState } from 'react'
-import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams, useGridApiContext } from '@mui/x-data-grid'
-import { useRecoilValue } from 'recoil'
-import { currentEventViewState } from '../../atoms/EventAtom.'
-import { ParticipantState } from '../../enum/ParticipantState'
-import { OverridableStringUnion } from '@mui/types'
-import { ChipPropsColorOverrides } from '@mui/material/Chip/Chip'
+import { SyntheticEvent, useEffect, useState } from 'react'
+import { DataGrid, GridColDef, GridRenderCellParams, useGridApiContext } from '@mui/x-data-grid'
+import { ParticipantState, translationTableColors, translationTableEnum } from '../../enum/ParticipantState'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
-import Chart from 'react-apexcharts'
-import { ApexOptions } from 'apexcharts'
-import { Participant } from '../../model/GeneralEvent'
+import { GeneralEvent, Participant } from '../../model/GeneralEvent'
 import Grid2 from '@mui/material/Unstable_Grid2'
+import { useParams } from 'react-router-dom'
+import { useFirebase } from '../../Context/FirebaseContext'
+import { collection, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore'
+import { ChartParticipantState } from './ChartParticipantState'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -67,29 +64,13 @@ const KeyTableCell = styled(TableCell)({
   fontWeight: 'bold'
 })
 
-const translationTableEnum: { [ParticipantState: string]: string } = {
-  [ParticipantState.COMMITMENT]: 'Zusage',
-  [ParticipantState.REJECTED]: 'Abgelehnt',
-  [ParticipantState.WITHRESERVATION]: 'Mit Vorbehalt',
-  [ParticipantState.OUTSTANDING]: 'Ausstehend'
-}
-
-const translationTableColors: {
-  [ParticipantState: string]: OverridableStringUnion<'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning',
-  ChipPropsColorOverrides>
-} = {
-  [ParticipantState.COMMITMENT]: 'success',
-  [ParticipantState.REJECTED]: 'error',
-  [ParticipantState.WITHRESERVATION]: 'warning',
-  [ParticipantState.OUTSTANDING]: 'info'
-}
-
 function SelectEditInputCell (props: GridRenderCellParams) {
   const { id, value, field } = props
   const apiRef = useGridApiContext()
 
   const handleChange = async (event: SelectChangeEvent) => {
     await apiRef.current.setEditCellValue({ id, field, value: event.target.value })
+
     apiRef.current.stopCellEditMode({ id, field })
   }
 
@@ -123,14 +104,11 @@ const renderSelectEditInputCell: GridColDef['renderCell'] = (params) => {
 
 const columns: GridColDef[] = [
   {
-    field: 'fullName',
+    field: 'fullname',
     headerName: 'Full name',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
-    flex: 1,
-    valueGetter: (params: GridValueGetterParams) =>
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `${params.row.person.firstName || ''} ${params.row.person.lastName || ''}`
+    flex: 1
   },
   {
     field: 'state',
@@ -149,67 +127,83 @@ const columns: GridColDef[] = [
   }
 ]
 
-function countParticipants (participants: Participant[], state: ParticipantState): number {
-  return participants.filter(p => p.state === state).length
-}
-
 export function EventPage () {
-  const event = useRecoilValue(currentEventViewState)
+  const { id } = useParams()
+  if (!id) return (<Typography>Loading...</Typography>)
+  const [event, setEvent] = useState<GeneralEvent | null>(null)
+  const [participants, setParticipants] = useState<Participant[]>([])
   const [value, setValue] = useState(0)
-  const theme = useTheme()
+  const [ownState, setOwnState] = useState<ParticipantState | null>(null)
 
-  function ColorOfState (state: ParticipantState) {
-    // @ts-expect-error
-    return theme.palette[translationTableColors[state]].main
+  const { apps: { firestore, auth } } = useFirebase()
+
+  async function changeStateOfParticipant (id: string, state: ParticipantState) {
+    const docRef = doc(firestore, `eventparticipants/${id}`)
+    await updateDoc(docRef, {
+      state
+    })
   }
 
-  const options: ApexOptions = {
-    series: [countParticipants(event.participants, ParticipantState.COMMITMENT),
-      countParticipants(event.participants, ParticipantState.WITHRESERVATION),
-      countParticipants(event.participants, ParticipantState.REJECTED),
-      countParticipants(event.participants, ParticipantState.OUTSTANDING)
-    ],
-    legend: {
-      position: 'bottom'
+  useEffect(() => {
+    const eventUbsub = onSnapshot(doc(firestore, `events/${id}`), (doc) => {
+      setEvent(doc.data() as GeneralEvent)
+    })
 
-    },
-    chart: {
-      width: '100%',
-      type: 'pie'
-    },
-    dataLabels: {
-      formatter: function (val, opts) {
-        return opts.w.config.series[opts.seriesIndex]
+    const participantsUnsub = onSnapshot(query(collection(firestore, 'eventparticipants'), where('eid', '==', id)),
+      (querySnapshot) => {
+        const participants: Participant[] = []
+        querySnapshot.forEach((doc) => {
+          participants.push(doc.data() as Participant)
+        })
+        setParticipants(participants)
+        setOwnState(participants.find(p => p.uid === auth.currentUser?.uid)?.state ?? ParticipantState.OUTSTANDING)
+      })
+
+    async function loadEvent () {
+      const event = await getDoc(doc(firestore, `events/${id as string}`))
+      if (!event.exists()) {
+        throw new Error('Event not found')
       }
-    },
-    labels: [
-      translationTableEnum[ParticipantState.COMMITMENT],
-      translationTableEnum[ParticipantState.WITHRESERVATION],
-      translationTableEnum[ParticipantState.REJECTED],
-      translationTableEnum[ParticipantState.OUTSTANDING]],
-    colors:
-      [
-        ColorOfState(ParticipantState.COMMITMENT),
-        ColorOfState(ParticipantState.WITHRESERVATION),
-        ColorOfState(ParticipantState.REJECTED),
-        ColorOfState(ParticipantState.OUTSTANDING)
-      ],
-    responsive:
-      [{
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200
-          },
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }]
-  }
+      setEvent(event.data() as GeneralEvent)
+    }
+
+    async function loadParticipants () {
+      const q = query(collection(firestore, 'eventparticipants'), where('eid', '==', id))
+      const participants = await getDocs(q)
+      if (participants.empty) {
+        throw new Error('Participants not found')
+      } else {
+        setParticipants(participants.docs.map(doc => doc.data() as Participant))
+      }
+    }
+
+    loadEvent().catch(console.error)
+    loadParticipants().catch(console.error)
+
+    return function CleanUp () {
+      eventUbsub()
+      participantsUnsub()
+    }
+  }, [])
+
+  if (!event) return (<Typography>Loading...</Typography>)
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue)
+  }
+
+  async function handleOwnParticipantStateChange (event: SelectChangeEvent) {
+    const state = event.target.value as ParticipantState
+    const uid = auth.currentUser?.uid
+    const q = query(collection(firestore, 'eventparticipants'),
+      where('eid', '==', id),
+      where('uid', '==', uid))
+    const participants = await getDocs(q)
+    if (!participants.empty || participants.docs.length === 1) {
+      await changeStateOfParticipant(participants.docs[0].id, state)
+    } else {
+      throw new Error('Could not find participant')
+    }
   }
 
   return (
@@ -244,7 +238,7 @@ export function EventPage () {
                         Start
                       </KeyTableCell>
                       <TableCell>
-                        {event.start.toDateString()}
+                        {event.start.toDate().toDateString()}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -252,7 +246,7 @@ export function EventPage () {
                         Ende
                       </KeyTableCell>
                       <TableCell>
-                        {event.end.toDateString()}
+                        {event.end.toDate().toDateString()}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -270,7 +264,7 @@ export function EventPage () {
                         Anzahl Teilnehmer
                       </KeyTableCell>
                       <TableCell>
-                        {event.participants.filter(p => p.state === ParticipantState.COMMITMENT).length}
+                        {participants.filter(p => p.state === ParticipantState.COMMITMENT).length}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -281,8 +275,9 @@ export function EventPage () {
                         <FormControl fullWidth>
                           <Select
                             id="demo-simple-select"
-                            value={'outstanding'}
+                            value={ownState as string}
                             variant="standard"
+                            onChange={handleOwnParticipantStateChange}
                           >
                             <MenuItem value={'commitment'}>
                               <Chip color="success" size="small" label={'Zusage'}/>
@@ -306,16 +301,7 @@ export function EventPage () {
             </Card>
           </Grid2>
           <Grid2 xs={12} md={6}>
-            <Card style={{ width: '100%', height: '100%' }}>
-              <CardHeader title='Teilnehmer Statistik'/>
-              <CardContent>
-                <Chart
-                  options={options}
-                  series={options.series}
-                  type='pie'
-                />
-              </CardContent>
-            </Card>
+            <ChartParticipantState participants={participants}/>
           </Grid2>
         </Grid2>
       </TabPanel>
@@ -323,7 +309,7 @@ export function EventPage () {
         <Card>
           <Box sx={{ height: 400, width: '100%' }}>
             <DataGrid
-              rows={event.participants}
+              rows={participants}
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}

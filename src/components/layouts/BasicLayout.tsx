@@ -1,7 +1,8 @@
 import React, { ReactElement, useState } from 'react'
 import {
   AppBar,
-  Box, Divider,
+  Box,
+  Divider,
   Drawer,
   List,
   ListItem,
@@ -13,15 +14,18 @@ import {
   styled,
   Toolbar,
   Tooltip,
-  Typography, useTheme
+  Typography,
+  useTheme
 } from '@mui/material'
 import { Logo } from '../Logo'
 import IconButton from '@mui/material/IconButton'
 import { NavItems } from '../../Nav'
-import { Link } from 'react-router-dom'
-import { ChevronLeft, Logout, Settings, MenuRounded, ChevronRight } from '@mui/icons-material'
+import { Link, Outlet } from 'react-router-dom'
+import { ChevronLeft, ChevronRight, Logout, MenuRounded, Settings } from '@mui/icons-material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { ProfileAvatar } from '../ProfileAvatar'
+import { useRecoilValue } from 'recoil'
+import { siteConfigAtom } from '../../atoms/SiteConfigAtom'
 
 const drawerWidth = 240
 
@@ -50,6 +54,7 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
   const theme = useTheme()
   const [open, setOpen] = useState<boolean>(false)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+  const siteConfig = useRecoilValue(siteConfigAtom)
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget)
   }
@@ -71,7 +76,7 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
             <IconButton onClick={handleOpen}>
               {open ? <ChevronLeft/> : <MenuRounded/>}
             </IconButton>
-            <Logo/>
+            <Logo width='30px'/>
             <Typography
               variant="h6"
               component="a"
@@ -86,7 +91,7 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
                 textDecoration: 'none'
               }}
             >
-              LOGO
+              {siteConfig.name}
             </Typography>
             <Box sx={{ flex: 1 }}/>
             <Box>
@@ -158,7 +163,7 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
         // sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <SpacingBox/>
-        {children}
+        <Outlet/>
       </Box>
     </Box>
   )
