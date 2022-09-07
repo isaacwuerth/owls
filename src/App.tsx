@@ -17,33 +17,35 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { MaintenancePage } from './components/pages/MaintenancePage'
 import { LogoutPage } from './components/pages/LogoutPage'
+import ErrorBoundary from './ErrorBoundry'
 
 export default function App () {
   return (
-
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <RecoilRoot>
-        <RecoilNexus/>
-        <BrowserRouter>
-          <FirebaseProvider>
-            <MaintenancePage>
-              <Routes>
-                <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/user-setup" element={<UserSetupPage/>}/>
-                <Route path="/logout" element={<LogoutPage/>}/>
-                <Route element={<BasicLayout/>}>
-                  <Route index element={<DashboardPage/>}/>
-                  <Route path="events/:id" element={<EventPage/>}/>
-                  <Route path="events/:id/edit" element={<EventEditPage/>}/>
-                  <Route path="events" element={<EventsPage/>}/>
-                  <Route path="profile" element={<ProfilPage/>}/>
-                </Route>
-              </Routes>
-              <ToastContainer/>
-            </MaintenancePage>
-          </FirebaseProvider>
-        </BrowserRouter>
-      </RecoilRoot>
-    </LocalizationProvider>
+    <ErrorBoundary>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <RecoilRoot>
+          <RecoilNexus/>
+          <BrowserRouter>
+            <FirebaseProvider>
+              <MaintenancePage>
+                <Routes>
+                  <Route path="/login" element={<LoginPage/>}/>
+                  <Route path="/user-setup" element={<UserSetupPage/>}/>
+                  <Route path="/logout" element={<LogoutPage/>}/>
+                  <Route element={<BasicLayout/>}>
+                    <Route index element={<DashboardPage/>}/>
+                    <Route path="events/:eid" element={<EventPage/>}/>
+                    <Route path="events/:eid/edit" element={<EventEditPage/>}/>
+                    <Route path="events" element={<EventsPage/>}/>
+                    <Route path="profile" element={<ProfilPage/>}/>
+                  </Route>
+                </Routes>
+                <ToastContainer/>
+              </MaintenancePage>
+            </FirebaseProvider>
+          </BrowserRouter>
+        </RecoilRoot>
+      </LocalizationProvider>
+    </ErrorBoundary>
   )
 }
