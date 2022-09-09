@@ -1,5 +1,6 @@
 import { atom } from 'recoil'
-import { GeneralEvent, Participant } from '../model/GeneralEvent'
+import { GeneralEvent } from '../model/GeneralEvent'
+import { Participant } from '../model/Participant'
 
 export const eventAtom = atom<GeneralEvent>({
   key: 'eventAtom'

@@ -1,18 +1,18 @@
-import { ParticipantState } from '../enum/ParticipantState'
-import firebase from 'firebase/compat/app'
-import Timestamp = firebase.firestore.Timestamp
+import { BasicEntitySchema } from '../repositories/base/BaseRepository'
+import { z } from 'zod'
 
-export interface Participant {
-  id: string
-  eid: string
-  uid: string
-  state: ParticipantState
-  fullname: string
-}
+export const LocationSchema = z.object({
+  postcode: z.string(),
+  city: z.string(),
+  street: z.string(),
+  country: z.string()
+})
 
-export interface GeneralEvent {
-  id: string
-  title: string
-  start: Timestamp
-  end: Timestamp
-}
+export const GeneralEventSchema = z.object({
+  title: z.string(),
+  start: z.date(),
+  end: z.date()
+}).merge(BasicEntitySchema)
+  .merge(LocationSchema.partial())
+
+export type GeneralEvent = z.infer<typeof GeneralEventSchema>

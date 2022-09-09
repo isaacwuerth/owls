@@ -1,39 +1,24 @@
-import {
-  Box,
-  Button,
-  Card,
-  Chip,
-  SelectChangeEvent,
-  styled,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Tabs,
-  Typography
-} from '@mui/material'
-import { SyntheticEvent, useEffect, useState } from 'react'
-import { DataGrid, GridColDef, GridRenderCellParams, useGridApiContext } from '@mui/x-data-grid'
-import { ParticipantState, translationTableColors, translationTableEnum } from '../../enum/ParticipantState'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import { GeneralEvent, Participant } from '../../model/GeneralEvent'
+import { Box, Button, Card, SelectChangeEvent, Tab, Tabs, Typography } from '@mui/material'
+import { PropsWithChildren, SyntheticEvent, useEffect, useState } from 'react'
+import { ParticipantState } from '../../enum/ParticipantState'
+import { GeneralEvent } from '../../model/GeneralEvent'
 import Grid2 from '@mui/material/Unstable_Grid2'
 import { useParams } from 'react-router-dom'
 import { useFirebase } from '../../Context/FirebaseContext'
-import { collection, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore'
-import { ChartParticipantState } from './ChartParticipantState'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { ChartParticipantState } from '../events/EventParticipantStateChart'
+import { EventParticipantTable } from '../events/EventParticipantTable'
+import { EventSelectState } from '../events/EventSelectState'
+import { InfoTable, InfoTableRow } from '../common/InfoTable'
+import { Loading } from '../common/Loading'
+import { Participant } from '../../model/Participant'
 
 interface TabPanelProps {
-  children?: React.ReactNode
   index: number
   value: number
 }
 
-function TabPanel (props: TabPanelProps) {
+function TabPanel (props: PropsWithChildren<TabPanelProps>) {
   const { children, value, index, ...other } = props
 
   return (
@@ -60,121 +45,35 @@ function a11yProps (index: number) {
   }
 }
 
-const KeyTableCell = styled(TableCell)({
-  fontWeight: 'bold'
-})
-
-function SelectEditInputCell (props: GridRenderCellParams) {
-  const { id, value, field } = props
-  const apiRef = useGridApiContext()
-
-  const handleChange = async (event: SelectChangeEvent) => {
-    await apiRef.current.setEditCellValue({ id, field, value: event.target.value })
-
-    apiRef.current.stopCellEditMode({ id, field })
-  }
-
-  return (
-    <Select
-      value={value}
-      fullWidth
-      onChange={handleChange}
-      size="small"
-      sx={{ height: 1 }}
-    >
-      <MenuItem value={'commitment'}>
-        <Chip color="success" size="small" label={'Zusage'}/>
-      </MenuItem>
-      <MenuItem value={'rejected'}>
-        <Chip color="error" size="small" label={'Abgelehnt'}/>
-      </MenuItem>
-      <MenuItem value={'withreservation'}>
-        <Chip color="warning" size="small" label={'Mit Vorbehalt'}/>
-      </MenuItem>
-      <MenuItem value={'outstanding'}>
-        <Chip color="info" size="small" label={'Ausstehend'}/>
-      </MenuItem>
-    </Select>
-  )
-}
-
-const renderSelectEditInputCell: GridColDef['renderCell'] = (params) => {
-  return <SelectEditInputCell {...params} />
-}
-
-const columns: GridColDef[] = [
-  {
-    field: 'fullname',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    flex: 1
-  },
-  {
-    field: 'state',
-    headerName: 'Status',
-    type: 'singleSelect',
-    valueOptions: Object.values(ParticipantState),
-    editable: true,
-    flex: 1,
-    renderCell: params => (
-      <Chip label={translationTableEnum[params.value]}
-            size="small"
-            color={translationTableColors[params.value]}/>
-
-    ),
-    renderEditCell: renderSelectEditInputCell
-  }
-]
-
 export function EventPage () {
-  const { id } = useParams()
-  if (!id) return (<Typography>Loading...</Typography>)
+  const { eid } = useParams<{ eid: string }>()
   const [event, setEvent] = useState<GeneralEvent | null>(null)
   const [participants, setParticipants] = useState<Participant[]>([])
   const [value, setValue] = useState(0)
   const [ownState, setOwnState] = useState<ParticipantState | null>(null)
 
-  const { apps: { firestore, auth } } = useFirebase()
+  const { apps: { firestore, auth }, eventRepository, participantRepository } = useFirebase()
 
-  async function changeStateOfParticipant (id: string, state: ParticipantState) {
-    const docRef = doc(firestore, `eventparticipants/${id}`)
-    await updateDoc(docRef, {
-      state
-    })
-  }
+  if (!eid) return (<Loading/>)
 
   useEffect(() => {
-    const eventUbsub = onSnapshot(doc(firestore, `events/${id}`), (doc) => {
+    const eventUbsub = onSnapshot(doc(firestore, `events/${eid}`), (doc) => {
       setEvent(doc.data() as GeneralEvent)
     })
 
-    const participantsUnsub = onSnapshot(query(collection(firestore, 'eventparticipants'), where('eid', '==', id)),
-      (querySnapshot) => {
-        const participants: Participant[] = []
-        querySnapshot.forEach((doc) => {
-          participants.push(doc.data() as Participant)
-        })
-        setParticipants(participants)
-        setOwnState(participants.find(p => p.uid === auth.currentUser?.uid)?.state ?? ParticipantState.OUTSTANDING)
-      })
+    const participantsUnsub = participantRepository.onEventParticipantsChange(eid, (participants) => {
+      setParticipants(participants)
+      setOwnState(participants.find(p => p.uid === auth.currentUser?.uid)?.state ?? ParticipantState.OUTSTANDING)
+    })
 
     async function loadEvent () {
-      const event = await getDoc(doc(firestore, `events/${id as string}`))
-      if (!event.exists()) {
-        throw new Error('Event not found')
-      }
-      setEvent(event.data() as GeneralEvent)
+      if (!eid) return
+      setEvent(await eventRepository.findOne(eid))
     }
 
     async function loadParticipants () {
-      const q = query(collection(firestore, 'eventparticipants'), where('eid', '==', id))
-      const participants = await getDocs(q)
-      if (participants.empty) {
-        throw new Error('Participants not found')
-      } else {
-        setParticipants(participants.docs.map(doc => doc.data() as Participant))
-      }
+      if (!eid) return
+      setParticipants(await participantRepository.findByEvent(eid))
     }
 
     loadEvent().catch(console.error)
@@ -186,26 +85,24 @@ export function EventPage () {
     }
   }, [])
 
-  if (!event) return (<Typography>Loading...</Typography>)
-
   const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
 
-  async function handleOwnParticipantStateChange (event: SelectChangeEvent) {
+  function handleOwnParticipantStateChange (event: SelectChangeEvent) {
     const state = event.target.value as ParticipantState
     const uid = auth.currentUser?.uid
-    const q = query(collection(firestore, 'eventparticipants'),
-      where('eid', '==', id),
-      where('uid', '==', uid))
-    const participants = await getDocs(q)
-    if (!participants.empty || participants.docs.length === 1) {
-      await changeStateOfParticipant(participants.docs[0].id, state)
-    } else {
-      throw new Error('Could not find participant')
-    }
+    // @ts-expect-error
+    participantRepository.updateUserState(eid, uid, state)
+      .catch(console.error)
   }
-
+  if (!event) return (<Loading/>)
+  const table: InfoTableRow[] = [
+    { label: 'Name', value: event.title },
+    { label: 'Start', value: String(event.start) },
+    { label: 'Ende', value: String(event.end) },
+    { label: 'Meine Teilnahme', value: <EventSelectState value={ownState ?? ParticipantState.OUTSTANDING} onChange={handleOwnParticipantStateChange} /> }
+  ]
   return (
     <>
       <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -230,74 +127,7 @@ export function EventPage () {
         <Grid2 container spacing={2}>
           <Grid2 xs={12} md={6}>
             <Card>
-              <TableContainer>
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <KeyTableCell>
-                        Start
-                      </KeyTableCell>
-                      <TableCell>
-                        {event.start.toDate().toDateString()}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <KeyTableCell>
-                        Ende
-                      </KeyTableCell>
-                      <TableCell>
-                        {event.end.toDate().toDateString()}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <KeyTableCell>
-                        Ort
-                      </KeyTableCell>
-                      <TableCell>
-                        <Typography>
-                          Irgendwo
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <KeyTableCell>
-                        Anzahl Teilnehmer
-                      </KeyTableCell>
-                      <TableCell>
-                        {participants.filter(p => p.state === ParticipantState.COMMITMENT).length}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <KeyTableCell>
-                        Meine Teilnahme
-                      </KeyTableCell>
-                      <TableCell>
-                        <FormControl fullWidth>
-                          <Select
-                            id="demo-simple-select"
-                            value={ownState as string}
-                            variant="standard"
-                            onChange={handleOwnParticipantStateChange}
-                          >
-                            <MenuItem value={'commitment'}>
-                              <Chip color="success" size="small" label={'Zusage'}/>
-                            </MenuItem>
-                            <MenuItem value={'rejected'}>
-                              <Chip color="error" size="small" label={'Abgelehnt'}/>
-                            </MenuItem>
-                            <MenuItem value={'withreservation'}>
-                              <Chip color="warning" size="small" label={'Mit Vorbehalt'}/>
-                            </MenuItem>
-                            <MenuItem value={'outstanding'}>
-                              <Chip color="info" size="small" label={'Ausstehend'}/>
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <InfoTable table={table}/>
             </Card>
           </Grid2>
           <Grid2 xs={12} md={6}>
@@ -308,14 +138,7 @@ export function EventPage () {
       <TabPanel value={value} index={1}>
         <Card>
           <Box sx={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={participants}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              experimentalFeatures={{ newEditingApi: true }}
-            />
+            <EventParticipantTable participants={participants}/>
           </Box>
         </Card>
       </TabPanel>

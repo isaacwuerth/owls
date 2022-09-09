@@ -3,24 +3,22 @@ import React, { useEffect } from 'react'
 import { AvatarUpload } from '../Profile/AvatarUpload'
 import { Controller, useForm } from 'react-hook-form'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { IsValidPhoneNumber } from '../../utils/PhoneValidation'
-import MuiPhoneNumber from 'material-ui-phone-number-2'
 import CountrySelect from '../Profile/CountrySelect'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SendIcon from '@mui/icons-material/Send'
 import { ProfilModel } from '../../model/ProfilModel'
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 import { profileAtom } from '../../atoms/ProfileAtom'
 import { useFirebase } from '../../Context/FirebaseContext'
 import { updateProfile } from 'firebase/auth'
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
 import { removeEmpty } from '../../utils/removeEmpty'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 
 export function UserSetupPage () {
   const navigate = useNavigate()
-  const [profile, setProfileState] = useRecoilState(profileAtom)
+  const setProfileState = useSetRecoilState(profileAtom)
   const { apps: { auth, firestore } } = useFirebase()
   const {
     control,
@@ -131,52 +129,6 @@ export function UserSetupPage () {
                     {...params}
                   />}
                   {...field}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Controller
-              control={control}
-              name="homephone"
-              rules={{ validate: value => value && IsValidPhoneNumber(value) }}
-              render={({ field }) => (
-                <MuiPhoneNumber
-                  defaultCountry='ch'
-                  variant='outlined'
-                  defaultValue={profile.homephone}
-                  disableDropdown
-                  label="Private Telefonnummer"
-                  error={Boolean(formState.errors[field.name])}
-                  helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihr Festnetzanschluss'}
-                  onChange={(value) => {
-                    if (value === '+41' || String(value).length <= 3) field.onChange(undefined)
-                    field.onChange(value)
-                  }}
-                  value={field.value}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item>
-            <Controller
-              control={control}
-              name="homephone"
-              rules={{ validate: value => value && IsValidPhoneNumber(value) }}
-              render={({ field }) => (
-                <MuiPhoneNumber
-                  defaultCountry='ch'
-                  variant='outlined'
-                  defaultValue={profile.mobilephone}
-                  disableDropdown
-                  label="Private Telefonnummer"
-                  error={Boolean(formState.errors[field.name])}
-                  helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihr Mobile Telefonnummer'}
-                  onChange={(value) => {
-                    if (value === '+41' || String(value).length <= 3) field.onChange(undefined)
-                    field.onChange(value)
-                  }}
-                  value={field.value}
                 />
               )}
             />

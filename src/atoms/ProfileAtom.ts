@@ -5,8 +5,7 @@ const sampleData: ProfilModel = {
   id: '1',
   firstName: 'John',
   lastName: 'Dow',
-  eMail: 'jowhn@doe.com',
-  avatar: '/spongbob.jpg'
+  eMail: 'jowhn@doe.com'
 }
 
 export const profileAtom = atom<ProfilModel>({

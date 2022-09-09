@@ -6,11 +6,17 @@ import { getDatabase } from 'firebase/database'
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 import * as firebaseui from 'firebaseui'
-import firebase from 'firebase/compat/app'
 import { useSetRecoilState } from 'recoil'
 import { profileAtom } from '../atoms/ProfileAtom'
-import { fetchAndActivate, getBoolean, getRemoteConfig, getString } from 'firebase/remote-config'
+import { fetchAndActivate, getAll, getRemoteConfig } from 'firebase/remote-config'
 import { siteConfigAtom } from '../atoms/SiteConfigAtom'
+import { SiteConfigSchema } from '../model/SiteConfig'
+import { getStorage } from 'firebase/storage'
+import { EventRepository } from '../repositories/EventRepository'
+import { ParticipantRepository } from '../repositories/ParticipantsRepository'
+import firebase from 'firebase/compat/app'
+import { UsersRepository } from '../repositories/UsersRepository'
+import { FileManager } from '../FileManager'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -23,6 +29,8 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 }
 const app = initializeApp(firebaseConfig)
+const firestore = getFirestore(app)
+const storage = getStorage(app)
 
 const firebaseContextConfig = {
   firebase: {
@@ -31,8 +39,9 @@ const firebaseContextConfig = {
   apps: {
     analytics: getAnalytics(app),
     database: getDatabase(app),
-    firestore: getFirestore(app),
+    firestore,
     auth: getAuth(app),
+    storage,
     loginUi: new firebaseui.auth.AuthUI(getAuth(app)),
     remoteConfig: getRemoteConfig(app)
   },
@@ -46,7 +55,11 @@ const firebaseContextConfig = {
     ],
     signInSuccessUrl: '/',
     privacyPolicyUrl: 'https://wwww.google.com'
-  }
+  },
+  eventRepository: new EventRepository(firestore),
+  participantRepository: new ParticipantRepository(firestore),
+  usersRepository: new UsersRepository(firestore),
+  avatarFiles: new FileManager(storage, 'avatar')
 }
 
 const defaultConfig = {
@@ -59,6 +72,19 @@ firebaseContextConfig.apps.remoteConfig.defaultConfig = defaultConfig
 
 export const FirebaseContext = createContext(firebaseContextConfig)
 
+function convertConfig (allConfigs: Record<string, any>): any {
+  const result: Record<string, any> = {}
+  Object.keys(allConfigs).forEach(key => {
+    result[key] = allConfigs[key].asString()
+  })
+  try {
+    SiteConfigSchema.parse(result)
+  } catch (e) {
+    console.error('Error parsing config', e)
+  }
+  return SiteConfigSchema.parse(result)
+}
+
 export default function FirebaseProvider ({ children }: PropsWithChildren) {
   const navigate = useNavigate()
   const setProfile = useSetRecoilState(profileAtom)
@@ -66,11 +92,8 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
   useEffect(() => {
     async function UpdateConfig () {
       await fetchAndActivate(firebaseContextConfig.apps.remoteConfig)
-      setSiteConfig({
-        name: getString(firebaseContextConfig.apps.remoteConfig, 'name'),
-        logoUrl: getString(firebaseContextConfig.apps.remoteConfig, 'logoUrl'),
-        maintenanceMode: getBoolean(firebaseContextConfig.apps.remoteConfig, 'maintenanceMode')
-      })
+      const allConfigs = getAll(firebaseContextConfig.apps.remoteConfig)
+      setSiteConfig(convertConfig(allConfigs))
     }
     async function LoadConfigStartup () {
       await UpdateConfig()

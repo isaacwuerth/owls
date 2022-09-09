@@ -1,7 +1,8 @@
-import { useRecoilValue } from 'recoil'
-import { profileAtom } from '../atoms/ProfileAtom'
 import { Avatar } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useFirebase } from '../Context/FirebaseContext'
+import { useRecoilState } from 'recoil'
+import { avatarAtom } from '../atoms/AvatarAtom'
 
 function stringToColor (string: string) {
   let hash = 0
@@ -32,10 +33,25 @@ function stringAvatar (name: string) {
 }
 
 export function ProfileAvatar () {
-  const profile = useRecoilValue(profileAtom)
+  const [avatar, setAvatar] = useRecoilState(avatarAtom)
+  const { avatarFiles, apps: { auth } } = useFirebase()
+  useEffect(() => {
+    if (auth.currentUser?.photoURL && auth.currentUser?.displayName) {
+      console.log(auth.currentUser?.photoURL)
+
+      avatarFiles.getDownloadUrl(auth.currentUser?.photoURL)
+        .then(url => setAvatar({
+          // @ts-expect-error
+          filename: auth.currentUser?.photoURL,
+          dowloadUrl: url
+        }))
+        .catch(console.error)
+    }
+  }, [])
+  if (avatar) {
+    return <Avatar alt={auth.currentUser?.displayName ?? ''} src={avatar.dowloadUrl}/>
+  }
   return (
-    profile.avatar
-      ? <Avatar alt={`${profile.firstName} ${profile.lastName}`} src={profile.avatar}/>
-      : <Avatar {...stringAvatar(`${profile.firstName} ${profile.lastName}`)} />
+    <Avatar {...stringAvatar(auth.currentUser?.displayName ?? 'A A')} />
   )
 }

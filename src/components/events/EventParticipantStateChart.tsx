@@ -2,7 +2,7 @@ import { Box, Card, CardContent, CardHeader, useTheme } from '@mui/material'
 import Chart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
 import { ParticipantState, translationTableColors, translationTableEnum } from '../../enum/ParticipantState'
-import { Participant } from '../../model/GeneralEvent'
+import { Participant } from '../../model/Participant'
 
 function countParticipants (participants: Participant[], state: ParticipantState): number {
   return participants.filter(p => p.state === state).length
