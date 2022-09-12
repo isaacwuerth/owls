@@ -1,5 +1,6 @@
 export interface ProfilModel {
   id: string
+  uid: string
   firstName: string
   lastName: string
   eMail: string

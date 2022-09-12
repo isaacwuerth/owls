@@ -102,7 +102,7 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
     LoadConfigStartup().catch(reason => {})
     onAuthStateChanged(firebaseContextConfig.apps.auth, async user => {
       if (user) {
-        const q = await query(collection(firebaseContextConfig.apps.firestore, 'users'), where('id', '==', user.uid))
+        const q = await query(collection(firebaseContextConfig.apps.firestore, 'users'), where('uid', '==', user.uid))
         const docs = await getDocs(q)
         if (docs.size > 1) throw new Error('There are multiple users with the same UID')
         if (docs.size === 1) {
