@@ -66,7 +66,7 @@ export function AvatarUpload () {
                 sx={{ marginRight: '1rem' }}
                 disabled={blocked}
             >
-                Upload CSV
+                Hochladen
                 <input type="file" accept="image/*" hidden onChange={handleFileUpload}/>
             </Button>
             <Button
