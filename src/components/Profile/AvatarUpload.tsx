@@ -1,59 +1,79 @@
 import { ProfileAvatar } from '../ProfileAvatar'
-import { Box, Button } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { useFirebase } from '../../Context/FirebaseContext'
-import { getAuth, updateProfile } from 'firebase/auth'
-import { avatarAtom } from '../../atoms/AvatarAtom'
+import { updateProfile } from 'firebase/auth'
+import { profileAtom } from '../../atoms/ProfileAtom'
+import { deleteField } from 'firebase/firestore'
 
 export function AvatarUpload () {
-  const [avatar, setAvatar] = useRecoilState(avatarAtom)
-  const { avatarFiles, apps: { auth }, firebase } = useFirebase()
+  const [profile, setProfile] = useRecoilState(profileAtom)
+  const { avatarFiles, usersRepository, apps: { auth } } = useFirebase()
+  const [blocked, setBlocked] = useState<boolean>(false)
 
   async function handleFileUpload (e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files == null) return
-    console.debug(e.target.files[0])
+    setBlocked(true)
     const file = e.target.files[0]
-    const fileextension = file.name.slice((file.name.lastIndexOf('.') - 1 >>> 0) + 2).toLocaleLowerCase()
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    const url = `${auth.currentUser?.uid}.${fileextension}`
+    const fileExtension = file.name.slice((file.name.lastIndexOf('.') - 1 >>> 0) + 2).toLocaleLowerCase()
+    const url = `${profile.uid}.${fileExtension}`
     await avatarFiles.upload(url, file)
-    setAvatar({
-      filename: url,
-      dowloadUrl: await avatarFiles.getDownloadUrl(url)
+    const downloadUrl = await avatarFiles.getDownloadUrl(url)
+    setProfile(oldProfile => {
+      return {
+        ...oldProfile,
+        photoURL: downloadUrl
+      }
     })
+
     if (auth.currentUser) {
-      await updateProfile(auth.currentUser, { photoURL: url })
-      auth = getAuth(firebase.app)
+      await updateProfile(auth.currentUser, { photoURL: downloadUrl })
+      await usersRepository.update(profile.id, { ...profile, photoURL: downloadUrl })
     }
-    e.target.value = ''
+    setBlocked(false)
   }
 
   async function handleDeleteProfileImage () {
-    if (!avatar) return
-    await avatarFiles.delete(avatar?.filename)
-    if (auth.currentUser?.photoURL != null) {
+    if (!profile?.photoURL) return
+    setBlocked(true)
+    const uri = decodeURI(profile.photoURL)
+    const regex = /\/o\/avatar%2F(?<photo>\w+.\w+)/
+    // @ts-expect-error
+    const photo = uri.match(regex).groups.photo
+    await avatarFiles.delete(photo)
+    if (auth.currentUser) {
+      const oldProfile = { ...profile, photoURL: undefined }
       await updateProfile(auth.currentUser, { photoURL: null })
+      // @ts-expect-error
+      await usersRepository.update(profile.id, { ...profile, photoURL: deleteField() })
+      setProfile(oldProfile)
     }
+    setBlocked(false)
   }
 
-  return (<Box display="flex">
-            <ProfileAvatar/>
-            <Button
+  return (
+      <Box display="flex">
+          <Box style={{ marginRight: 10 }}>
+              {blocked ? <CircularProgress /> : <ProfileAvatar />}
+          </Box>
+          <Button
                 component="label"
                 variant="outlined"
-                startIcon={<UploadFileIcon />}
+                startIcon={<UploadFileIcon/>}
                 sx={{ marginRight: '1rem' }}
+                disabled={blocked}
             >
-                Upload CSV
-                <input type="file" accept="*.*" hidden onChange={handleFileUpload} />
+                Hochladen
+                <input type="file" accept="image/*" hidden onChange={handleFileUpload}/>
             </Button>
             <Button
                 variant="outlined"
-                startIcon={<DeleteIcon />}
+                startIcon={<DeleteIcon/>}
                 onClick={handleDeleteProfileImage}
+                disabled={blocked}
             >
                 Löschen
             </Button>

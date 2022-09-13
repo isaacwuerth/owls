@@ -30,7 +30,7 @@ export function UserSetupPage () {
     try {
       if (!auth.currentUser) console.error('There was a error with the profile update')
       profile.eMail = auth.currentUser?.email ?? ''
-      profile.id = auth.currentUser?.uid ?? ''
+      profile.uid = auth.currentUser?.uid ?? ''
       // @ts-expect-error
       profile.birthday = profile.birthday?.toDateString()
 
