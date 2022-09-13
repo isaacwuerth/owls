@@ -9,9 +9,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
-      - name: Extract version
-        id: extract_version
-        uses: Saionaro/extract-package-version@v1.0.6
+      - name: Get package info
+        id: package
+        uses: codex-team/action-nodejs-package-info@v1
       - name: Create a Sentry.io release
         uses: tclindner/sentry-releases-action@v1.2.0
         env:
@@ -19,5 +19,5 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
-          tagName: owls@${{ steps.extract_version.outputs.version }}
-          environment: prod
+          tagName: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
+          environment: ${{ secrets.SENTRY_ENVIRONMENT }}
