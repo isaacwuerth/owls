@@ -1,7 +1,15 @@
 import React from 'react'
 import { RecoilRoot } from 'recoil'
 import BasicLayout from './components/layouts/BasicLayout'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import {
+  BrowserRouter,
+  createRoutesFromChildren,
+  matchRoutes,
+  Route,
+  Routes,
+  useLocation,
+  useNavigationType
+} from 'react-router-dom'
 import { DashboardPage } from './components/pages/DashboardPage'
 import { EventsPage } from './components/pages/EventsPage'
 import { ProfilPage } from './components/pages/ProfilPage'
@@ -17,12 +25,45 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { MaintenancePage } from './components/pages/MaintenancePage'
 import { LogoutPage } from './components/pages/LogoutPage'
-import ErrorBoundary from './ErrorBoundry'
 import { Splashscreen } from './Splashscreen'
+import * as Sentry from '@sentry/react'
+import { BrowserTracing } from '@sentry/tracing'
+import { ErrorBoundary } from './ErrorBoundary'
+import SentryRRWeb from '@sentry/rrweb'
+import { CaptureConsole as CaptureConsoleIntegration, Offline as OfflineIntegration, ReportingObserver as ReportingObserverIntegration } from '@sentry/integrations'
 
-export default function App () {
+Sentry.init({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+  integrations: [
+    new BrowserTracing({
+      tracingOrigins: ['localhost'],
+      routingInstrumentation: Sentry.reactRouterV6Instrumentation(React.useEffect,
+        useLocation,
+        useNavigationType,
+        createRoutesFromChildren,
+        matchRoutes
+      )
+    }),
+    new SentryRRWeb(),
+    new CaptureConsoleIntegration(),
+    new OfflineIntegration({ maxStoredEvents: 50 }),
+    new ReportingObserverIntegration()
+
+  ],
+  tracesSampleRate: 1.0,
+  environment: process.env.REACT_APP_SENTRY_RELEASE_VERSION,
+  attachStacktrace: true,
+  maxBreadcrumbs: 100,
+  enabled: false
+})
+
+Sentry.setTag('rrweb.active', 'yes')
+
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
+
+function App () {
   return (
-    <ErrorBoundary>
+    <Sentry.ErrorBoundary fallback={<ErrorBoundary/>} showDialog>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <RecoilRoot>
           <RecoilNexus/>
@@ -30,7 +71,7 @@ export default function App () {
             <FirebaseProvider>
               <Splashscreen>
                 <MaintenancePage>
-                  <Routes>
+                  <SentryRoutes>
                     <Route path="/login" element={<LoginPage/>}/>
                     <Route path="/user-setup" element={<UserSetupPage/>}/>
                     <Route path="/logout" element={<LogoutPage/>}/>
@@ -41,7 +82,7 @@ export default function App () {
                       <Route path="events" element={<EventsPage/>}/>
                       <Route path="profile" element={<ProfilPage/>}/>
                     </Route>
-                  </Routes>
+                  </SentryRoutes>
                   <ToastContainer/>
                 </MaintenancePage>
               </Splashscreen>
@@ -49,6 +90,8 @@ export default function App () {
           </BrowserRouter>
         </RecoilRoot>
       </LocalizationProvider>
-    </ErrorBoundary>
+    </Sentry.ErrorBoundary>
   )
 }
+
+export default Sentry.withProfiler(App, { includeRender: true, includeUpdates: true })
