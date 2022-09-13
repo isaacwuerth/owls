@@ -56,7 +56,8 @@ const firebaseContextConfig = {
       firebase.auth.GoogleAuthProvider.PROVIDER_ID
     ],
     signInSuccessUrl: '/',
-    privacyPolicyUrl: 'https://wwww.google.com'
+    privacyPolicyUrl: 'https://wwww.google.com',
+    tosUrl: 'https://wwww.google.com'
   },
   eventRepository: new EventRepository(firestore),
   participantRepository: new ParticipantRepository(firestore),
