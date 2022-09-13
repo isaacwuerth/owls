@@ -16,7 +16,7 @@ import { EventRepository } from '../repositories/EventRepository'
 import { ParticipantRepository } from '../repositories/ParticipantsRepository'
 import firebase from 'firebase/compat/app'
 import { UsersRepository } from '../repositories/UsersRepository'
-import { FileManager } from '../FileManager'
+import { FileRepository } from '../repositories/FileRepository'
 import { applicationStateAtom } from '../atoms/ApplicationState'
 
 const firebaseConfig = {
@@ -61,7 +61,7 @@ const firebaseContextConfig = {
   eventRepository: new EventRepository(firestore),
   participantRepository: new ParticipantRepository(firestore),
   usersRepository: new UsersRepository(firestore),
-  avatarFiles: new FileManager(storage, 'avatar')
+  avatarFiles: new FileRepository(storage, 'avatar')
 }
 
 const defaultConfig = {

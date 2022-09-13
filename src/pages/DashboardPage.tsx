@@ -29,7 +29,7 @@ export function DashboardPage () {
                       <TableBody>
                         <TableRow>
                           <TableCell>
-                            <img src="/hockey.jpg" height="100px"/>
+                            <img src="/public/hockey.jpg" height="100px"/>
                           </TableCell>
                           <TableCell>
                             <Typography variant="h5">Hockeymatch in</Typography>

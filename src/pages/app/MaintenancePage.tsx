@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil'
 import { siteConfigAtom } from '../../atoms/SiteConfigAtom'
 import { Box, Card, Typography } from '@mui/material'
 import './Maintenance.sass'
-import { calculateTimeLeft, Counter } from '../counter/Counter'
+import { calculateTimeLeft, Counter } from '../../components/counter/Counter'
 
 interface MaintenanceProps {
   title: string

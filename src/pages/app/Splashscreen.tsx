@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import { useRecoilValue } from 'recoil'
-import { applicationStateAtom } from './atoms/ApplicationState'
+import { applicationStateAtom } from '../../atoms/ApplicationState'
 
 export function Splashscreen ({ children }: any) {
   const applicationState = useRecoilValue(applicationStateAtom)

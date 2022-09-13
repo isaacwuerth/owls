@@ -2,7 +2,7 @@ import { useFirebase } from '../../Context/FirebaseContext'
 import React, { useEffect } from 'react'
 import { Box } from '@mui/material'
 import 'firebaseui/dist/firebaseui.css'
-import { Logo } from '../Logo'
+import { Logo } from '../../components/Logo'
 
 export function LoginPage () {
   const { apps: { loginUi }, uiConfig } = useFirebase()

@@ -1,14 +1,14 @@
 import { Box, Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
-import { ProfilModel } from '../../model/ProfilModel'
+import { ProfilModel } from '../model/ProfilModel'
 import { useRecoilState } from 'recoil'
-import { profileAtom } from '../../atoms/ProfileAtom'
+import { profileAtom } from '../atoms/ProfileAtom'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SendIcon from '@mui/icons-material/Send'
 import React from 'react'
-import { AvatarUpload } from '../Profile/AvatarUpload'
+import { AvatarUpload } from '../components/Profile/AvatarUpload'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import CountrySelect from '../Profile/CountrySelect'
+import CountrySelect from '../components/Profile/CountrySelect'
 
 export function ProfilPage () {
   const [profile, setProfileState] = useRecoilState(profileAtom)

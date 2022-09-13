@@ -1,6 +1,6 @@
 import { FirebaseStorage, getDownloadURL, ref, uploadBytes, deleteObject } from 'firebase/storage'
 
-export class FileManager {
+export class FileRepository {
   basePath: string = ''
   storage: FirebaseStorage
 
