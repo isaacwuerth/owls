@@ -30,7 +30,11 @@ import * as Sentry from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing'
 import { ErrorBoundary } from './ErrorBoundary'
 import SentryRRWeb from '@sentry/rrweb'
-import { CaptureConsole as CaptureConsoleIntegration, Offline as OfflineIntegration, ReportingObserver as ReportingObserverIntegration } from '@sentry/integrations'
+import {
+  CaptureConsole as CaptureConsoleIntegration,
+  Offline as OfflineIntegration,
+  ReportingObserver as ReportingObserverIntegration
+} from '@sentry/integrations'
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -48,13 +52,15 @@ Sentry.init({
     new CaptureConsoleIntegration(),
     new OfflineIntegration({ maxStoredEvents: 50 }),
     new ReportingObserverIntegration()
-
   ],
   tracesSampleRate: 1.0,
-  environment: process.env.REACT_APP_SENTRY_RELEASE_VERSION,
+  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  release: `${process.env.REACT_APP_NAME}@${process.env.REACT_APP_VERSION}`,
   attachStacktrace: true,
   maxBreadcrumbs: 100,
-  enabled: false
+  autoSessionTracking: true,
+  enabled: process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test'
 })
 
 Sentry.setTag('rrweb.active', 'yes')
