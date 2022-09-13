@@ -1,9 +1,10 @@
 export interface ProfilModel {
   id: string
+  uid: string
   firstName: string
   lastName: string
   eMail: string
-  avatar?: string
+  photoURL?: string
   birthday?: Date | null
   homephone?: string
   mobilephone?: string

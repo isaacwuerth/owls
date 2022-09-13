@@ -1,16 +1,18 @@
-import { Person } from './Person'
-import { ParticipantState } from '../enum/ParticipantState'
+import { BasicEntitySchema } from '../repositories/base/BaseRepository'
+import { z } from 'zod'
 
-export interface Participant {
-  id: number
-  person: Person
-  state: ParticipantState
-}
+export const LocationSchema = z.object({
+  postcode: z.string(),
+  city: z.string(),
+  street: z.string(),
+  country: z.string()
+})
 
-export interface GeneralEvent {
-  id?: number
-  title: string
-  start: Date
-  end: Date
-  participants: Participant[]
-}
+export const GeneralEventSchema = z.object({
+  title: z.string(),
+  start: z.date(),
+  end: z.date()
+}).merge(BasicEntitySchema)
+  .merge(LocationSchema.partial())
+
+export type GeneralEvent = z.infer<typeof GeneralEventSchema>

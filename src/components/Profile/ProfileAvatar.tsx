@@ -1,7 +1,7 @@
-import { useRecoilValue } from 'recoil'
-import { profileAtom } from '../atoms/ProfileAtom'
 import { Avatar } from '@mui/material'
 import React from 'react'
+import { useRecoilState } from 'recoil'
+import { profileAtom } from '../../atoms/ProfileAtom'
 
 function stringToColor (string: string) {
   let hash = 0
@@ -32,10 +32,16 @@ function stringAvatar (name: string) {
 }
 
 export function ProfileAvatar () {
-  const profile = useRecoilValue(profileAtom)
+  const [profile] = useRecoilState(profileAtom)
+  if (profile.photoURL) {
+    return (
+    <Avatar
+        alt={`${profile.firstName} ${profile.lastName}`}
+        src={profile.photoURL}
+    />
+    )
+  }
   return (
-    profile.avatar
-      ? <Avatar alt={`${profile.firstName} ${profile.lastName}`} src={profile.avatar}/>
-      : <Avatar {...stringAvatar(`${profile.firstName} ${profile.lastName}`)} />
+    <Avatar {...stringAvatar(`${profile.firstName} ${profile.lastName}`)} />
   )
 }

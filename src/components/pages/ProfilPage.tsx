@@ -8,8 +8,6 @@ import SendIcon from '@mui/icons-material/Send'
 import React from 'react'
 import { AvatarUpload } from '../Profile/AvatarUpload'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import MuiPhoneNumber from 'material-ui-phone-number-2'
-import { IsValidPhoneNumber } from '../../utils/PhoneValidation'
 import CountrySelect from '../Profile/CountrySelect'
 
 export function ProfilPage () {
@@ -40,7 +38,6 @@ export function ProfilPage () {
                                 <AvatarUpload/>
                             </Grid>
                             <Grid item>
-
                                 <Controller
                                     control={control}
                                     name="eMail"
@@ -129,54 +126,6 @@ export function ProfilPage () {
                                                 {...params}
                                             />}
                                             {...field}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <Controller
-                                    control={control}
-                                    name="homephone"
-                                    defaultValue={profile.homephone}
-                                    rules={{ validate: value => value && IsValidPhoneNumber(value) }}
-                                    render={({ field }) => (
-                                        <MuiPhoneNumber
-                                            defaultCountry='ch'
-                                            variant='outlined'
-                                            defaultValue={profile.homephone}
-                                            disableDropdown
-                                            label="Private Telefonnummer"
-                                            error={Boolean(formState.errors[field.name])}
-                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihr Festnetzanschluss'}
-                                            onChange={(value) => {
-                                              if (value === '+41' || String(value).length <= 3) field.onChange(undefined)
-                                              field.onChange(value)
-                                            }}
-                                            value={field.value}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <Controller
-                                    control={control}
-                                    name="homephone"
-                                    defaultValue={profile.mobilephone}
-                                    rules={{ validate: value => value && IsValidPhoneNumber(value) }}
-                                    render={({ field }) => (
-                                        <MuiPhoneNumber
-                                            defaultCountry='ch'
-                                            variant='outlined'
-                                            defaultValue={profile.mobilephone}
-                                            disableDropdown
-                                            label="Private Telefonnummer"
-                                            error={Boolean(formState.errors[field.name])}
-                                            helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihr Mobile Telefonnummer'}
-                                            onChange={(value) => {
-                                              if (value === '+41' || String(value).length <= 3) field.onChange(undefined)
-                                              field.onChange(value)
-                                            }}
-                                            value={field.value}
                                         />
                                     )}
                                 />
