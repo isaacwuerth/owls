@@ -27,7 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci && npm run build
       - name: Get package info
         id: package
         uses: codex-team/action-nodejs-package-info@v1
@@ -35,6 +34,7 @@ jobs:
         run: echo REACT_APP_NAME=${{ steps.package.outputs.name }} >> $GITHUB_ENV
       - name: Set REACT_APP_VERSION
         run: echo REACT_APP_VERSION=${{ steps.package.outputs.version }} >> $GITHUB_ENV
+      - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
