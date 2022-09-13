@@ -3,6 +3,7 @@
 
 # Config
 .env
+.sentryclirc
 
 # dependencies
 /node_modules
