@@ -18,6 +18,7 @@ import { ToastContainer } from 'react-toastify'
 import { MaintenancePage } from './components/pages/MaintenancePage'
 import { LogoutPage } from './components/pages/LogoutPage'
 import ErrorBoundary from './ErrorBoundry'
+import { Splashscreen } from './Splashscreen'
 
 export default function App () {
   return (
@@ -27,21 +28,23 @@ export default function App () {
           <RecoilNexus/>
           <BrowserRouter>
             <FirebaseProvider>
-              <MaintenancePage>
-                <Routes>
-                  <Route path="/login" element={<LoginPage/>}/>
-                  <Route path="/user-setup" element={<UserSetupPage/>}/>
-                  <Route path="/logout" element={<LogoutPage/>}/>
-                  <Route element={<BasicLayout/>}>
-                    <Route index element={<DashboardPage/>}/>
-                    <Route path="events/:eid" element={<EventPage/>}/>
-                    <Route path="events/:eid/edit" element={<EventEditPage/>}/>
-                    <Route path="events" element={<EventsPage/>}/>
-                    <Route path="profile" element={<ProfilPage/>}/>
-                  </Route>
-                </Routes>
-                <ToastContainer/>
-              </MaintenancePage>
+              <Splashscreen>
+                <MaintenancePage>
+                  <Routes>
+                    <Route path="/login" element={<LoginPage/>}/>
+                    <Route path="/user-setup" element={<UserSetupPage/>}/>
+                    <Route path="/logout" element={<LogoutPage/>}/>
+                    <Route element={<BasicLayout/>}>
+                      <Route index element={<DashboardPage/>}/>
+                      <Route path="events/:eid" element={<EventPage/>}/>
+                      <Route path="events/:eid/edit" element={<EventEditPage/>}/>
+                      <Route path="events" element={<EventsPage/>}/>
+                      <Route path="profile" element={<ProfilPage/>}/>
+                    </Route>
+                  </Routes>
+                  <ToastContainer/>
+                </MaintenancePage>
+              </Splashscreen>
             </FirebaseProvider>
           </BrowserRouter>
         </RecoilRoot>

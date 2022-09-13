@@ -17,6 +17,7 @@ import { ParticipantRepository } from '../repositories/ParticipantsRepository'
 import firebase from 'firebase/compat/app'
 import { UsersRepository } from '../repositories/UsersRepository'
 import { FileManager } from '../FileManager'
+import { applicationStateAtom } from '../atoms/ApplicationState'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -33,6 +34,7 @@ const firestore = getFirestore(app)
 const storage = getStorage(app)
 
 const firebaseContextConfig = {
+  loading: true,
   firebase: {
     app
   },
@@ -89,6 +91,7 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
   const navigate = useNavigate()
   const setProfile = useSetRecoilState(profileAtom)
   const setSiteConfig = useSetRecoilState(siteConfigAtom)
+  const setApplicationState = useSetRecoilState(applicationStateAtom)
   useEffect(() => {
     async function UpdateConfig () {
       await fetchAndActivate(firebaseContextConfig.apps.remoteConfig)
@@ -108,6 +111,7 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
         if (docs.size === 1) {
           // @ts-expect-error
           setProfile(docs.docs[0].data())
+          setApplicationState('running')
         } else {
           navigate('user-setup')
         }
