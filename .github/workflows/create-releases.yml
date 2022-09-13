@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@master
       - name: Create a Sentry.io release
-        uses: tclindner/sentry-releases-action@v1.2.0
+        uses: tclindner/sentry-releases-action@v1.19.0
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
