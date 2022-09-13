@@ -111,13 +111,13 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
         if (docs.size === 1) {
           // @ts-expect-error
           setProfile(docs.docs[0].data())
-          setApplicationState('running')
         } else {
           navigate('user-setup')
         }
       } else {
         navigate('/login')
       }
+      setApplicationState('running')
     })
   }, [])
 
