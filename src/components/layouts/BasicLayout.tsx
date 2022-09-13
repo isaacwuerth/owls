@@ -23,7 +23,7 @@ import { NavItems } from '../../Nav'
 import { Link, Outlet } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Logout, MenuRounded, Settings } from '@mui/icons-material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { ProfileAvatar } from '../ProfileAvatar'
+import { ProfileAvatar } from '../Profile/ProfileAvatar'
 import { useRecoilValue } from 'recoil'
 import { siteConfigAtom } from '../../atoms/SiteConfigAtom'
 

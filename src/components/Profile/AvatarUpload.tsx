@@ -1,4 +1,4 @@
-import { ProfileAvatar } from '../ProfileAvatar'
+import { ProfileAvatar } from './ProfileAvatar'
 import { Box, Button, CircularProgress } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import UploadFileIcon from '@mui/icons-material/UploadFile'

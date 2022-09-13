@@ -1,7 +1,7 @@
 import { Avatar } from '@mui/material'
 import React from 'react'
 import { useRecoilState } from 'recoil'
-import { profileAtom } from '../atoms/ProfileAtom'
+import { profileAtom } from '../../atoms/ProfileAtom'
 
 function stringToColor (string: string) {
   let hash = 0
