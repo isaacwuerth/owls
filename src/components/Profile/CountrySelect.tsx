@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
+import { RefCallBack } from 'react-hook-form/dist/types'
 
 export interface PropsCountrySelect {
   fullWidth: boolean
@@ -12,10 +13,10 @@ export interface PropsCountrySelect {
   value?: string
   onChange: (event: any) => void
   onBlur: (event: any) => void
-  ref: any
+  innerRef?: any
 }
 
-export default function CountrySelect (props: PropsCountrySelect) {
+function CountrySelect2 (props: PropsCountrySelect) {
   const [value, setValue] = useState<CountryType | null>(countries.find(country => country.code === props.value) ?? null)
   const [inputValue, setInputValue] = useState('')
   return (
@@ -41,7 +42,7 @@ export default function CountrySelect (props: PropsCountrySelect) {
             value={value}
             onChange={(_, newValue) => {
               setValue(newValue)
-              props.onChange(newValue?.code)
+              props.onChange(newValue?.code ?? '')
             }}
             onBlur={props.onBlur}
             inputValue={inputValue}
@@ -55,6 +56,7 @@ export default function CountrySelect (props: PropsCountrySelect) {
                     label={props.label}
                     error={props.error}
                     helperText={props.helperText}
+                    ref={props.innerRef}
                     inputProps={{
                       ...params.inputProps,
                       autoComplete: 'new-password' // disable autocomplete and autofill
@@ -65,6 +67,10 @@ export default function CountrySelect (props: PropsCountrySelect) {
         />
   )
 }
+// eslint-disable-next-line react/display-name
+const CountrySelect = forwardRef<RefCallBack, PropsCountrySelect>((props: PropsCountrySelect, ref) => <CountrySelect2 {...props} innerRef={ref}/>)
+
+export default CountrySelect
 
 interface CountryType {
   code: string

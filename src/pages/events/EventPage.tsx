@@ -1,4 +1,4 @@
-import { Box, Button, Card, SelectChangeEvent, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Button, Card, Tab, Tabs, Typography } from '@mui/material'
 import { PropsWithChildren, SyntheticEvent, useEffect, useState } from 'react'
 import { ParticipantState } from '../../enum/ParticipantState'
 import { GeneralEvent } from '../../model/GeneralEvent'
@@ -12,6 +12,9 @@ import { EventSelectState } from '../../components/events/EventSelectState'
 import { InfoTable, InfoTableRow } from '../../components/common/InfoTable'
 import { Loading } from '../../components/common/Loading'
 import { Participant } from '../../model/Participant'
+import { generalErrorHandler } from '../../utils/generalErrorHandler'
+import { useRecoilValue } from 'recoil'
+import { profileAtom } from '../../atoms/ProfileAtom'
 
 interface TabPanelProps {
   index: number
@@ -31,7 +34,7 @@ function TabPanel (props: PropsWithChildren<TabPanelProps>) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
@@ -47,12 +50,13 @@ function a11yProps (index: number) {
 
 export function EventPage () {
   const { eid } = useParams<{ eid: string }>()
+  const profile = useRecoilValue(profileAtom)
   const [event, setEvent] = useState<GeneralEvent | null>(null)
   const [participants, setParticipants] = useState<Participant[]>([])
   const [value, setValue] = useState(0)
   const [ownState, setOwnState] = useState<ParticipantState | null>(null)
 
-  const { apps: { firestore, auth }, eventRepository, participantRepository } = useFirebase()
+  const { apps: { firestore }, eventRepository, participantRepository } = useFirebase()
 
   if (!eid) return (<Loading/>)
 
@@ -63,7 +67,7 @@ export function EventPage () {
 
     const participantsUnsub = participantRepository.onEventParticipantsChange(eid, (participants) => {
       setParticipants(participants)
-      setOwnState(participants.find(p => p.uid === auth.currentUser?.uid)?.state ?? ParticipantState.OUTSTANDING)
+      setOwnState(participants.find(p => p.uid === profile.id)?.state ?? ParticipantState.OUTSTANDING)
     })
 
     async function loadEvent () {
@@ -76,8 +80,8 @@ export function EventPage () {
       setParticipants(await participantRepository.findByEvent(eid))
     }
 
-    loadEvent().catch(console.error)
-    loadParticipants().catch(console.error)
+    loadEvent().catch(generalErrorHandler)
+    loadParticipants().catch(generalErrorHandler)
 
     return function CleanUp () {
       eventUbsub()
@@ -89,26 +93,19 @@ export function EventPage () {
     setValue(newValue)
   }
 
-  function handleOwnParticipantStateChange (event: SelectChangeEvent) {
-    const state = event.target.value as ParticipantState
-    const uid = auth.currentUser?.uid
-    // @ts-expect-error
-    participantRepository.updateUserState(eid, uid, state)
-      .catch(console.error)
-  }
   if (!event) return (<Loading/>)
   const table: InfoTableRow[] = [
     { label: 'Name', value: event.title },
-    { label: 'Start', value: String(event.start) },
-    { label: 'Ende', value: String(event.end) },
-    { label: 'Meine Teilnahme', value: <EventSelectState value={ownState ?? ParticipantState.OUTSTANDING} onChange={handleOwnParticipantStateChange} /> }
+    { label: 'Start', value: String(event.start.toLocaleString()) },
+    { label: 'Ende', value: String(event.end.toLocaleString()) },
+    { label: 'Meine Teilnahme', value: <EventSelectState eid={eid} uid={profile.id ?? ''} value={ownState ?? ParticipantState.OUTSTANDING} /> }
   ]
   return (
     <>
       <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Grid2 container style={{ width: '100%' }}>
           <Grid2 xs={12} alignItems='end' md={8}>
-            <Typography variant='h2'>{event.title}</Typography>
+            <Typography variant='h2' component={'span'}>{event.title}</Typography>
           </Grid2>
           <Grid2 xs={12} alignItems='end' md={4}>
             <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center' }}>

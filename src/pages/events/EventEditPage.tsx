@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SendIcon from '@mui/icons-material/Send'
+import { generalErrorHandler } from '../../utils/generalErrorHandler'
 
 export function EventEditPage () {
   const { eid } = useParams()
@@ -18,7 +19,7 @@ export function EventEditPage () {
 
   useEffect(() => {
     if (eid != null) {
-      eventRepository.findOne(eid).then(setEvent).catch(console.error)
+      eventRepository.findOne(eid).then(setEvent).catch(generalErrorHandler)
     }
   }, [])
 
@@ -36,7 +37,7 @@ export function EventEditPage () {
   const onSubmit = (eventEdited: GeneralEvent) => {
     eventRepository.update(eid, eventEdited)
       .then(() => navigate('..'))
-      .catch(console.error)
+      .catch(generalErrorHandler)
   }
 
   return (

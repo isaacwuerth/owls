@@ -11,7 +11,6 @@ import { GeneralEvent } from '../../model/GeneralEvent'
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', hide: true },
   {
-    resizable: true,
     field: 'title',
     flex: 1,
     headerName: 'Titel'
@@ -20,22 +19,19 @@ const columns: GridColDef[] = [
     field: 'start',
     headerName: 'Start',
     flex: 1,
-    type: 'dateTime',
-    resizable: true
+    type: 'dateTime'
   },
   {
     field: 'end',
     headerName: 'Ende',
     flex: 1,
-    type: 'dateTime',
-    resizable: true
+    type: 'dateTime'
   },
   {
     field: 'postcode',
     headerName: 'Ort',
     flex: 1,
     type: 'dateTime',
-    resizable: true,
     valueGetter: params => {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       return `${params.row.postcode} ${params.row.city}, ${params.row.street}`

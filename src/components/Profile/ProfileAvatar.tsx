@@ -2,6 +2,9 @@ import { Avatar } from '@mui/material'
 import React from 'react'
 import { useRecoilState } from 'recoil'
 import { profileAtom } from '../../atoms/ProfileAtom'
+import { SxProps } from '@mui/system'
+import { Theme } from '@mui/material/styles'
+import { mergeDeep } from '../../utils/deepMerge'
 
 function stringToColor (string: string) {
   let hash = 0
@@ -31,17 +34,23 @@ function stringAvatar (name: string) {
   }
 }
 
-export function ProfileAvatar () {
+interface ProfileAvatarProps {
+  sx?: SxProps<Theme>
+}
+
+export function ProfileAvatar (props: ProfileAvatarProps) {
   const [profile] = useRecoilState(profileAtom)
+  props = mergeDeep(stringAvatar(`${profile.firstName} ${profile.lastName}`), props)
   if (profile.photoURL) {
     return (
     <Avatar
+        {...props}
         alt={`${profile.firstName} ${profile.lastName}`}
         src={profile.photoURL}
     />
     )
   }
   return (
-    <Avatar {...stringAvatar(`${profile.firstName} ${profile.lastName}`)} />
+    <Avatar {...props}/>
   )
 }

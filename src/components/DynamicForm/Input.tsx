@@ -11,6 +11,8 @@ export function getDefaultValue (type: InputType): any {
   if (type === InputType.STRING) return ''
   if (type === InputType.BOOLEAN) return false
   if (type === InputType.DATETIME) return null
+  if (type === InputType.DATE) return null
+  if (type === InputType.COUNTRY) return ''
 }
 
 export function Input ({ field, form }: DynamicInputFieldProps): JSX.Element {
@@ -42,6 +44,7 @@ export function Input ({ field, form }: DynamicInputFieldProps): JSX.Element {
             label={`${field.label}${field.mandatory ? ' *' : ''}`}
             placeholder={field.placeholder}
             fullWidth
+            disabled={field.disabled}
           />
         )}
       />

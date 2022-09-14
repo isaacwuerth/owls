@@ -3,11 +3,12 @@ import React from 'react'
 import { DynamicBaseInputProps } from '../DynamicInput'
 
 export function DynamicSwitchInput (props: DynamicBaseInputProps): JSX.Element {
-  const { name, value, label, error, errorMessage, helperText, onBlur, onChange } = props
+  const { name, value, label, error, errorMessage, helperText, onBlur, onChange, disabled } = props
   return (
         <FormControl error={error} fullWidth>
             <FormLabel component="legend">{label}</FormLabel>
             <FormControlLabel
+                disabled={disabled}
                 style={{ width: '100%' }}
                 label={label}
                 control={<Switch name={name}

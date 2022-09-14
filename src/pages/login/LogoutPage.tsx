@@ -8,7 +8,9 @@ export function LogoutPage () {
       await firebase.apps.auth.signOut()
     }
 
-    signOut().catch(console.error)
+    signOut().catch(reason => {
+      throw new Error(reason)
+    })
   }, [])
   return null
 }

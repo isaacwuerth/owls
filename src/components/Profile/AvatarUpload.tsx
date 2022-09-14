@@ -31,7 +31,11 @@ export function AvatarUpload () {
 
     if (auth.currentUser) {
       await updateProfile(auth.currentUser, { photoURL: downloadUrl })
+    }
+    if (profile?.id) {
       await usersRepository.update(profile.id, { ...profile, photoURL: downloadUrl })
+    } else {
+      await usersRepository.create({ ...profile, photoURL: downloadUrl })
     }
     setBlocked(false)
   }
@@ -57,7 +61,7 @@ export function AvatarUpload () {
   return (
       <Box display="flex">
           <Box style={{ marginRight: 10 }}>
-              {blocked ? <CircularProgress /> : <ProfileAvatar />}
+              {blocked ? <CircularProgress /> : <ProfileAvatar/>}
           </Box>
           <Button
                 component="label"

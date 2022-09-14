@@ -9,16 +9,23 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
 import HorizontalLinearStepper, { HorizontalLinearStep } from '../../components/ProgressStepper'
 import EnhancedTable from '../../components/EnhancedTable'
-import { ProfilModel } from '../../model/ProfilModel'
 import { Participant } from '../../model/Participant'
 import { ParticipantState } from '../../enum/ParticipantState'
-
+import { ProfileSchema } from '../../model/Profil'
 import './EventsPage.scss'
+import { z } from 'zod'
+import { generalErrorHandler } from '../../utils/generalErrorHandler'
+
+const ProfileWithIdSchema = ProfileSchema
+  .omit({ id: true })
+  .extend({ id: z.string() })
+
+type ProfileWithId = z.infer<typeof ProfileWithIdSchema>
 
 export function EventsPage () {
   const [events, setEvents] = useState<GeneralEvent[]>([])
   const [showPopup, setShowPopup] = useState<boolean>(false)
-  const [users, setUsers] = useState<ProfilModel[]>([])
+  const [users, setUsers] = useState<ProfileWithId[]>([])
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const { eventRepository, usersRepository, participantRepository } = useFirebase()
 
@@ -45,7 +52,7 @@ export function EventsPage () {
       await crateParticipants(eid)
       setShowPopup(false)
       reset()
-    }).catch(console.log)
+    }).catch(generalErrorHandler)
   }
 
   async function handleDelete (id: string) {
@@ -58,6 +65,7 @@ export function EventsPage () {
 
   useEffect(() => {
     eventRepository.onCollectionUpdate(setEvents)
+    // @ts-expect-error
     usersRepository.onCollectionUpdate(setUsers)
   }, [])
   return (
@@ -69,7 +77,7 @@ export function EventsPage () {
           <HorizontalLinearStepper>
             <HorizontalLinearStep title={'Veranstalltung'}
                                   error={!form.formState.isValid && form.formState.isSubmitted}>
-              <EventForm form={form} mode='create' onSubmit={console.log}/>
+              <EventForm form={form} mode='create' onSubmit={eventEdited => {}}/>
             </HorizontalLinearStep>
             <HorizontalLinearStep title={'Teilnehmer'}>
               <EnhancedTable selected={selectedUsers}

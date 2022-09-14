@@ -2,7 +2,7 @@ import { TextField } from '@mui/material'
 import { DynamicBaseInputProps } from '../DynamicInput'
 
 export function DynamicInputText (props: DynamicBaseInputProps): JSX.Element {
-  const { name, value, label, error, placeholder, errorMessage, helperText, onBlur, onChange, fullWidth, width100 } = props
+  const { name, value, label, error, placeholder, errorMessage, helperText, onBlur, onChange, fullWidth, width100, disabled } = props
 
   return (
         <TextField
@@ -18,6 +18,7 @@ export function DynamicInputText (props: DynamicBaseInputProps): JSX.Element {
             onChange={onChange}
             onBlur={onBlur}
             helperText={error ? errorMessage : helperText}
+            disabled={disabled}
         />
   )
 }

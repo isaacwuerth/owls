@@ -24,6 +24,7 @@ export interface FieldParameter {
   helpMessage?: string
   mandatory: boolean
   placeholder: string
+  disabled?: boolean
 }
 
 export interface DynamicInputFieldProps {

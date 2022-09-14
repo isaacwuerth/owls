@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getAnalytics } from 'firebase/analytics'
 import { getDatabase } from 'firebase/database'
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 import { useNavigate } from 'react-router-dom'
 import * as firebaseui from 'firebaseui'
 import { useSetRecoilState } from 'recoil'
@@ -83,7 +83,7 @@ function convertConfig (allConfigs: Record<string, any>): any {
   try {
     SiteConfigSchema.parse(result)
   } catch (e) {
-    console.error('Error parsing config', e)
+    throw new Error(String(e))
   }
   return SiteConfigSchema.parse(result)
 }
@@ -106,12 +106,10 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
     LoadConfigStartup().catch(reason => {})
     onAuthStateChanged(firebaseContextConfig.apps.auth, async user => {
       if (user) {
-        const q = await query(collection(firebaseContextConfig.apps.firestore, 'users'), where('uid', '==', user.uid))
-        const docs = await getDocs(q)
-        if (docs.size > 1) throw new Error('There are multiple users with the same UID')
-        if (docs.size === 1) {
-          // @ts-expect-error
-          setProfile(docs.docs[0].data())
+        const users = await firebaseContextConfig.usersRepository.findByUID(user.uid)
+        if (users.length > 1) throw new Error('There are multiple users with the same UID')
+        if (users.length === 1) {
+          setProfile(users[0])
         } else {
           navigate('user-setup')
         }

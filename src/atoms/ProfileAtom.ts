@@ -1,7 +1,7 @@
 import { atom } from 'recoil'
-import { ProfilModel } from '../model/ProfilModel'
+import { Profile } from '../model/Profil'
 
-const sampleData: ProfilModel = {
+const sampleData: Profile = {
   id: '',
   uid: '',
   firstName: 'A',
@@ -9,7 +9,7 @@ const sampleData: ProfilModel = {
   eMail: ''
 }
 
-export const profileAtom = atom<ProfilModel>({
+export const profileAtom = atom<Profile>({
   key: 'profileAtom',
   default: sampleData
 })

@@ -2,18 +2,31 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { Chip, SelectChangeEvent } from '@mui/material'
 import { ParticipantState } from '../../enum/ParticipantState'
+import { useState } from 'react'
+import { generalErrorHandler } from '../../utils/generalErrorHandler'
+import { useFirebase } from '../../Context/FirebaseContext'
 
 interface EventSelectStateProps {
   value: ParticipantState
-  onChange: (event: SelectChangeEvent<ParticipantState>) => void
+  uid: string
+  eid: string
 }
 
-export function EventSelectState ({ value, onChange }: EventSelectStateProps) {
+export function EventSelectState ({ value, eid, uid }: EventSelectStateProps) {
+  const [state, setState] = useState<ParticipantState>(value)
+  const { participantRepository } = useFirebase()
+  async function handleSelect (event: SelectChangeEvent) {
+    const state = event.target.value as ParticipantState
+    await participantRepository.updateUserState(eid, uid, state)
+      .catch(generalErrorHandler)
+    setState(state)
+  }
+
   return (
     <Select
-      value={value}
+      value={state}
       fullWidth
-      onChange={onChange}
+      onChange={handleSelect}
       size="small"
       sx={{ height: 1 }}
     >

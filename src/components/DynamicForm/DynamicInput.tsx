@@ -5,6 +5,8 @@ import { DynamicUnsignedNumberInput } from './Fields/DynamicUnsignedNumberInput'
 import { DynamicDateTime } from './Fields/DynamicDateTime'
 import { DynamicPhoneNumber } from './Fields/DynamicPhoneNumber'
 import { DynamicPassword } from './Fields/DynamicPassword'
+import { DynamicDate } from './Fields/DynamicDate'
+import { DynamicCountry } from './Fields/DynamicCountry'
 
 export type SupportedPrimitives = number | string | boolean | Date
 
@@ -16,7 +18,9 @@ export enum InputType {
   UNSIGNEDINTEGER,
   DATETIME,
   PHONE,
-  PASSWORD
+  PASSWORD,
+  DATE,
+  COUNTRY
 }
 
 export interface DynamicBaseInputProps {
@@ -31,38 +35,29 @@ export interface DynamicBaseInputProps {
   onChange: (event: any) => void
   fullWidth?: boolean
   width100?: boolean
+  disabled?: boolean
 }
 
 export function DynamicInput (props: DynamicBaseInputProps & { type: InputType }): JSX.Element {
   switch (props.type) {
     case InputType.STRING:
-      return (
-                <DynamicInputText {...props}/>
-      )
+      return (<DynamicInputText {...props}/>)
     case InputType.INTEGER:
-      return (
-                <DynamicNumberInput {...props}/>
-      )
+      return (<DynamicNumberInput {...props}/>)
     case InputType.BOOLEAN:
-      return (
-                <DynamicSwitchInput {...props}/>
-      )
+      return (<DynamicSwitchInput {...props}/>)
     case InputType.UNSIGNEDINTEGER:
-      return (
-                <DynamicUnsignedNumberInput {...props}/>
-      )
+      return (<DynamicUnsignedNumberInput {...props}/>)
     case InputType.DATETIME:
-      return (
-                <DynamicDateTime {...props}/>
-      )
+      return (<DynamicDateTime {...props}/>)
+    case InputType.DATE:
+      return (<DynamicDate {...props}/>)
     case InputType.PHONE:
-      return (
-                <DynamicPhoneNumber {...props}/>
-      )
+      return (<DynamicPhoneNumber {...props}/>)
     case InputType.PASSWORD:
-      return (
-                <DynamicPassword {...props}/>
-      )
+      return (<DynamicPassword {...props}/>)
+    case InputType.COUNTRY:
+      return (<DynamicCountry {...props}/>)
   }
 
   return (<div>Unknown input type</div>)

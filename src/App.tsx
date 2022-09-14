@@ -89,7 +89,7 @@ function App () {
                       <Route path="profile" element={<ProfilPage/>}/>
                     </Route>
                   </SentryRoutes>
-                  <ToastContainer/>
+                  <ToastContainer position='top-center'/>
                 </MaintenancePage>
               </Splashscreen>
             </FirebaseProvider>

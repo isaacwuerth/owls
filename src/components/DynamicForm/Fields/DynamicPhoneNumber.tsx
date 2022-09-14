@@ -5,7 +5,7 @@ import { AsYouType, parsePhoneNumber } from 'libphonenumber-js'
 import Countries from './countries.json'
 
 export function DynamicPhoneNumber (props: DynamicBaseInputProps): JSX.Element {
-  const { name, value, label, error, errorMessage, helperText, onChange, fullWidth, width100, placeholder, onBlur } = props
+  const { name, value, label, error, errorMessage, helperText, onChange, fullWidth, width100, placeholder, onBlur, disabled } = props
   const [phoneNumber, setPhoneNumber] = React.useState<string>(value as string ?? '')
   const [flag, setFlag] = React.useState<string | null>(null)
 
@@ -38,6 +38,7 @@ export function DynamicPhoneNumber (props: DynamicBaseInputProps): JSX.Element {
       onChange={handleChange}
       onBlur={onBlur}
       helperText={error ? errorMessage : helperText}
+      disabled={disabled}
       InputProps={{
         endAdornment: (
           <>

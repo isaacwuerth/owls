@@ -15,7 +15,8 @@ export function DynamicPassword (props: DynamicBaseInputProps): JSX.Element {
     onBlur,
     onChange,
     fullWidth,
-    width100
+    width100,
+    disabled
   } = props
   const [showPasswort, setShowPassword] = useState<boolean>(false)
   return (
@@ -27,6 +28,7 @@ export function DynamicPassword (props: DynamicBaseInputProps): JSX.Element {
             name={name}
             label={label}
             value={value ?? ''}
+            disabled={disabled}
             error={error}
             placeholder={placeholder}
             onChange={onChange}

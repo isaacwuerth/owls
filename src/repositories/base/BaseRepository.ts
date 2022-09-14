@@ -4,6 +4,7 @@ import { IRead } from '../interfaces/IRead'
 import {
   collection,
   deleteDoc,
+  deleteField,
   doc,
   DocumentData,
   Firestore,
@@ -21,10 +22,21 @@ import {
 } from 'firebase/firestore'
 import { z } from 'zod'
 
+const removeNullUndefined = (obj: any) => {
+  const objFiltered = { ...obj }
+  Object.keys(obj).forEach(key => {
+    if (obj[key] == null) {
+      objFiltered[key] = deleteField()
+    }
+  })
+
+  return objFiltered
+}
+
 export const BasicEntitySchema = z.object({
-  id: z.string().optional(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional()
+  id: z.string().nullable().default(null).optional(),
+  createdAt: z.date().or(z.custom<Timestamp>()).nullable().default(null).optional(),
+  updatedAt: z.date().or(z.custom<Timestamp>()).nullable().default(null).optional()
 })
 
 export type BasicEntity = z.infer<typeof BasicEntitySchema>
@@ -73,15 +85,13 @@ export abstract class BaseRepository<T extends BasicEntity> implements IWrite<T>
   }
 
   async create (item: T): Promise<string> {
-    // @ts-expect-error
-    item.createdAt = serverTimestamp() as Timestamp
-    // @ts-expect-error
-    item.updatedAt = serverTimestamp() as Timestamp
+    const createItem = BasicEntitySchema.passthrough().parse(item)
+    createItem.createdAt = serverTimestamp() as Timestamp
+    createItem.updatedAt = serverTimestamp() as Timestamp
     const itemRef = doc(collection(this.db, this.collectionName))
       .withConverter(this.postConverter)
-
-    item.id = itemRef.id
-    return await setDoc(itemRef, item)
+    createItem.id = itemRef.id
+    return await setDoc(itemRef, createItem)
       .then(() => itemRef.id)
   }
 
@@ -93,13 +103,14 @@ export abstract class BaseRepository<T extends BasicEntity> implements IWrite<T>
     return await Promise.all(functions)
   }
 
-  async update (id: string, item: T): Promise<string> {
-    // @ts-expect-error
-    item.updatedAt = serverTimestamp() as Timestamp
-    item.id = id
+  async update (id: string, newItem: T): Promise<string> {
+    newItem.updatedAt = serverTimestamp() as Timestamp
+    newItem.id = id
+    delete newItem.createdAt
+    const filtered = removeNullUndefined(newItem)
     const docRef = doc(this.db, `${this.collectionName}/${id}`)
       .withConverter(this.postConverter)
-    return await updateDoc(docRef, item as any)
+    return await updateDoc(docRef, filtered)
       .then(() => id)
   }
 

@@ -1,58 +1,61 @@
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, Grid, Typography } from '@mui/material'
 import React, { useEffect } from 'react'
-import { AvatarUpload } from '../components/Profile/AvatarUpload'
-import { Controller, useForm } from 'react-hook-form'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import CountrySelect from '../components/Profile/CountrySelect'
+import { useForm } from 'react-hook-form'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SendIcon from '@mui/icons-material/Send'
-import { ProfilModel } from '../model/ProfilModel'
+import { Profile, ProfileCreate, ProfileCreateSchema, ProfileSchema } from '../model/Profil'
 import { useSetRecoilState } from 'recoil'
 import { profileAtom } from '../atoms/ProfileAtom'
 import { useFirebase } from '../Context/FirebaseContext'
 import { updateProfile } from 'firebase/auth'
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
-import { removeEmpty } from '../utils/removeEmpty'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { InputType } from '../components/DynamicForm/DynamicInput'
+import { Input } from '../components/DynamicForm/Input'
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
 
 export function UserSetupPage () {
   const navigate = useNavigate()
   const setProfileState = useSetRecoilState(profileAtom)
-  const { apps: { auth, firestore } } = useFirebase()
+  const { usersRepository, apps: { auth } } = useFirebase()
+  const form = useForm<ProfileCreate>({
+    resolver: zodResolver(ProfileCreateSchema),
+    defaultValues: { eMail: auth.currentUser?.email ?? '' }
+  })
   const {
-    control,
     handleSubmit,
     reset,
-    formState
-  } = useForm<ProfilModel>()
-  const onSubmit = async (profile: ProfilModel) => {
+    formState: { errors }
+  } = form
+  const onSubmit = async (newProfile: any) => {
+    console.log(newProfile)
     try {
-      if (!auth.currentUser) console.error('There was a error with the profile update')
-      profile.eMail = auth.currentUser?.email ?? ''
-      profile.uid = auth.currentUser?.uid ?? ''
-      // @ts-expect-error
-      profile.birthday = profile.birthday?.toDateString()
-
-      // @ts-expect-error
-      await updateProfile(auth.currentUser, {
-        displayName: `${profile.firstName} ${profile.lastName}`
-      })
-      setProfileState(profile)
-      await addDoc(collection(firestore, 'users'), removeEmpty(profile)).catch(reason => toast(reason))
+      newProfile.eMail = auth.currentUser?.email ?? ''
+      newProfile.uid = auth.currentUser?.uid ?? ''
+      if (!newProfile.birthday) newProfile.birthday = undefined
+      const profile: Profile = ProfileSchema.parse(newProfile)
+      if (auth.currentUser) {
+        await updateProfile(auth.currentUser, {
+          displayName: `${profile.firstName} ${profile.lastName}`
+        })
+      }
+      const id = await usersRepository.create(profile)
+      const user = await usersRepository.findOne(id)
+      setProfileState(user)
       navigate('/')
     } catch (e: any) {
       toast(e.message)
+      throw e
     }
   }
 
   useEffect(() => {
+    if (!auth?.currentUser?.uid) navigate('/login')
     async function CheckIfUserExistAndRedirectToProfilePage () {
       // @ts-expect-error
-      const q = query(collection(firestore, 'users'), where('id', '==', auth.currentUser.uid))
-      const docs = await getDocs(q)
-      if (docs.size > 1) throw new Error('There are multiple users with the same UID')
-      if (docs.size === 1) {
+      const users = await usersRepository.findByUID(auth.currentUser.uid)
+      if (users.length > 1) throw new Error('There are multiple users with the same UID')
+      if (users.length === 1) {
         navigate('/profile')
       }
     }
@@ -66,139 +69,90 @@ export function UserSetupPage () {
       <Typography>Damit die App benutzt werden kann, benötigen wir einige Informationen von dir.</Typography>
       <Box component={'form'} onSubmit={handleSubmit(onSubmit)}>
         <Grid container direction='column' spacing={3}>
-          <Grid item columnSpacing={3}>
-            <AvatarUpload/>
+          <Grid item>
+            <Input form={form} field={{
+              type: InputType.STRING,
+              label: 'E-Mail',
+              mandatory: true,
+              isArray: false,
+              name: 'eMail',
+              placeholder: '',
+              disabled: true
+            }}/>
           </Grid>
           <Grid item>
-            <Controller
-              control={control}
-              name="firstName"
-              rules={{
-                required: true,
-                minLength: {
-                  value: 1,
-                  message: 'Bitte im min einen Buchstaben eingeben'
-                }
-              }}
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Vorname"
-                  type="text"
-                  error={Boolean(formState.errors[field.name])}
-                  helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Bitte einen Vornamen eingeben'}
-                  {...field}
-                />
-              )}
-            />
+            <Input form={form} field={{
+              type: InputType.STRING,
+              label: 'Vorname',
+              mandatory: true,
+              isArray: false,
+              name: 'firstName',
+              placeholder: ''
+            }}/>
           </Grid>
           <Grid item>
-            <Controller
-              control={control}
-              name="lastName"
-              rules={{
-                required: true,
-                minLength: {
-                  value: 1,
-                  message: 'Bitte im min einen Buchstaben eingeben'
-                }
-              }}
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Geburtstag"
-                  type="text"
-                  error={Boolean(formState.errors[field.name])}
-                  helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Bitte einen Geburtstags eingeben'}
-                  {...field}
-                />
-              )}
-            />
+            <Input form={form} field={{
+              type: InputType.STRING,
+              label: 'Nachname',
+              mandatory: true,
+              isArray: false,
+              name: 'lastName',
+              placeholder: ''
+            }}/>
           </Grid>
           <Grid item>
-            <Controller
-              control={control}
-              name="birthday"
-              defaultValue={null}
-              render={({ field }) => (
-                <DatePicker
-                  label="Geburtstag"
-                  renderInput={(params) => <TextField
-                    error={Boolean(formState.errors[field.name])}
-                    helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Bitte einen Nachnamen eingeben'}
-                    {...params}
-                  />}
-                  {...field}
-                />
-              )}
-            />
+            <Input form={form} field={{
+              type: InputType.DATE,
+              label: 'Geburtstag',
+              mandatory: true,
+              isArray: false,
+              name: 'birthday',
+              placeholder: ''
+            }}/>
           </Grid>
           <Grid item>
-            <Controller
-              control={control}
-              name="street"
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Strasse und Hausnummer"
-                  type="text"
-                  error={Boolean(formState.errors[field.name])}
-                  helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihre private Addresse für den Briefversand'}
-                  {...field}
-                />
-              )}
-            />
+            <Input form={form} field={{
+              type: InputType.STRING,
+              label: 'Strasse und Hausnummer',
+              mandatory: true,
+              isArray: false,
+              name: 'street',
+              placeholder: ''
+            }}/>
           </Grid>
           <Grid item>
-            <Controller
-              control={control}
-              name="postcode"
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="PLZ"
-                  type="text"
-                  error={Boolean(formState.errors[field.name])}
-                  helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Die Postleitzahl ihrer Wohnorts'}
-                  {...field}
-                />
-              )}
-            />
+            <Input form={form} field={{
+              type: InputType.STRING,
+              label: 'PLZ',
+              mandatory: false,
+              isArray: false,
+              name: 'postcode',
+              placeholder: ''
+            }}/>
           </Grid>
           <Grid item>
-            <Controller
-              control={control}
-              name="city"
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Wohnort"
-                  type="text"
-                  error={Boolean(formState.errors[field.name])}
-                  helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Ihr Wohnort'}
-                  {...field}
-                />
-              )}
-            />
+            <Input form={form} field={{
+              type: InputType.STRING,
+              label: 'Wohnort',
+              mandatory: false,
+              isArray: false,
+              name: 'city',
+              placeholder: ''
+            }}/>
           </Grid>
           <Grid item>
-            <Controller
-              control={control}
-              name="country"
-              render={({ field }) => (
-                <CountrySelect
-                  fullWidth
-                  label="Land"
-                  error={Boolean(formState.errors[field.name])}
-                  helperText={(formState.errors[field.name] != null) ? formState.errors[field.name]?.message : 'Das Land ihrers Wohnorts'}
-                  {...field}
-                />
-              )}
-            />
+            <Input form={form} field={{
+              type: InputType.COUNTRY,
+              label: 'Land',
+              mandatory: false,
+              isArray: false,
+              name: 'country',
+              placeholder: ''
+            }}/>
           </Grid>
         </Grid>
       </Box>
-
+      {JSON.stringify(errors)}
       <Box style={{ display: 'flex', justifyContent: 'center' }}>
         <Button type="reset"
                 variant="outlined"

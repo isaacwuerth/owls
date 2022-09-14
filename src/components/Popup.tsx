@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, styled, useMediaQuery, useTheme } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -14,7 +14,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export interface DialogTitleProps {
   id: string
-  children?: React.ReactNode
+  children?: ReactNode
   onClose: () => void
 }
 

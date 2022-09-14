@@ -1,12 +1,12 @@
 import { TextField } from '@mui/material'
-import { DateTimePicker } from '@mui/x-date-pickers'
+import { DatePicker } from '@mui/x-date-pickers'
 import React from 'react'
 import { DynamicBaseInputProps } from '../DynamicInput'
 
-export function DynamicDateTime (props: DynamicBaseInputProps): JSX.Element {
+export function DynamicDate (props: DynamicBaseInputProps): JSX.Element {
   const { name, value, label, error, placeholder, errorMessage, helperText, onBlur, onChange, fullWidth, width100, disabled } = props
   return (
-        <DateTimePicker
+        <DatePicker
             key={`input-datetime-${name}`}
             label={label}
             disabled={disabled}
