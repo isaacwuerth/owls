@@ -8,6 +8,8 @@ import trackerFetch from '@openreplay/tracker-fetch'
 type Profiler = (name: string) => (fn: Function, thisArg?: any) => any
 export const OpenReplayContext = createContext<Tracker | null>(null)
 export const OpenReplayProfilerContext = createContext<Profiler | null>(null)
+let tracker: Tracker
+let profiler: Profiler
 
 export default function OpenReplayProvider (props: PropsWithChildren<Options>) {
   if (process.env.NODE_ENV !== 'production') { return (<>{props.children}</>) }

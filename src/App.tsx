@@ -71,7 +71,7 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
 function App () {
   return (
     <Sentry.ErrorBoundary fallback={<ErrorBoundary/>} showDialog>
-      <OpenReplayProvider projectKey={process.env.REACT_APP_OPENREPLAY_PROJECTKEY ?? ''} __DISABLE_SECURE_MODE>
+      <OpenReplayProvider projectKey={process.env.REACT_APP_OPENREPLAY_PROJECTKEY ?? ''}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <RecoilRoot>
             <RecoilNexus/>
