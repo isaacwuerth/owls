@@ -12,24 +12,22 @@ let tracker: Tracker
 let profiler: Profiler
 
 export default function OpenReplayProvider (props: PropsWithChildren<Options>) {
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') { return (<>{props.children}</>) }
   if (!tracker) {
     tracker = new Tracker(props)
-    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-      tracker.use(trackerAxios())
-      void tracker.start()
-      tracker.use(trackerAssist())
-      profiler = tracker.use(trackerProfiler())
-      const fetch = tracker.use(trackerFetch())
-      // @ts-expect-error
-      global.fetch = fetch
-    }
+    tracker.use(trackerAxios())
+    tracker.use(trackerAssist())
+    profiler = tracker.use(trackerProfiler())
+    const fetch = tracker.use(trackerFetch())
+    // @ts-expect-error
+    global.fetch = fetch
   }
   return (
-        <OpenReplayContext.Provider value={tracker}>
-          <OpenReplayProfilerContext.Provider value={profiler}>
-            {props.children}
-          </OpenReplayProfilerContext.Provider>
-        </OpenReplayContext.Provider>
+    <OpenReplayContext.Provider value={tracker}>
+      <OpenReplayProfilerContext.Provider value={profiler}>
+        {props.children}
+      </OpenReplayProfilerContext.Provider>
+    </OpenReplayContext.Provider>
   )
 }
 

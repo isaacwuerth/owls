@@ -112,7 +112,7 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
         if (users.length > 1) throw new Error('There are multiple users with the same UID')
         if (users.length === 1) {
           setProfile(users[0])
-          openreplay.setUserID(user.email ?? 'nouser')
+          openreplay?.setUserID(user.email ?? 'nouser')
         } else {
           navigate('user-setup')
         }
