@@ -20,7 +20,7 @@ export default function OpenReplayProvider (props: PropsWithChildren<Options>) {
     const fetch = tracker.use(trackerFetch())
     // @ts-expect-error
     global.fetch = fetch
-    if (process.env.NODE_ENV !== 'production') void tracker.start()
+    if (process.env.NODE_ENV === 'production') void tracker.start()
   }
   return (
     <OpenReplayContext.Provider value={tracker}>
