@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { EventSelectState } from './EventSelectState'
-import { ParticipantState } from '../../enum/ParticipantState'
+import { ParticipantState } from '../../model/enum/ParticipantState'
 import { Participant } from '../../model/Participant'
 
 const columns: GridColDef[] = [

@@ -18,6 +18,7 @@ import firebase from 'firebase/compat/app'
 import { UsersRepository } from '../repositories/UsersRepository'
 import { FileRepository } from '../repositories/FileRepository'
 import { applicationStateAtom } from '../atoms/ApplicationState'
+import { useOpenReplay } from './OpenReplayContext'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -93,6 +94,7 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
   const setProfile = useSetRecoilState(profileAtom)
   const setSiteConfig = useSetRecoilState(siteConfigAtom)
   const setApplicationState = useSetRecoilState(applicationStateAtom)
+  const openreplay = useOpenReplay()
   useEffect(() => {
     async function UpdateConfig () {
       await fetchAndActivate(firebaseContextConfig.apps.remoteConfig)
@@ -110,6 +112,7 @@ export default function FirebaseProvider ({ children }: PropsWithChildren) {
         if (users.length > 1) throw new Error('There are multiple users with the same UID')
         if (users.length === 1) {
           setProfile(users[0])
+          openreplay.setUserID(user.email ?? 'nouser')
         } else {
           navigate('user-setup')
         }

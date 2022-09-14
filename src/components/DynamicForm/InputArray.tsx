@@ -3,7 +3,8 @@ import React from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 import { Controller, useFieldArray } from 'react-hook-form'
-import { DynamicInput, InputType } from './DynamicInput'
+import { DynamicInput } from './DynamicInput'
+import { InputType } from './InputType'
 
 export function getDefaultValue (type: InputType): any {
   if (type === InputType.INTEGER) return 0
@@ -18,7 +19,7 @@ export interface FieldParameter {
   name: string
   label: string
   type: InputType
-  isArray: boolean
+  isArray?: boolean
   defaultValue?: number | string | boolean | Date | string[] | number[] | Date[]
   selectableValues?: string[]
   helpMessage?: string

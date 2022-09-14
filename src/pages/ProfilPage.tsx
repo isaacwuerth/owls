@@ -10,9 +10,9 @@ import { useFirebase } from '../Context/FirebaseContext'
 import { updateProfile } from 'firebase/auth'
 import { Profile, ProfileSchema } from '../model/Profil'
 import { Input } from '../components/DynamicForm/Input'
-import { InputType } from '../components/DynamicForm/DynamicInput'
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
 import { toast } from 'react-toastify'
+import { InputType } from '../components/DynamicForm/InputType'
 
 export function ProfilPage () {
   const [profile, setProfileState] = useRecoilState(profileAtom)

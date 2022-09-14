@@ -1,0 +1,12 @@
+export enum InputType {
+  STRING,
+  INTEGER,
+  DECIMAL,
+  BOOLEAN,
+  UNSIGNEDINTEGER,
+  DATETIME,
+  PHONE,
+  PASSWORD,
+  DATE,
+  COUNTRY
+}

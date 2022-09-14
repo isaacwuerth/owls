@@ -1,6 +1,6 @@
 import { BaseRepository } from './base/BaseRepository'
 import { collection, Firestore, getDocs, onSnapshot, query, Unsubscribe, where } from 'firebase/firestore'
-import { ParticipantState } from '../enum/ParticipantState'
+import { ParticipantState } from '../model/enum/ParticipantState'
 import { Participant } from '../model/Participant'
 
 export class ParticipantRepository extends BaseRepository<Participant> {

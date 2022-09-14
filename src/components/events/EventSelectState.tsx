@@ -1,7 +1,7 @@
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { Chip, SelectChangeEvent } from '@mui/material'
-import { ParticipantState } from '../../enum/ParticipantState'
+import { ParticipantState } from '../../model/enum/ParticipantState'
 import { useState } from 'react'
 import { generalErrorHandler } from '../../utils/generalErrorHandler'
 import { useFirebase } from '../../Context/FirebaseContext'

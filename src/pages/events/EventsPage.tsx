@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react'
 import { GeneralEvent, GeneralEventSchema } from '../../model/GeneralEvent'
 import { useFirebase } from '../../Context/FirebaseContext'
 import { Box, Button, Typography } from '@mui/material'
-import { Popup } from '../../components/Popup'
+import { Popup } from '../../common/Popup'
 import { EventForm } from '../../components/events/EventForm'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
-import HorizontalLinearStepper, { HorizontalLinearStep } from '../../components/ProgressStepper'
-import EnhancedTable from '../../components/EnhancedTable'
+import HorizontalLinearStepper, { HorizontalLinearStep } from '../../common/ProgressStepper'
+import EnhancedTable from '../../common/EnhancedTable'
 import { Participant } from '../../model/Participant'
-import { ParticipantState } from '../../enum/ParticipantState'
+import { ParticipantState } from '../../model/enum/ParticipantState'
 import { ProfileSchema } from '../../model/Profil'
 import './EventsPage.scss'
 import { z } from 'zod'
@@ -29,11 +29,13 @@ export function EventsPage () {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const { eventRepository, usersRepository, participantRepository } = useFirebase()
 
-  const form = useForm<GeneralEvent>({ resolver: zodResolver(GeneralEventSchema) })
+  const methods = useForm<GeneralEvent>({
+    resolver: zodResolver(GeneralEventSchema)
+  })
   const {
     handleSubmit,
     reset
-  } = form
+  } = methods
 
   async function crateParticipants (eid: string) {
     const participants: Participant[] = selectedUsers.map(uid => {
@@ -76,8 +78,10 @@ export function EventsPage () {
         <Box sx={{ minWidth: { md: '500px' } }}>
           <HorizontalLinearStepper>
             <HorizontalLinearStep title={'Veranstalltung'}
-                                  error={!form.formState.isValid && form.formState.isSubmitted}>
-              <EventForm form={form} mode='create' onSubmit={eventEdited => {}}/>
+                                  error={!methods.formState.isValid && methods.formState.isSubmitted}>
+              <FormProvider {...methods} >
+                <EventForm/>
+              </FormProvider>
             </HorizontalLinearStep>
             <HorizontalLinearStep title={'Teilnehmer'}>
               <EnhancedTable selected={selectedUsers}

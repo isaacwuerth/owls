@@ -7,21 +7,9 @@ import { DynamicPhoneNumber } from './Fields/DynamicPhoneNumber'
 import { DynamicPassword } from './Fields/DynamicPassword'
 import { DynamicDate } from './Fields/DynamicDate'
 import { DynamicCountry } from './Fields/DynamicCountry'
+import { InputType } from './InputType'
 
 export type SupportedPrimitives = number | string | boolean | Date
-
-export enum InputType {
-  STRING,
-  INTEGER,
-  DECIMAL,
-  BOOLEAN,
-  UNSIGNEDINTEGER,
-  DATETIME,
-  PHONE,
-  PASSWORD,
-  DATE,
-  COUNTRY
-}
 
 export interface DynamicBaseInputProps {
   name: string

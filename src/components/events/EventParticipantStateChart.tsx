@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, CardHeader, useTheme } from '@mui/material'
 import Chart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
-import { ParticipantState, translationTableColors, translationTableEnum } from '../../enum/ParticipantState'
+import { ParticipantState, translationTableColors, translationTableEnum } from '../../model/enum/ParticipantState'
 import { Participant } from '../../model/Participant'
 
 function countParticipants (participants: Participant[], state: ParticipantState): number {

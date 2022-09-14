@@ -2,18 +2,7 @@ import { DynamicInputFieldProps, InputArray } from './InputArray'
 import { SelectArray } from './SelectArray'
 import { RadioSelect } from './RadioSelect'
 import { Controller } from 'react-hook-form'
-import { DynamicInput, InputType } from './DynamicInput'
-
-export function getDefaultValue (type: InputType): any {
-  if (type === InputType.INTEGER) return 0
-  if (type === InputType.DECIMAL) return 0
-  if (type === InputType.UNSIGNEDINTEGER) return 0
-  if (type === InputType.STRING) return ''
-  if (type === InputType.BOOLEAN) return false
-  if (type === InputType.DATETIME) return null
-  if (type === InputType.DATE) return null
-  if (type === InputType.COUNTRY) return ''
-}
+import { DynamicInput } from './DynamicInput'
 
 export function Input ({ field, form }: DynamicInputFieldProps): JSX.Element {
   if (field.isArray && Array.isArray(field.selectableValues)) {

@@ -17,15 +17,16 @@ import {
   Typography,
   useTheme
 } from '@mui/material'
-import { Logo } from '../Logo'
+
 import IconButton from '@mui/material/IconButton'
 import { NavItems } from '../../Nav'
 import { Link, Outlet } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Logout, MenuRounded, Settings } from '@mui/icons-material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { ProfileAvatar } from '../Profile/ProfileAvatar'
+import { ProfileAvatar } from '../../components/Profile/ProfileAvatar'
 import { useRecoilValue } from 'recoil'
 import { siteConfigAtom } from '../../atoms/SiteConfigAtom'
+import { Logo } from '../Logo'
 
 const drawerWidth = 240
 

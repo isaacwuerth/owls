@@ -10,9 +10,9 @@ import { useFirebase } from '../Context/FirebaseContext'
 import { updateProfile } from 'firebase/auth'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { InputType } from '../components/DynamicForm/DynamicInput'
 import { Input } from '../components/DynamicForm/Input'
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
+import { InputType } from '../components/DynamicForm/InputType'
 
 export function UserSetupPage () {
   const navigate = useNavigate()
@@ -28,7 +28,6 @@ export function UserSetupPage () {
     formState: { errors }
   } = form
   const onSubmit = async (newProfile: any) => {
-    console.log(newProfile)
     try {
       newProfile.eMail = auth.currentUser?.email ?? ''
       newProfile.uid = auth.currentUser?.uid ?? ''

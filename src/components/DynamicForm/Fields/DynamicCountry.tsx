@@ -63,7 +63,6 @@ export function DynamicCountry (props: DynamicBaseInputProps): JSX.Element {
   }
 
   function handleSelected (event: any, newValue: CountryType | null) {
-    console.log(newValue)
     setSelected(newValue)
     onChange(newValue?.code)
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { RecoilRoot } from 'recoil'
-import BasicLayout from './components/layouts/BasicLayout'
+import BasicLayout from './common/layouts/BasicLayout'
 import {
   BrowserRouter,
   createRoutesFromChildren,
@@ -35,6 +35,7 @@ import {
   Offline as OfflineIntegration,
   ReportingObserver as ReportingObserverIntegration
 } from '@sentry/integrations'
+import OpenReplayProvider from './Context/OpenReplayContext'
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -70,32 +71,34 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
 function App () {
   return (
     <Sentry.ErrorBoundary fallback={<ErrorBoundary/>} showDialog>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <RecoilRoot>
-          <RecoilNexus/>
-          <BrowserRouter>
-            <FirebaseProvider>
-              <Splashscreen>
-                <MaintenancePage>
-                  <SentryRoutes>
-                    <Route path="/login" element={<LoginPage/>}/>
-                    <Route path="/user-setup" element={<UserSetupPage/>}/>
-                    <Route path="/logout" element={<LogoutPage/>}/>
-                    <Route element={<BasicLayout/>}>
-                      <Route index element={<DashboardPage/>}/>
-                      <Route path="events/:eid" element={<EventPage/>}/>
-                      <Route path="events/:eid/edit" element={<EventEditPage/>}/>
-                      <Route path="events" element={<EventsPage/>}/>
-                      <Route path="profile" element={<ProfilPage/>}/>
-                    </Route>
-                  </SentryRoutes>
-                  <ToastContainer position='top-center'/>
-                </MaintenancePage>
-              </Splashscreen>
-            </FirebaseProvider>
-          </BrowserRouter>
-        </RecoilRoot>
-      </LocalizationProvider>
+      <OpenReplayProvider projectKey='R8C4sH0aQVI5ctsw6MfJ' __DISABLE_SECURE_MODE>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <RecoilRoot>
+            <RecoilNexus/>
+            <BrowserRouter>
+              <FirebaseProvider>
+                <Splashscreen>
+                  <MaintenancePage>
+                    <SentryRoutes>
+                      <Route path="/login" element={<LoginPage/>}/>
+                      <Route path="/user-setup" element={<UserSetupPage/>}/>
+                      <Route path="/logout" element={<LogoutPage/>}/>
+                      <Route element={<BasicLayout/>}>
+                        <Route index element={<DashboardPage/>}/>
+                        <Route path="events/:eid" element={<EventPage/>}/>
+                        <Route path="events/:eid/edit" element={<EventEditPage/>}/>
+                        <Route path="events" element={<EventsPage/>}/>
+                        <Route path="profile" element={<ProfilPage/>}/>
+                      </Route>
+                    </SentryRoutes>
+                    <ToastContainer position='top-center'/>
+                  </MaintenancePage>
+                </Splashscreen>
+              </FirebaseProvider>
+            </BrowserRouter>
+          </RecoilRoot>
+        </LocalizationProvider>
+      </OpenReplayProvider>
     </Sentry.ErrorBoundary>
   )
 }
