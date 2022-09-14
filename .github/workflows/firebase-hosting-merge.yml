@@ -31,6 +31,18 @@ jobs:
       - name: Get package info
         id: package
         uses: codex-team/action-nodejs-package-info@v1
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Set REACT_APP_NAME
         run: echo REACT_APP_NAME=${{ steps.package.outputs.name }} >> $GITHUB_ENV
       - name: Set REACT_APP_VERSION
