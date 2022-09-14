@@ -1,5 +1,4 @@
 import { FormControl, FormControlLabel, FormHelperText, FormLabel, Radio, RadioGroup } from '@mui/material'
-import React from 'react'
 import { Controller } from 'react-hook-form'
 import { DynamicInputFieldProps } from './InputArray'
 

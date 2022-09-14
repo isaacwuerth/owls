@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil'
 import { profileAtom } from '../atoms/ProfileAtom'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SendIcon from '@mui/icons-material/Send'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { AvatarUpload } from '../components/Profile/AvatarUpload'
 import { useFirebase } from '../Context/FirebaseContext'
 import { updateProfile } from 'firebase/auth'
@@ -45,7 +45,6 @@ export function ProfilPage () {
   }
 
   return (
-
             <Card>
                 <CardContent>
                     <Typography variant="h2">Profil</Typography>

@@ -1,5 +1,5 @@
 import { IconButton, InputAdornment, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { DynamicBaseInputProps } from '../DynamicInput'
 

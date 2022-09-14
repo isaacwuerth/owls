@@ -1,5 +1,4 @@
 import { Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel } from '@mui/material'
-import React from 'react'
 import { Controller, useFieldArray } from 'react-hook-form'
 import { DynamicInputFieldProps } from './InputArray'
 

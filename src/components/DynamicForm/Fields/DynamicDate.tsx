@@ -1,6 +1,5 @@
 import { TextField } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
-import React from 'react'
 import { DynamicBaseInputProps } from '../DynamicInput'
 
 export function DynamicDate (props: DynamicBaseInputProps): JSX.Element {

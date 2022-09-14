@@ -1,5 +1,4 @@
 import { Avatar } from '@mui/material'
-import React from 'react'
 import { useRecoilState } from 'recoil'
 import { profileAtom } from '../../atoms/ProfileAtom'
 import { SxProps } from '@mui/system'

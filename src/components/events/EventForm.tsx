@@ -1,5 +1,4 @@
 import Grid2 from '@mui/material/Unstable_Grid2' // Grid version 2
-import React from 'react'
 import { Box, Typography } from '@mui/material'
 import { InputWrapper } from '../DynamicForm/InputWrapper'
 import { InputType } from '../DynamicForm/InputType'

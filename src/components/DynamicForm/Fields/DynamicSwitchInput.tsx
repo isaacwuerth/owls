@@ -1,5 +1,4 @@
 import { FormControl, FormControlLabel, FormHelperText, FormLabel, Switch } from '@mui/material'
-import React from 'react'
 import { DynamicBaseInputProps } from '../DynamicInput'
 
 export function DynamicSwitchInput (props: DynamicBaseInputProps): JSX.Element {

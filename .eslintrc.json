@@ -1,11 +1,17 @@
 {
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "env": {
     "browser": true,
     "es2021": true
   },
   "extends": [
     "plugin:react/recommended",
-    "standard-with-typescript"
+    "standard-with-typescript",
+    "plugin:react/jsx-runtime"
   ],
   "overrides": [
   ],
@@ -20,7 +26,6 @@
     "react"
   ],
   "rules": {
-    "react/react-in-jsx-scope": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/strict-boolean-expressions": "off"
