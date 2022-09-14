@@ -36,12 +36,12 @@ import {
   ReportingObserver as ReportingObserverIntegration
 } from '@sentry/integrations'
 import OpenReplayProvider from './Context/OpenReplayContext'
+import { AppInfoPage } from './pages/app/AppInfoPage'
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [
     new BrowserTracing({
-      tracingOrigins: ['localhost'],
       routingInstrumentation: Sentry.reactRouterV6Instrumentation(React.useEffect,
         useLocation,
         useNavigationType,
@@ -71,7 +71,7 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
 function App () {
   return (
     <Sentry.ErrorBoundary fallback={<ErrorBoundary/>} showDialog>
-      <OpenReplayProvider projectKey='R8C4sH0aQVI5ctsw6MfJ' __DISABLE_SECURE_MODE>
+      <OpenReplayProvider projectKey={process.env.REACT_APP_OPENREPLAY_PROJECTKEY ?? ''} __DISABLE_SECURE_MODE>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <RecoilRoot>
             <RecoilNexus/>
@@ -82,6 +82,7 @@ function App () {
                     <SentryRoutes>
                       <Route path="/login" element={<LoginPage/>}/>
                       <Route path="/user-setup" element={<UserSetupPage/>}/>
+                      <Route path="/appinfo" element={<AppInfoPage/>}/>
                       <Route path="/logout" element={<LogoutPage/>}/>
                       <Route element={<BasicLayout/>}>
                         <Route index element={<DashboardPage/>}/>

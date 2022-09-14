@@ -15,6 +15,7 @@ env:
   REACT_APP_SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT }}
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+  REACT_APP_OPENREPLAY_PROJECTKEY: ${{ secrets.OPENREPLAY_PROJECTKEY }}
 
 
 name: Deploy to Context Hosting on merge
