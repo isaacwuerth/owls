@@ -8,6 +8,6 @@ export const siteConfigAtom = atom<SiteConfig>({
     logoUrl: '',
     maintenanceMode: 'off',
     maintenanceMessage: 'Wir sind bald wieder online',
-    maintenanceTitle: 'Diese Webseite wird gerade überarbeitet'
-  }
+    maintenanceTitle: 'Diese Webseite wird gerade überarbeitet',
+  },
 })

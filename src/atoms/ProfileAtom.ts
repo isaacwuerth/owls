@@ -6,10 +6,10 @@ const sampleData: Profile = {
   uid: '',
   firstName: 'A',
   lastName: 'A',
-  eMail: ''
+  eMail: '',
 }
 
 export const profileAtom = atom<Profile>({
   key: 'profileAtom',
-  default: sampleData
+  default: sampleData,
 })

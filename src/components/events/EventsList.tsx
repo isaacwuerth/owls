@@ -12,36 +12,36 @@ const columns: GridColDef[] = [
   {
     field: 'title',
     flex: 1,
-    headerName: 'Titel'
+    headerName: 'Titel',
   },
   {
     field: 'start',
     headerName: 'Start',
     flex: 1,
-    type: 'dateTime'
+    type: 'dateTime',
   },
   {
     field: 'end',
     headerName: 'Ende',
     flex: 1,
-    type: 'dateTime'
+    type: 'dateTime',
   },
   {
     field: 'postcode',
     headerName: 'Ort',
     flex: 1,
     type: 'dateTime',
-    valueGetter: params => {
+    valueGetter: (params) => {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       return `${params.row.postcode} ${params.row.city}, ${params.row.street}`
-    }
+    },
   },
   {
     field: 'actions',
     width: 125,
     type: 'actions',
-    headerName: 'Aktionen'
-  }
+    headerName: 'Aktionen',
+  },
 ]
 
 interface EventListProps {
@@ -49,29 +49,28 @@ interface EventListProps {
   onDelete: (id: string) => void
 }
 
-export default function EventsList ({ events, onDelete }: EventListProps) {
+export default function EventsList({ events, onDelete }: EventListProps) {
   const navigate = useNavigate()
   columns[5].renderCell = (params) => {
-    return <>
-      <IconButton
-        aria-label="View"
-        onClick={() => navigate(String(params.row.id))}
-      >
-        <VisibilityIcon/>
-      </IconButton>
-      <IconButton
-        aria-label="Edit"
-        onClick={() => navigate(String(params.row.id) + '/edit')}
-      >
-        <EditIcon/>
-      </IconButton>
-      <IconButton
-        aria-label="Edit"
-        onClick={() => onDelete(params.row.id)}
-      >
-        <DeleteIcon/>
-      </IconButton>
-    </>
+    return (
+      <>
+        <IconButton
+          aria-label="View"
+          onClick={() => navigate(String(params.row.id))}
+        >
+          <VisibilityIcon />
+        </IconButton>
+        <IconButton
+          aria-label="Edit"
+          onClick={() => navigate(String(params.row.id) + '/edit')}
+        >
+          <EditIcon />
+        </IconButton>
+        <IconButton aria-label="Edit" onClick={() => onDelete(params.row.id)}>
+          <DeleteIcon />
+        </IconButton>
+      </>
+    )
   }
 
   return (

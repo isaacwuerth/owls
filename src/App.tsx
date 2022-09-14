@@ -8,7 +8,7 @@ import {
   Route,
   Routes,
   useLocation,
-  useNavigationType
+  useNavigationType,
 } from 'react-router-dom'
 import { DashboardPage } from './pages/DashboardPage'
 import { EventsPage } from './pages/events/EventsPage'
@@ -33,7 +33,7 @@ import SentryRRWeb from '@sentry/rrweb'
 import {
   CaptureConsole as CaptureConsoleIntegration,
   Offline as OfflineIntegration,
-  ReportingObserver as ReportingObserverIntegration
+  ReportingObserver as ReportingObserverIntegration,
 } from '@sentry/integrations'
 import OpenReplayProvider from './Context/OpenReplayContext'
 import { AppInfoPage } from './pages/app/AppInfoPage'
@@ -42,17 +42,18 @@ Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
   integrations: [
     new BrowserTracing({
-      routingInstrumentation: Sentry.reactRouterV6Instrumentation(React.useEffect,
+      routingInstrumentation: Sentry.reactRouterV6Instrumentation(
+        React.useEffect,
         useLocation,
         useNavigationType,
         createRoutesFromChildren,
         matchRoutes
-      )
+      ),
     }),
     new SentryRRWeb(),
     new CaptureConsoleIntegration(),
     new OfflineIntegration({ maxStoredEvents: 50 }),
-    new ReportingObserverIntegration()
+    new ReportingObserverIntegration(),
   ],
   tracesSampleRate: 1.0,
   environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
@@ -61,38 +62,44 @@ Sentry.init({
   attachStacktrace: true,
   maxBreadcrumbs: 100,
   autoSessionTracking: true,
-  enabled: process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test'
+  enabled:
+    process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test',
 })
 
 Sentry.setTag('rrweb.active', 'yes')
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
 
-function App () {
+function App() {
   return (
-    <Sentry.ErrorBoundary fallback={<ErrorBoundary/>} showDialog>
-      <OpenReplayProvider projectKey={process.env.REACT_APP_OPENREPLAY_PROJECTKEY ?? ''}>
+    <Sentry.ErrorBoundary fallback={<ErrorBoundary />} showDialog>
+      <OpenReplayProvider
+        projectKey={process.env.REACT_APP_OPENREPLAY_PROJECTKEY ?? ''}
+      >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <RecoilRoot>
-            <RecoilNexus/>
+            <RecoilNexus />
             <BrowserRouter>
               <FirebaseProvider>
                 <Splashscreen>
                   <MaintenancePage>
                     <SentryRoutes>
-                      <Route path="/login" element={<LoginPage/>}/>
-                      <Route path="/user-setup" element={<UserSetupPage/>}/>
-                      <Route path="/appinfo" element={<AppInfoPage/>}/>
-                      <Route path="/logout" element={<LogoutPage/>}/>
-                      <Route element={<BasicLayout/>}>
-                        <Route index element={<DashboardPage/>}/>
-                        <Route path="events/:eid" element={<EventPage/>}/>
-                        <Route path="events/:eid/edit" element={<EventEditPage/>}/>
-                        <Route path="events" element={<EventsPage/>}/>
-                        <Route path="profile" element={<ProfilPage/>}/>
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/user-setup" element={<UserSetupPage />} />
+                      <Route path="/appinfo" element={<AppInfoPage />} />
+                      <Route path="/logout" element={<LogoutPage />} />
+                      <Route element={<BasicLayout />}>
+                        <Route index element={<DashboardPage />} />
+                        <Route path="events/:eid" element={<EventPage />} />
+                        <Route
+                          path="events/:eid/edit"
+                          element={<EventEditPage />}
+                        />
+                        <Route path="events" element={<EventsPage />} />
+                        <Route path="profile" element={<ProfilPage />} />
                       </Route>
                     </SentryRoutes>
-                    <ToastContainer position='top-center'/>
+                    <ToastContainer position="top-center" />
                   </MaintenancePage>
                 </Splashscreen>
               </FirebaseProvider>
@@ -104,4 +111,7 @@ function App () {
   )
 }
 
-export default Sentry.withProfiler(App, { includeRender: true, includeUpdates: true })
+export default Sentry.withProfiler(App, {
+  includeRender: true,
+  includeUpdates: true,
+})

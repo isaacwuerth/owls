@@ -3,9 +3,9 @@ import { GeneralEvent } from '../model/GeneralEvent'
 import { Participant } from '../model/Participant'
 
 export const eventAtom = atom<GeneralEvent>({
-  key: 'eventAtom'
+  key: 'eventAtom',
 })
 
 export const participantsAtom = atom<Participant[]>({
-  key: 'participantsAtom'
+  key: 'participantsAtom',
 })

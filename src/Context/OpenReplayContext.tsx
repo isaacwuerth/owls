@@ -11,15 +11,14 @@ export const OpenReplayProfilerContext = createContext<Profiler | null>(null)
 let tracker: Tracker
 let profiler: Profiler
 
-export default function OpenReplayProvider (props: PropsWithChildren<Options>) {
+export default function OpenReplayProvider(props: PropsWithChildren<Options>) {
   if (!tracker) {
     tracker = new Tracker(props)
     tracker.use(trackerAxios())
     tracker.use(trackerAssist())
     profiler = tracker.use(trackerProfiler())
-    const fetch = tracker.use(trackerFetch())
     // @ts-expect-error
-    global.fetch = fetch
+    global.fetch = tracker.use(trackerFetch())
     if (process.env.NODE_ENV === 'production') void tracker.start()
   }
   return (

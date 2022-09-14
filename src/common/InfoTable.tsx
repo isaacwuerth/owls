@@ -1,7 +1,15 @@
-import { Card, styled, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material'
+import {
+  Card,
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from '@mui/material'
 
 const KeyTableCell = styled(TableCell)({
-  fontWeight: 'bold'
+  fontWeight: 'bold',
 })
 
 export interface InfoTableRow {
@@ -13,7 +21,7 @@ interface InfoTableProps {
   table: InfoTableRow[]
 }
 
-export function InfoTable ({ table }: InfoTableProps) {
+export function InfoTable({ table }: InfoTableProps) {
   const rows = table.map((row) => (
     <TableRow key={row.label}>
       <KeyTableCell>{row.label}</KeyTableCell>
@@ -24,9 +32,7 @@ export function InfoTable ({ table }: InfoTableProps) {
   return (
     <TableContainer component={Card}>
       <Table>
-        <TableBody>
-          {rows}
-        </TableBody>
+        <TableBody>{rows}</TableBody>
       </Table>
     </TableContainer>
   )

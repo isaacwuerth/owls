@@ -8,7 +8,11 @@ import { useNavigate } from 'react-router-dom'
 import * as firebaseui from 'firebaseui'
 import { useSetRecoilState } from 'recoil'
 import { profileAtom } from '../atoms/ProfileAtom'
-import { fetchAndActivate, getAll, getRemoteConfig } from 'firebase/remote-config'
+import {
+  fetchAndActivate,
+  getAll,
+  getRemoteConfig,
+} from 'firebase/remote-config'
 import { siteConfigAtom } from '../atoms/SiteConfigAtom'
 import { SiteConfigSchema } from '../model/SiteConfig'
 import { getStorage } from 'firebase/storage'
@@ -28,7 +32,7 @@ const firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 }
 const app = initializeApp(firebaseConfig)
 const firestore = getFirestore(app)
@@ -37,7 +41,7 @@ const storage = getStorage(app)
 const firebaseContextConfig = {
   loading: true,
   firebase: {
-    app
+    app,
   },
   apps: {
     analytics: getAnalytics(app),
@@ -46,29 +50,29 @@ const firebaseContextConfig = {
     auth: getAuth(app),
     storage,
     loginUi: new firebaseui.auth.AuthUI(getAuth(app)),
-    remoteConfig: getRemoteConfig(app)
+    remoteConfig: getRemoteConfig(app),
   },
   uiConfig: {
     signInOptions: [
       {
         provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        requireDisplayName: false
+        requireDisplayName: false,
       },
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     ],
     signInSuccessUrl: '/',
     privacyPolicyUrl: 'https://wwww.google.com',
-    tosUrl: 'https://wwww.google.com'
+    tosUrl: 'https://wwww.google.com',
   },
   eventRepository: new EventRepository(firestore),
   participantRepository: new ParticipantRepository(firestore),
   usersRepository: new UsersRepository(firestore),
-  avatarFiles: new FileRepository(storage, 'avatar')
+  avatarFiles: new FileRepository(storage, 'avatar'),
 }
 
 const defaultConfig = {
   name: '',
-  logoUrl: ''
+  logoUrl: '',
 }
 
 firebaseContextConfig.apps.remoteConfig.settings.minimumFetchIntervalMillis = 50000
@@ -76,9 +80,9 @@ firebaseContextConfig.apps.remoteConfig.defaultConfig = defaultConfig
 
 export const FirebaseContext = createContext(firebaseContextConfig)
 
-function convertConfig (allConfigs: Record<string, any>): any {
+function convertConfig(allConfigs: Record<string, any>): any {
   const result: Record<string, any> = {}
-  Object.keys(allConfigs).forEach(key => {
+  Object.keys(allConfigs).forEach((key) => {
     result[key] = allConfigs[key].asString()
   })
   try {
@@ -89,27 +93,30 @@ function convertConfig (allConfigs: Record<string, any>): any {
   return SiteConfigSchema.parse(result)
 }
 
-export default function FirebaseProvider ({ children }: PropsWithChildren) {
+export default function FirebaseProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate()
   const setProfile = useSetRecoilState(profileAtom)
   const setSiteConfig = useSetRecoilState(siteConfigAtom)
   const setApplicationState = useSetRecoilState(applicationStateAtom)
   const openreplay = useOpenReplay()
   useEffect(() => {
-    async function UpdateConfig () {
+    async function UpdateConfig() {
       await fetchAndActivate(firebaseContextConfig.apps.remoteConfig)
       const allConfigs = getAll(firebaseContextConfig.apps.remoteConfig)
       setSiteConfig(convertConfig(allConfigs))
     }
-    async function LoadConfigStartup () {
+    async function LoadConfigStartup() {
       await UpdateConfig()
       // setInterval(UpdateConfig, 60000)
     }
-    LoadConfigStartup().catch(reason => {})
-    onAuthStateChanged(firebaseContextConfig.apps.auth, async user => {
+    LoadConfigStartup().catch(() => {})
+    onAuthStateChanged(firebaseContextConfig.apps.auth, async (user) => {
       if (user) {
-        const users = await firebaseContextConfig.usersRepository.findByUID(user.uid)
-        if (users.length > 1) throw new Error('There are multiple users with the same UID')
+        const users = await firebaseContextConfig.usersRepository.findByUID(
+          user.uid
+        )
+        if (users.length > 1)
+          throw new Error('There are multiple users with the same UID')
         if (users.length === 1) {
           setProfile(users[0])
           openreplay?.setUserID(user.email ?? 'nouser')

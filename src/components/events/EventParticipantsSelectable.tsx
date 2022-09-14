@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
 
-function descendingComparator<T> (a: T, b: T, orderBy: keyof T) {
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1
   }
@@ -34,7 +34,13 @@ function descendingComparator<T> (a: T, b: T, orderBy: keyof T) {
 type Order = 'asc' | 'desc'
 type supportedTypes = number | string | Date
 
-function getComparator<Key extends keyof any> (order: Order, orderBy: Key): (a: { [key in Key]: supportedTypes }, b: { [key in Key]: supportedTypes }) => number {
+function getComparator<Key extends keyof any>(
+  order: Order,
+  orderBy: Key
+): (
+  a: { [key in Key]: supportedTypes },
+  b: { [key in Key]: supportedTypes }
+) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
@@ -57,8 +63,16 @@ interface EnhancedTableHeadProps<T> {
   headCells: Array<HeadCell<T>>
 }
 
-function EnhancedTableHead<T> (props: EnhancedTableHeadProps<T>) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells } = props
+function EnhancedTableHead<T>(props: EnhancedTableHeadProps<T>) {
+  const {
+    onSelectAllClick,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onRequestSort,
+    headCells,
+  } = props
   const createSortHandler =
     (property: keyof T) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property)
@@ -74,7 +88,7 @@ function EnhancedTableHead<T> (props: EnhancedTableHeadProps<T>) {
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              'aria-label': 'select all desserts'
+              'aria-label': 'select all desserts',
             }}
           />
         </TableCell>
@@ -91,13 +105,11 @@ function EnhancedTableHead<T> (props: EnhancedTableHeadProps<T>) {
               onClick={createSortHandler(headCell.name)}
             >
               {headCell.label}
-              {orderBy === headCell.name
-                ? (
+              {orderBy === headCell.name ? (
                 <Box component="span" sx={visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </Box>
-                  )
-                : null}
+              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -120,46 +132,45 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         pr: { xs: 1, sm: 1 },
         ...(numSelected > 0 && {
           bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity)
-        })
+            alpha(
+              theme.palette.primary.main,
+              theme.palette.action.activatedOpacity
+            ),
+        }),
       }}
     >
-      {numSelected > 0
-        ? (
-          <Typography
-            sx={{ flex: '1 1 100%' }}
-            color="inherit"
-            variant="subtitle1"
-            component="div"
-          >
-            {numSelected} selected
-          </Typography>
-          )
-        : (
-          <Typography
-            sx={{ flex: '1 1 100%' }}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            Nutrition
-          </Typography>
-          )}
-      {numSelected > 0
-        ? (
-          <Tooltip title="Delete">
-            <IconButton>
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-          )
-        : (
-          <Tooltip title="Filter list">
-            <IconButton>
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
-          )}
+      {numSelected > 0 ? (
+        <Typography
+          sx={{ flex: '1 1 100%' }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography
+          sx={{ flex: '1 1 100%' }}
+          variant="h6"
+          id="tableTitle"
+          component="div"
+        >
+          Nutrition
+        </Typography>
+      )}
+      {numSelected > 0 ? (
+        <Tooltip title="Delete">
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </Toolbar>
   )
 }
@@ -174,7 +185,9 @@ type EnhancedTableProps<T> = {
   columns: Array<HeadCell<T>>
 }
 
-export default function EnhancedTable<T extends {id: string} & {[key in any]: string | number}> ({ rowsPerPage, rows, defaultOrderBy, columns }: EnhancedTableProps<T>) {
+export default function EnhancedTable<
+  T extends { id: string } & { [key in any]: string | number }
+>({ rowsPerPage, rows, defaultOrderBy, columns }: EnhancedTableProps<T>) {
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState<string>(defaultOrderBy)
   const [page, setPage] = React.useState<number>(0)
@@ -200,7 +213,7 @@ export default function EnhancedTable<T extends {id: string} & {[key in any]: st
     setSelected([])
   }
 
-  function handleRowClick (event: React.MouseEvent<unknown>, id: string) {
+  function handleRowClick(event: React.MouseEvent<unknown>, id: string) {
     const selectedIndex = selected.indexOf(id)
     let newSelected: string[] = []
 
@@ -224,7 +237,9 @@ export default function EnhancedTable<T extends {id: string} & {[key in any]: st
     setPage(newPage)
   }
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setAcuelRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
@@ -259,7 +274,8 @@ export default function EnhancedTable<T extends {id: string} & {[key in any]: st
               headCells={columns}
             />
             <TableBody>
-              {rows.sort(getComparator(order, orderBy))
+              {rows
+                .sort(getComparator(order, orderBy))
                 .slice(page * acuelRowsPerPage, (page + 1) * acuelRowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id)
@@ -280,21 +296,23 @@ export default function EnhancedTable<T extends {id: string} & {[key in any]: st
                           color="primary"
                           checked={isItemSelected}
                           inputProps={{
-                            'aria-labelledby': labelId
+                            'aria-labelledby': labelId,
                           }}
                         />
                       </TableCell>
 
-                      {columns.map((column) =>
-                        <TableCell key={`${String(column.name)}-${index}`}>{row[column.name]}</TableCell>
-                      )}
+                      {columns.map((column) => (
+                        <TableCell key={`${String(column.name)}-${index}`}>
+                          {row[column.name]}
+                        </TableCell>
+                      ))}
                     </TableRow>
                   )
                 })}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: (dense ? 33 : 53) * emptyRows
+                    height: (dense ? 33 : 53) * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />

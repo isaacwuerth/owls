@@ -2,7 +2,7 @@ import libphonenumber from 'google-libphonenumber'
 
 const phoneNumberUtils = libphonenumber.PhoneNumberUtil.getInstance()
 
-export function IsValidPhoneNumber (number: string | undefined): boolean {
+export function IsValidPhoneNumber(number: string | undefined): boolean {
   if (!number) return false
   try {
     const phoneNumber = phoneNumberUtils.parseAndKeepRawInput(number)

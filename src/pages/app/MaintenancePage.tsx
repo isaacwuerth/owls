@@ -11,7 +11,7 @@ interface MaintenanceProps {
   endDate?: Date
 }
 
-function Maintenance ({ title, message, endDate }: MaintenanceProps) {
+function Maintenance({ title, message, endDate }: MaintenanceProps) {
   if (endDate) {
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(endDate))
     useEffect(() => {
@@ -26,28 +26,45 @@ function Maintenance ({ title, message, endDate }: MaintenanceProps) {
   }
 
   return (
-    <Box sx={{
-      backgroundImage: 'url(/img/maintenance.jpg)'
-    }}
-         className={'holder'}
+    <Box
+      sx={{
+        backgroundImage: 'url(/img/maintenance.jpg)',
+      }}
+      className={'holder'}
     >
-      <Card className='background'>
-        <Typography fontSize='24px' fontWeight='bolder'>{title}</Typography>
-          <p>{message}</p>
-          {endDate ? <Counter endDate={endDate}/> : null}
+      <Card className="background">
+        <Typography fontSize="24px" fontWeight="bolder">
+          {title}
+        </Typography>
+        <p>{message}</p>
+        {endDate ? <Counter endDate={endDate} /> : null}
       </Card>
     </Box>
   )
 }
 
-export function MaintenancePage ({ children }: PropsWithChildren<{}>) {
-  const { maintenanceMode, maintenanceMessage, maintenanceEnd, maintenanceTitle } = useRecoilValue(siteConfigAtom)
-  const timedifference = maintenanceEnd ? new Date(maintenanceEnd).getTime() - new Date().getTime() : 0
+export function MaintenancePage({ children }: PropsWithChildren<{}>) {
+  const {
+    maintenanceMode,
+    maintenanceMessage,
+    maintenanceEnd,
+    maintenanceTitle,
+  } = useRecoilValue(siteConfigAtom)
+  const timedifference = maintenanceEnd
+    ? new Date(maintenanceEnd).getTime() - new Date().getTime()
+    : 0
   // eslint-disable-next-line no-unreachable
   if (maintenanceMode === 'permanent') {
-    return <Maintenance message={maintenanceMessage} title={maintenanceTitle}/>
+    return <Maintenance message={maintenanceMessage} title={maintenanceTitle} />
   } else if (maintenanceMode === 'scheduled') {
-    if (timedifference > 0) return <Maintenance message={maintenanceMessage} title={maintenanceTitle} endDate={maintenanceEnd}/>
+    if (timedifference > 0)
+      return (
+        <Maintenance
+          message={maintenanceMessage}
+          title={maintenanceTitle}
+          endDate={maintenanceEnd}
+        />
+      )
   }
   return <>{children}</>
 }

@@ -13,12 +13,14 @@ interface HorizontalLinearStepperProps {
   children: Array<React.ReactElement<StepProps>> | React.ReactElement<StepProps>
 }
 
-export default function HorizontalLinearStepper ({ children }: HorizontalLinearStepperProps) {
+export default function HorizontalLinearStepper({
+  children,
+}: HorizontalLinearStepperProps) {
   const [activeStep, setActiveStep] = React.useState(0)
   const [skipped, setSkipped] = React.useState(new Set<number>())
   const child: ReactNode = Children.toArray(children)[activeStep]
 
-  const isStepOptional = (step: number) => {
+  const isStepOptional = () => {
     // @ts-expect-error
     return child.props.optional
   }
@@ -43,7 +45,7 @@ export default function HorizontalLinearStepper ({ children }: HorizontalLinearS
   }
 
   const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
+    if (!isStepOptional()) {
       // You probably want to guard against something like this,
       // it should never occur unless someone's actively trying to break something.
       throw new Error("You can't skip a step that isn't optional.")
@@ -70,7 +72,14 @@ export default function HorizontalLinearStepper ({ children }: HorizontalLinearS
     }
     return (
       <Step key={title} title={title} {...stepProps}>
-        <StepLabel error={error} optional={optional && <Typography variant="caption">Optional</Typography>}>{title}</StepLabel>
+        <StepLabel
+          error={error}
+          optional={
+            optional && <Typography variant="caption">Optional</Typography>
+          }
+        >
+          {title}
+        </StepLabel>
       </Step>
     )
   })
@@ -80,37 +89,38 @@ export default function HorizontalLinearStepper ({ children }: HorizontalLinearS
       <Stepper activeStep={activeStep} sx={{ marginBottom: '15px' }}>
         {header}
       </Stepper>
-      {activeStep === steps.length - 1
-        ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              {child}
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
-          </React.Fragment>
-          )
-        : (
-          <React.Fragment>
-            {child}
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-                Back
+      {activeStep === steps.length - 1 ? (
+        <React.Fragment>
+          <Typography sx={{ mt: 2, mb: 1 }}>{child}</Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ flex: '1 1 auto' }} />
+            <Button onClick={handleReset}>Reset</Button>
+          </Box>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          {child}
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Button
+              color="inherit"
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              sx={{ mr: 1 }}
+            >
+              Back
+            </Button>
+            <Box sx={{ flex: '1 1 auto' }} />
+            {isStepOptional() && (
+              <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                Skip
               </Button>
-              <Box sx={{ flex: '1 1 auto' }} />
-              {isStepOptional(activeStep) && (
-                <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                  Skip
-                </Button>
-              )}
-              <Button onClick={handleNext}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-              </Button>
-            </Box>
-          </React.Fragment>
-          )}
+            )}
+            <Button onClick={handleNext}>
+              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+            </Button>
+          </Box>
+        </React.Fragment>
+      )}
     </Box>
   )
 }
@@ -121,6 +131,6 @@ interface StepProps extends PropsWithChildren {
   error?: boolean
 }
 
-export function HorizontalLinearStep ({ children }: StepProps) {
+export function HorizontalLinearStep({ children }: StepProps) {
   return children as JSX.Element
 }

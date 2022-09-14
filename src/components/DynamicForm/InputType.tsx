@@ -8,5 +8,5 @@ export enum InputType {
   PHONE,
   PASSWORD,
   DATE,
-  COUNTRY
+  COUNTRY,
 }

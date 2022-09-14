@@ -1,15 +1,24 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, styled, useMediaQuery, useTheme } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  styled,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import { PropsWithChildren, ReactNode } from 'react'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
   },
   '& .MuiDialogActions-root': {
-    padding: theme.spacing(1)
-  }
+    padding: theme.spacing(1),
+  },
 }))
 
 export interface DialogTitleProps {
@@ -24,22 +33,20 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
   return (
     <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
       {children}
-      {onClose
-        ? (
-          <IconButton
-            aria-label="close"
-            onClick={onClose}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500]
-            }}
-          >
-            <CloseIcon/>
-          </IconButton>
-          )
-        : null}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
     </DialogTitle>
   )
 }
@@ -52,7 +59,13 @@ interface PopupProps {
   handleSave: () => void
 }
 
-export function Popup ({ title, handleClose, open, children, handleSave }: PropsWithChildren<PopupProps>) {
+export function Popup({
+  title,
+  handleClose,
+  open,
+  children,
+  handleSave,
+}: PropsWithChildren<PopupProps>) {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
   return (
@@ -65,9 +78,7 @@ export function Popup ({ title, handleClose, open, children, handleSave }: Props
       <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
         {title}
       </BootstrapDialogTitle>
-      <DialogContent dividers>
-        {children}
-      </DialogContent>
+      <DialogContent dividers>{children}</DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleSave}>
           Save changes

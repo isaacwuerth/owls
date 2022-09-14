@@ -7,5 +7,5 @@ interface Avatar {
 
 export const avatarAtom = atom<Avatar | null>({
   key: 'avatarAtom',
-  default: null
+  default: null,
 })

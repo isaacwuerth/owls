@@ -5,7 +5,7 @@ import { SxProps } from '@mui/system'
 import { Theme } from '@mui/material/styles'
 import { mergeDeep } from '../../utils/deepMerge'
 
-function stringToColor (string: string) {
+function stringToColor(string: string) {
   let hash = 0
   let i
 
@@ -24,12 +24,12 @@ function stringToColor (string: string) {
   return color
 }
 
-function stringAvatar (name: string) {
+function stringAvatar(name: string) {
   return {
     sx: {
-      bgcolor: stringToColor(name)
+      bgcolor: stringToColor(name),
     },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`
+    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
   }
 }
 
@@ -37,19 +37,20 @@ interface ProfileAvatarProps {
   sx?: SxProps<Theme>
 }
 
-export function ProfileAvatar (props: ProfileAvatarProps) {
+export function ProfileAvatar(props: ProfileAvatarProps) {
   const [profile] = useRecoilState(profileAtom)
-  props = mergeDeep(stringAvatar(`${profile.firstName} ${profile.lastName}`), props)
+  props = mergeDeep(
+    stringAvatar(`${profile.firstName} ${profile.lastName}`),
+    props
+  )
   if (profile.photoURL) {
     return (
-    <Avatar
+      <Avatar
         {...props}
         alt={`${profile.firstName} ${profile.lastName}`}
         src={profile.photoURL}
-    />
+      />
     )
   }
-  return (
-    <Avatar {...props}/>
-  )
+  return <Avatar {...props} />
 }

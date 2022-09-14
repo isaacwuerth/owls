@@ -1,4 +1,4 @@
-interface FileManagerProps {
+export interface FileManagerProps {
   title: string
 }
 
@@ -9,10 +9,6 @@ interface FileManagerProps {
  *   - File 1
  *   - File 2
  */
-export function FileManager ({ title }: FileManagerProps) {
-  return (
-    <>
-
-    </>
-  )
+export function FileManager() {
+  return <></>
 }

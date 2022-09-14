@@ -1,6 +1,6 @@
 import { InputType } from './InputType'
 
-export function getDefaultValue (type: InputType): any {
+export function getDefaultValue(type: InputType): any {
   if (type === InputType.INTEGER) return 0
   if (type === InputType.DECIMAL) return 0
   if (type === InputType.UNSIGNEDINTEGER) return 0

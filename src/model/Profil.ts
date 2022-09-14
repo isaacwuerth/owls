@@ -12,13 +12,13 @@ export const ProfileCreateSchema = z.object({
   street: z.string().optional(),
   postcode: z.string().optional(),
   city: z.string().optional(),
-  country: z.string().optional()
+  country: z.string().optional(),
 })
 
 export type ProfileCreate = z.infer<typeof ProfileCreateSchema>
 
-export const ProfileSchema = ProfileCreateSchema
-  .merge(BasicEntitySchema)
-  .extend({ uid: z.string() })
+export const ProfileSchema = ProfileCreateSchema.merge(
+  BasicEntitySchema
+).extend({ uid: z.string() })
 
 export type Profile = z.infer<typeof ProfileSchema>

@@ -1,14 +1,14 @@
 import { useFirebase } from '../../Context/FirebaseContext'
 import { useEffect } from 'react'
 
-export function LogoutPage () {
+export function LogoutPage() {
   const firebase = useFirebase()
   useEffect(() => {
-    async function signOut () {
+    async function signOut() {
       await firebase.apps.auth.signOut()
     }
 
-    signOut().catch(reason => {
+    signOut().catch((reason) => {
       throw new Error(reason)
     })
   }, [])

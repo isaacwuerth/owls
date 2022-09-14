@@ -15,13 +15,19 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  useTheme
+  useTheme,
 } from '@mui/material'
 
 import IconButton from '@mui/material/IconButton'
 import { NavItems } from '../../Nav'
 import { Link, Outlet } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Logout, MenuRounded, Settings } from '@mui/icons-material'
+import {
+  ChevronLeft,
+  ChevronRight,
+  Logout,
+  MenuRounded,
+  Settings,
+} from '@mui/icons-material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { ProfileAvatar } from '../../components/Profile/ProfileAvatar'
 import { useRecoilValue } from 'recoil'
@@ -37,9 +43,17 @@ interface AppBarMenuItem {
 }
 
 const AppBarMenuItems: AppBarMenuItem[] = [
-  { name: 'Profil', uri: 'profile', icon: <AccountCircleIcon fontSize="small"/> },
-  { name: 'Einstellungen', uri: 'settings', icon: <Settings fontSize="small"/> },
-  { name: 'Logout', uri: 'logout', icon: <Logout fontSize="small"/> }
+  {
+    name: 'Profil',
+    uri: 'profile',
+    icon: <AccountCircleIcon fontSize="small" />,
+  },
+  {
+    name: 'Einstellungen',
+    uri: 'settings',
+    icon: <Settings fontSize="small" />,
+  },
+  { name: 'Logout', uri: 'logout', icon: <Logout fontSize="small" /> },
 ]
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -48,13 +62,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
-  ...theme.mixins.toolbar
+  ...theme.mixins.toolbar,
 }))
 
-function BasicLayout ({ children }: React.PropsWithChildren) {
+function BasicLayout() {
   const theme = useTheme()
   const [open, setOpen] = useState<boolean>(false)
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  )
   const siteConfig = useRecoilValue(siteConfigAtom)
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget)
@@ -64,7 +80,7 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
   }
 
   const SpacingBox = styled(Box)(({ theme }) => ({
-    ...theme.mixins.toolbar
+    ...theme.mixins.toolbar,
   }))
 
   const handleOpen = () => setOpen(!open)
@@ -75,9 +91,9 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
         <Box>
           <Toolbar style={{ paddingLeft: 15 }}>
             <IconButton onClick={handleOpen}>
-              {open ? <ChevronLeft/> : <MenuRounded/>}
+              {open ? <ChevronLeft /> : <MenuRounded />}
             </IconButton>
-            <Logo width='30px'/>
+            <Logo width="30px" />
             <Typography
               variant="h6"
               component="a"
@@ -89,16 +105,16 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
                 fontWeight: 700,
                 letterSpacing: '.3rem',
                 color: 'inherit',
-                textDecoration: 'none'
+                textDecoration: 'none',
               }}
             >
               {siteConfig.name}
             </Typography>
-            <Box sx={{ flex: 1 }}/>
+            <Box sx={{ flex: 1 }} />
             <Box>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <ProfileAvatar/>
+                  <ProfileAvatar />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -107,50 +123,60 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
                 anchorEl={anchorElUser}
                 anchorOrigin={{
                   vertical: 'top',
-                  horizontal: 'right'
+                  horizontal: 'right',
                 }}
                 keepMounted
                 transformOrigin={{
                   vertical: 'top',
-                  horizontal: 'right'
+                  horizontal: 'right',
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {
-                  AppBarMenuItems.map((value, index) => (
-                    <MenuItem key={`appbar-menu-item-${index}`} component={Link} to={value.uri}
-                              onClick={handleCloseUserMenu}>
-                      <ListItemIcon>{value.icon}</ListItemIcon>
-                      {value.name}
-                    </MenuItem>
-                  ))
-                }
-
+                {AppBarMenuItems.map((value, index) => (
+                  <MenuItem
+                    key={`appbar-menu-item-${index}`}
+                    component={Link}
+                    to={value.uri}
+                    onClick={handleCloseUserMenu}
+                  >
+                    <ListItemIcon>{value.icon}</ListItemIcon>
+                    {value.name}
+                  </MenuItem>
+                ))}
               </Menu>
             </Box>
           </Toolbar>
         </Box>
       </AppBar>
-      <Box component="nav" sx={{ width: { md: drawerWidth }, flexShrink: { sm: 0 } }}>
-        <Drawer open={open}
-                anchor='left'
-                sx={{ '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth } }}
-                onClose={() => setOpen(false)}
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { sm: 0 } }}
+      >
+        <Drawer
+          open={open}
+          anchor="left"
+          sx={{
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+            },
+          }}
+          onClose={() => setOpen(false)}
         >
-          <Toolbar/>
+          <Toolbar />
           <DrawerHeader>
             <IconButton onClick={handleOpen}>
-              {theme.direction === 'rtl' ? <ChevronRight/> : <ChevronLeft/>}
+              {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
             </IconButton>
           </DrawerHeader>
-          <Divider/>
+          <Divider />
           <List>
-            {NavItems.map((text, index) => (
+            {NavItems.map((text) => (
               <ListItem key={text.key} disablePadding>
                 <ListItemButton component={Link} to={text.uri}>
                   <ListItemIcon>{text.icon}</ListItemIcon>
-                  <ListItemText primary={text.name}/>
+                  <ListItemText primary={text.name} />
                 </ListItemButton>
               </ListItem>
             ))}
@@ -163,8 +189,8 @@ function BasicLayout ({ children }: React.PropsWithChildren) {
         sx={{ flexGrow: 1, p: 3, padding: 0 }}
         // sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
-        <SpacingBox/>
-        <Outlet/>
+        <SpacingBox />
+        <Outlet />
       </Box>
     </Box>
   )

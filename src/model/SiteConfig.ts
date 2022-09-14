@@ -6,7 +6,10 @@ export const SiteConfigSchema = z.object({
   maintenanceMode: z.enum(['permanent', 'off', 'scheduled']),
   maintenanceTitle: z.string(),
   maintenanceMessage: z.string(),
-  maintenanceEnd: z.preprocess((a) => new Date(a as string), z.date().optional())
+  maintenanceEnd: z.preprocess(
+    (a) => new Date(a as string),
+    z.date().optional()
+  ),
 })
 
 export type SiteConfig = z.infer<typeof SiteConfigSchema>

@@ -4,9 +4,24 @@ import { Icon, InputAdornment, TextField } from '@mui/material'
 import { AsYouType, parsePhoneNumber } from 'libphonenumber-js'
 import Countries from './countries.json'
 
-export function DynamicPhoneNumber (props: DynamicBaseInputProps): JSX.Element {
-  const { name, value, label, error, errorMessage, helperText, onChange, fullWidth, width100, placeholder, onBlur, disabled } = props
-  const [phoneNumber, setPhoneNumber] = React.useState<string>(value as string ?? '')
+export function DynamicPhoneNumber(props: DynamicBaseInputProps): JSX.Element {
+  const {
+    name,
+    value,
+    label,
+    error,
+    errorMessage,
+    helperText,
+    onChange,
+    fullWidth,
+    width100,
+    placeholder,
+    onBlur,
+    disabled,
+  } = props
+  const [phoneNumber, setPhoneNumber] = React.useState<string>(
+    (value as string) ?? ''
+  )
   const [flag, setFlag] = React.useState<string | null>(null)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,9 +57,15 @@ export function DynamicPhoneNumber (props: DynamicBaseInputProps): JSX.Element {
       InputProps={{
         endAdornment: (
           <>
-            {flag && <InputAdornment position="end"><Icon><img src={flag}/></Icon></InputAdornment>}
-      </>
-        )
+            {flag && (
+              <InputAdornment position="end">
+                <Icon>
+                  <img alt="Flags" src={flag} />
+                </Icon>
+              </InputAdornment>
+            )}
+          </>
+        ),
       }}
     />
   )

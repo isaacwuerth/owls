@@ -1,3 +1,1 @@
-export function Form () {
-
-}
+export function Form() {}

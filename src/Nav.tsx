@@ -10,6 +10,6 @@ export interface NavItem {
 }
 
 export const NavItems: NavItem[] = [
-  { key: 'dashboard', name: 'Übersicht', uri: '/', icon: <DashboardIcon/> },
-  { key: 'events', name: 'Events', uri: '/events', icon: <EventIcon/> }
+  { key: 'dashboard', name: 'Übersicht', uri: '/', icon: <DashboardIcon /> },
+  { key: 'events', name: 'Events', uri: '/events', icon: <EventIcon /> },
 ]

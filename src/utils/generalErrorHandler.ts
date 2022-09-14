@@ -1,3 +1,3 @@
-export function generalErrorHandler (reason: string) {
+export function generalErrorHandler(reason: string) {
   throw new Error(reason)
 }

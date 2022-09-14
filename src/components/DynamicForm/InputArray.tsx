@@ -5,7 +5,7 @@ import { Controller, useFieldArray } from 'react-hook-form'
 import { DynamicInput } from './DynamicInput'
 import { InputType } from './InputType'
 
-export function getDefaultValue (type: InputType): any {
+export function getDefaultValue(type: InputType): any {
   if (type === InputType.INTEGER) return 0
   if (type === InputType.DECIMAL) return 0
   if (type === InputType.UNSIGNEDINTEGER) return 0
@@ -32,60 +32,73 @@ export interface DynamicInputFieldProps {
   form: any
 }
 
-export function InputArray ({ field, form }: DynamicInputFieldProps): JSX.Element {
+export function InputArray({
+  field,
+  form,
+}: DynamicInputFieldProps): JSX.Element {
   const { name, defaultValue, type, placeholder } = field
 
   const { fields, append, remove, insert } = useFieldArray({
     control: form.control,
-    name
+    name,
   })
 
   return (
-        <Grid container direction={'column'} spacing={1}>
-            {
-                fields.map((field, index) => {
-                  return (
-                        <Grid item key={index}>
-                            <Box style={{ display: 'flex', alignItems: 'center' }}>
-                                <Controller
-                                    name={`${name}.${index}`}
-                                    control={form.control}
-                                    defaultValue={defaultValue}
-                                    render={({ field, fieldState }) => (
-                                        <DynamicInput name={field.name}
-                                                      label={field.name}
-                                                      value={field.value}
-                                                      error={Boolean(fieldState.error?.message)}
-                                                      placeholder={placeholder}
-                                                      helperText={fieldState.error?.message ?? ''}
-                                                      errorMessage={fieldState.error?.message ?? ''}
-                                                      onBlur={field.onBlur}
-                                                      onChange={field.onChange}
-                                                      type={type}
-                                                      fullWidth
-                                        />
-                                    )}
-                                />
-                                <IconButton onClick={() => {
-                                  insert(index, getDefaultValue(type))
-                                }}>
-                                    <AddIcon style={{ color: 'green' }}/>
-                                </IconButton>
-                                <IconButton onClick={() => {
-                                  remove(index)
-                                }}>
-                                    <RemoveIcon style={{ color: 'red' }}/>
-                                </IconButton>
-                            </Box>
-                        </Grid>
-                  )
-                })}
-            <Grid item>
-                <Button fullWidth variant="contained" color="primary"
-                        onClick={() => {
-                          append(getDefaultValue(type))
-                        }}>Add</Button>
-            </Grid>
-        </Grid>
+    <Grid container direction={'column'} spacing={1}>
+      {fields.map((field, index) => {
+        return (
+          <Grid item key={index}>
+            <Box style={{ display: 'flex', alignItems: 'center' }}>
+              <Controller
+                name={`${name}.${index}`}
+                control={form.control}
+                defaultValue={defaultValue}
+                render={({ field, fieldState }) => (
+                  <DynamicInput
+                    name={field.name}
+                    label={field.name}
+                    value={field.value}
+                    error={Boolean(fieldState.error?.message)}
+                    placeholder={placeholder}
+                    helperText={fieldState.error?.message ?? ''}
+                    errorMessage={fieldState.error?.message ?? ''}
+                    onBlur={field.onBlur}
+                    onChange={field.onChange}
+                    type={type}
+                    fullWidth
+                  />
+                )}
+              />
+              <IconButton
+                onClick={() => {
+                  insert(index, getDefaultValue(type))
+                }}
+              >
+                <AddIcon style={{ color: 'green' }} />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  remove(index)
+                }}
+              >
+                <RemoveIcon style={{ color: 'red' }} />
+              </IconButton>
+            </Box>
+          </Grid>
+        )
+      })}
+      <Grid item>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            append(getDefaultValue(type))
+          }}
+        >
+          Add
+        </Button>
+      </Grid>
+    </Grid>
   )
 }

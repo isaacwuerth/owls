@@ -21,7 +21,7 @@ interface TabPanelProps {
   value: number
 }
 
-function TabPanel (props: PropsWithChildren<TabPanelProps>) {
+function TabPanel(props: PropsWithChildren<TabPanelProps>) {
   const { children, value, index, ...other } = props
 
   return (
@@ -32,23 +32,19 @@ function TabPanel (props: PropsWithChildren<TabPanelProps>) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   )
 }
 
-function a11yProps (index: number) {
+function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`
+    'aria-controls': `simple-tabpanel-${index}`,
   }
 }
 
-export function EventPage () {
+export function EventPage() {
   const { eid } = useParams<{ eid: string }>()
   const profile = useRecoilValue(profileAtom)
   const [event, setEvent] = useState<GeneralEvent | null>(null)
@@ -56,26 +52,36 @@ export function EventPage () {
   const [value, setValue] = useState(0)
   const [ownState, setOwnState] = useState<ParticipantState | null>(null)
 
-  const { apps: { firestore }, eventRepository, participantRepository } = useFirebase()
+  const {
+    apps: { firestore },
+    eventRepository,
+    participantRepository,
+  } = useFirebase()
 
-  if (!eid) return (<Loading/>)
+  if (!eid) return <Loading />
 
   useEffect(() => {
     const eventUbsub = onSnapshot(doc(firestore, `events/${eid}`), (doc) => {
       setEvent(doc.data() as GeneralEvent)
     })
 
-    const participantsUnsub = participantRepository.onEventParticipantsChange(eid, (participants) => {
-      setParticipants(participants)
-      setOwnState(participants.find(p => p.uid === profile.id)?.state ?? ParticipantState.OUTSTANDING)
-    })
+    const participantsUnsub = participantRepository.onEventParticipantsChange(
+      eid,
+      (participants) => {
+        setParticipants(participants)
+        setOwnState(
+          participants.find((p) => p.uid === profile.id)?.state ??
+            ParticipantState.OUTSTANDING
+        )
+      }
+    )
 
-    async function loadEvent () {
+    async function loadEvent() {
       if (!eid) return
       setEvent(await eventRepository.findOne(eid))
     }
 
-    async function loadParticipants () {
+    async function loadParticipants() {
       if (!eid) return
       setParticipants(await participantRepository.findByEvent(eid))
     }
@@ -83,7 +89,7 @@ export function EventPage () {
     loadEvent().catch(generalErrorHandler)
     loadParticipants().catch(generalErrorHandler)
 
-    return function CleanUp () {
+    return function CleanUp() {
       eventUbsub()
       participantsUnsub()
     }
@@ -93,29 +99,57 @@ export function EventPage () {
     setValue(newValue)
   }
 
-  if (!event) return (<Loading/>)
+  if (!event) return <Loading />
   const table: InfoTableRow[] = [
     { label: 'Name', value: event.title },
     { label: 'Start', value: String(event.start.toLocaleString()) },
     { label: 'Ende', value: String(event.end.toLocaleString()) },
-    { label: 'Meine Teilnahme', value: <EventSelectState eid={eid} uid={profile.id ?? ''} value={ownState ?? ParticipantState.OUTSTANDING} /> }
+    {
+      label: 'Meine Teilnahme',
+      value: (
+        <EventSelectState
+          eid={eid}
+          uid={profile.id ?? ''}
+          value={ownState ?? ParticipantState.OUTSTANDING}
+        />
+      ),
+    },
   ]
   return (
     <>
-      <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Grid2 container style={{ width: '100%' }}>
-          <Grid2 xs={12} alignItems='end' md={8}>
-            <Typography variant='h2' component={'span'}>{event.title}</Typography>
+          <Grid2 xs={12} alignItems="end" md={8}>
+            <Typography variant="h2" component={'span'}>
+              {event.title}
+            </Typography>
           </Grid2>
-          <Grid2 xs={12} alignItems='end' md={4}>
-            <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center' }}>
-              <Button variant='contained'>Bearbeiten</Button>
+          <Grid2 xs={12} alignItems="end" md={4}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                height: '100%',
+                justifyContent: 'center',
+              }}
+            >
+              <Button variant="contained">Bearbeiten</Button>
             </Box>
           </Grid2>
         </Grid2>
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
           <Tab label="Details" {...a11yProps(0)} />
           <Tab label="Teilnehmer" {...a11yProps(1)} />
         </Tabs>
@@ -124,18 +158,18 @@ export function EventPage () {
         <Grid2 container spacing={2}>
           <Grid2 xs={12} md={6}>
             <Card>
-              <InfoTable table={table}/>
+              <InfoTable table={table} />
             </Card>
           </Grid2>
           <Grid2 xs={12} md={6}>
-            <ChartParticipantState participants={participants}/>
+            <ChartParticipantState participants={participants} />
           </Grid2>
         </Grid2>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Card>
           <Box sx={{ height: 400, width: '100%' }}>
-            <EventParticipantTable participants={participants}/>
+            <EventParticipantTable participants={participants} />
           </Box>
         </Card>
       </TabPanel>
