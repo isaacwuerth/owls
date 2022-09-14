@@ -1,5 +1,8 @@
 import { InfoTable, InfoTableRow } from '../../common/InfoTable'
 import { Card, Typography } from '@mui/material'
+import { useRecoilValue } from 'recoil'
+import { siteConfigAtom } from '../../atoms/SiteConfigAtom'
+import { profileAtom } from '../../atoms/ProfileAtom'
 
 const table: InfoTableRow[] = [
   { label: 'NODE_ENV', value: process.env.NODE_ENV },
@@ -18,11 +21,25 @@ const table: InfoTableRow[] = [
   { label: 'REACT_APP_OPENREPLAY_PROJECTKEY', value: process.env.REACT_APP_OPENREPLAY_PROJECTKEY }
 ]
 
+function objectToInfoTableRow (obj: object): InfoTableRow[] {
+  const entries = Object.entries(obj)
+  const rows: InfoTableRow[] = entries.map(value => {
+    return { label: value[0], value: String(value[1]) }
+  })
+  return rows
+}
+
 export function AppInfoPage () {
+  const siteConfig = useRecoilValue(siteConfigAtom)
+  const profile = useRecoilValue(profileAtom)
   return (
         <Card>
             <Typography variant='h2'>Environment Variables</Typography>
             <InfoTable table={table}/>
+            <Typography variant='h2'>Environment Variables</Typography>
+            <InfoTable table={objectToInfoTableRow(siteConfig)}/>
+            <Typography variant='h2'>Current User</Typography>
+            <InfoTable table={objectToInfoTableRow(profile)}/>
         </Card>
   )
 }

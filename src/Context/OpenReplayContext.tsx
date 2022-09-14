@@ -12,7 +12,7 @@ let tracker: Tracker
 let profiler: Profiler
 
 export default function OpenReplayProvider (props: PropsWithChildren<Options>) {
-  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') { return (<>{props.children}</>) }
+  if (process.env.NODE_ENV !== 'production') { return (<>{props.children}</>) }
   if (!tracker) {
     tracker = new Tracker(props)
     tracker.use(trackerAxios())
