@@ -64,7 +64,9 @@ export function EventsPage() {
     await eventRepository.delete(id)
     const participants = await participantRepository.findByEvent(id)
     for (const participant of participants) {
-      await participantRepository.delete(participant.id as string)
+      if (participant?.id) {
+        await participantRepository.delete(participant.id)
+      }
     }
   }
 
