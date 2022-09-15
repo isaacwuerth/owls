@@ -15,11 +15,7 @@ export function NotFound() {
     >
       <Box>
         <Typography variant="h1">404</Typography>
-        <img
-          src={NotFoundImage}
-          alt="Not found image"
-          style={{ width: '100%' }}
-        />
+        <img src={NotFoundImage} alt="Not found image" style={{ width: 300 }} />
 
         <Typography variant="h2">Looks like you are lost</Typography>
         <Typography variant="body1">
