@@ -17,7 +17,7 @@ env:
   REACT_APP_SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
   REACT_APP_OPENREPLAY_PROJECTKEY: ${{ secrets.OPENREPLAY_PROJECTKEY }}
 
-name: Deploy to Context Hosting on merge
+name: Release
 on:
   push:
     branches:
