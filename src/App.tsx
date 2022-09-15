@@ -1,6 +1,14 @@
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import {
+  CaptureConsole as CaptureConsoleIntegration,
+  Offline as OfflineIntegration,
+  ReportingObserver as ReportingObserverIntegration,
+} from '@sentry/integrations'
+import * as Sentry from '@sentry/react'
+import SentryRRWeb from '@sentry/rrweb'
+import { BrowserTracing } from '@sentry/tracing'
 import React from 'react'
-import { RecoilRoot } from 'recoil'
-import BasicLayout from './common/layouts/BasicLayout'
 import {
   BrowserRouter,
   createRoutesFromChildren,
@@ -10,21 +18,24 @@ import {
   useLocation,
   useNavigationType,
 } from 'react-router-dom'
-import { DashboardPage } from './pages/DashboardPage'
-import { EventsPage } from './pages/events/EventsPage'
-import { ProfilPage } from './pages/ProfilPage'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { EventPage } from './pages/events/EventPage'
-import { EventEditPage } from './pages/events/EventEditPage'
-import RecoilNexus from 'recoil-nexus'
-import FirebaseProvider from './Context/FirebaseContext'
-import { LoginPage } from './pages/login/LoginPage'
-import { UserSetupPage } from './pages/UserSetupPage'
-import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { RecoilRoot } from 'recoil'
+import RecoilNexus from 'recoil-nexus'
+import BasicLayout from './common/layouts/BasicLayout'
+import FirebaseProvider from './Context/FirebaseContext'
+import OpenReplayProvider from './Context/OpenReplayContext'
+import { AppInfoPage } from './pages/app/AppInfoPage'
+import { ErrorBoundary } from './pages/app/ErrorBoundary'
 import { MaintenancePage } from './pages/app/MaintenancePage'
+import { Splashscreen } from './pages/app/Splashscreen'
+import { DashboardPage } from './pages/DashboardPage'
+import { EventEditPage } from './pages/events/EventEditPage'
+import { EventPage } from './pages/events/EventPage'
+import { EventsPage } from './pages/events/EventsPage'
+import { LoginPage } from './pages/login/LoginPage'
 import { LogoutPage } from './pages/login/LogoutPage'
+import { NotFound } from './pages/NotFound'
 import { ProfileOwnPage } from './pages/ProfileOwnPage'
 import UserPage from './pages/users/UserPage'
 import { UsersPage } from './pages/users/UsersPage'
@@ -76,6 +87,7 @@ function App() {
                 <Splashscreen>
                   <MaintenancePage>
                     <SentryRoutes>
+                      <Route path="*" element={<NotFound />} />
                       <Route path="/login" element={<LoginPage />} />
                       <Route path="/user-setup" element={<UserSetupPage />} />
                       <Route path="/appinfo" element={<AppInfoPage />} />
