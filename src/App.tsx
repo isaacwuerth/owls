@@ -25,19 +25,10 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { MaintenancePage } from './pages/app/MaintenancePage'
 import { LogoutPage } from './pages/login/LogoutPage'
-import { Splashscreen } from './pages/app/Splashscreen'
-import * as Sentry from '@sentry/react'
-import { BrowserTracing } from '@sentry/tracing'
-import { ErrorBoundary } from './pages/app/ErrorBoundary'
-import SentryRRWeb from '@sentry/rrweb'
-import {
-  CaptureConsole as CaptureConsoleIntegration,
-  Offline as OfflineIntegration,
-  ReportingObserver as ReportingObserverIntegration,
-} from '@sentry/integrations'
-import OpenReplayProvider from './Context/OpenReplayContext'
-import { AppInfoPage } from './pages/app/AppInfoPage'
+import { ProfileOwnPage } from './pages/ProfileOwnPage'
+import UserPage from './pages/users/UserPage'
 import { UsersPage } from './pages/users/UsersPage'
+import { UserSetupPage } from './pages/UserSetupPage'
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -97,8 +88,9 @@ function App() {
                           element={<EventEditPage />}
                         />
                         <Route path="events" element={<EventsPage />} />
-                        <Route path="profile" element={<ProfilPage />} />
+                        <Route path="profile" element={<ProfileOwnPage />} />
                         <Route path="users" element={<UsersPage />} />
+                        <Route path="users/:id" element={<UserPage />} />
                       </Route>
                     </SentryRoutes>
                     <ToastContainer position="top-center" />

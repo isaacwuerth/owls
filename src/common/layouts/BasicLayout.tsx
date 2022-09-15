@@ -29,7 +29,7 @@ import {
   Settings,
 } from '@mui/icons-material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { ProfileAvatar } from '../../components/Profile/ProfileAvatar'
+import { AvatarCurrentUser } from '../../components/Profile/AvatarCurrentUser'
 import { useRecoilValue } from 'recoil'
 import { siteConfigAtom } from '../../atoms/SiteConfigAtom'
 import { Logo } from '../Logo'
@@ -114,7 +114,7 @@ function BasicLayout() {
             <Box>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <ProfileAvatar />
+                  <AvatarCurrentUser />
                 </IconButton>
               </Tooltip>
               <Menu
