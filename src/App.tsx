@@ -37,6 +37,7 @@ import {
 } from '@sentry/integrations'
 import OpenReplayProvider from './Context/OpenReplayContext'
 import { AppInfoPage } from './pages/app/AppInfoPage'
+import { UsersPage } from './pages/users/UsersPage'
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -97,6 +98,7 @@ function App() {
                         />
                         <Route path="events" element={<EventsPage />} />
                         <Route path="profile" element={<ProfilPage />} />
+                        <Route path="users" element={<UsersPage />} />
                       </Route>
                     </SentryRoutes>
                     <ToastContainer position="top-center" />
