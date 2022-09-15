@@ -18,7 +18,7 @@ env:
   REACT_APP_OPENREPLAY_PROJECTKEY: ${{ secrets.OPENREPLAY_PROJECTKEY }}
 
 name: Deploy to Context Hosting on merge
-"on":
+on:
   push:
     branches:
       - main
@@ -30,8 +30,19 @@ concurrency:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
       - name: Get package info
         id: package
         uses: codex-team/action-nodejs-package-info@v1
@@ -47,14 +58,28 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+
       - name: Set REACT_APP_NAME
         run: echo REACT_APP_NAME=${{ steps.package.outputs.name }} >> $GITHUB_ENV
+
       - name: Set REACT_APP_VERSION
         run: echo REACT_APP_VERSION=${{ steps.package.outputs.version }} >> $GITHUB_ENV
+
       - run: npm ci && npm run build
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_OWLSINTERNAL }}
           channelId: live
           projectId: owlsinternal
+
+      - name: Create a Sentry.io release
+        uses: tclindner/sentry-releases-action@v1.2.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          tagName: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
+          environment: ${{ secrets.SENTRY_ENVIRONMENT }}
