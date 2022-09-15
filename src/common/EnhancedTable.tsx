@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
@@ -20,6 +19,7 @@ import Switch from '@mui/material/Switch'
 import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
+import { ChangeEvent, useState, MouseEvent } from 'react'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -51,8 +51,8 @@ interface HeadCell<T> {
 
 interface EnhancedTableHeadProps<T> {
   numSelected: number
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof T) => void
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onRequestSort: (event: MouseEvent<unknown>, property: keyof T) => void
+  onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
   order: Order
   orderBy: string
   rowCount: number
@@ -70,7 +70,7 @@ function EnhancedTableHead<T>(props: EnhancedTableHeadProps<T>) {
     headCells,
   } = props
   const createSortHandler =
-    (property: keyof T) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof T) => (event: MouseEvent<unknown>) => {
       onRequestSort(event, property)
     }
 
@@ -192,22 +192,19 @@ export default function EnhancedTable<T extends BasicRow>({
   setSelected,
   selected,
 }: EnhancedTableProps<T>) {
-  const [order, setOrder] = React.useState<Order>('asc')
-  const [orderBy, setOrderBy] = React.useState<string>(String(defaultOrderBy))
-  const [page, setPage] = React.useState<number>(0)
-  const [dense, setDense] = React.useState<boolean>(false)
-  const [acuelRowsPerPage, setAcuelRowsPerPage] = React.useState(rowsPerPage)
+  const [order, setOrder] = useState<Order>('asc')
+  const [orderBy, setOrderBy] = useState<string>(String(defaultOrderBy))
+  const [page, setPage] = useState<number>(0)
+  const [dense, setDense] = useState<boolean>(false)
+  const [acuelRowsPerPage, setAcuelRowsPerPage] = useState(rowsPerPage)
 
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: keyof T
-  ) => {
+  const handleRequestSort = (event: MouseEvent<unknown>, property: keyof T) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(String(property))
   }
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.id)
       setSelected(newSelected)
@@ -216,7 +213,7 @@ export default function EnhancedTable<T extends BasicRow>({
     setSelected([])
   }
 
-  function handleRowClick(event: React.MouseEvent<unknown>, id: string) {
+  function handleRowClick(event: MouseEvent<unknown>, id: string) {
     const selectedIndex = selected.indexOf(id)
     let newSelected: string[] = []
 
@@ -239,14 +236,12 @@ export default function EnhancedTable<T extends BasicRow>({
     setPage(newPage)
   }
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setAcuelRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked)
   }
 
@@ -300,10 +295,7 @@ export default function EnhancedTable<T extends BasicRow>({
 
                       {columns.map((column) => (
                         <TableCell key={`${String(column.name)}-${index}`}>
-                          {
-                            // @ts-expect-error
-                            row[column.name]
-                          }
+                          {String(row[column.name])}
                         </TableCell>
                       ))}
                     </TableRow>
