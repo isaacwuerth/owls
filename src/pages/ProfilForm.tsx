@@ -1,39 +1,44 @@
-import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material'
-import { useForm } from 'react-hook-form'
-import { useRecoilState } from 'recoil'
-import { profileAtom } from '../atoms/ProfileAtom'
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
 import DeleteIcon from '@mui/icons-material/Delete'
 import SendIcon from '@mui/icons-material/Send'
-import { useState } from 'react'
+import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material'
+import { updateProfile } from 'firebase/auth'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { editUserAtom } from '../atoms/EditUser'
+import { profileAtom } from '../atoms/ProfileAtom'
+import { Input } from '../components/DynamicForm/Input'
+import { InputType } from '../components/DynamicForm/InputType'
 import { AvatarUpload } from '../components/Profile/AvatarUpload'
 import { useFirebase } from '../Context/FirebaseContext'
-import { updateProfile } from 'firebase/auth'
 import { Profile, ProfileSchema } from '../model/Profil'
-import { Input } from '../components/DynamicForm/Input'
-import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
-import { toast } from 'react-toastify'
-import { InputType } from '../components/DynamicForm/InputType'
 
-export function ProfilPage() {
-  const [profile, setProfileState] = useRecoilState(profileAtom)
-  const {
-    usersRepository,
-    apps: { auth },
-  } = useFirebase()
+export function ProfileForm() {
+  const [user, setUser] = useRecoilState(editUserAtom)
+  const setCurrentUser = useSetRecoilState(profileAtom)
+  const { usersRepository } = useFirebase()
   const [disableForm, setDisableForm] = useState<boolean>(false)
   const form = useForm<Profile>({
     resolver: zodResolver(ProfileSchema),
-    defaultValues: profile,
+    defaultValues: user,
   })
+
   const { handleSubmit, reset } = form
+  const {
+    apps: { auth },
+  } = useFirebase()
 
   const onSubmit = async (newProfile: Profile) => {
-    if (!profile?.id) return
+    if (!user?.id) return
     setDisableForm(true)
     newProfile = ProfileSchema.parse(newProfile)
-    await usersRepository.update(profile.id, newProfile)
-    setProfileState(profile)
-    if (auth.currentUser) {
+    await usersRepository.update(user.id, newProfile)
+    setUser(newProfile)
+
+    if (auth.currentUser?.uid === newProfile.uid) {
+      setCurrentUser(newProfile)
       await updateProfile(auth.currentUser, {
         displayName: `${newProfile.firstName} ${newProfile.lastName}`,
       })
@@ -43,8 +48,12 @@ export function ProfilPage() {
   }
 
   const handleAbort = () => {
-    reset(profile)
+    reset(user)
   }
+
+  useEffect(() => {
+    reset(user)
+  }, [user])
 
   return (
     <Card>
@@ -121,7 +130,7 @@ export function ProfilPage() {
                   isArray: false,
                   name: 'birthday',
                   placeholder: '',
-                  defaultValue: profile.birthday ?? undefined,
+                  defaultValue: user?.birthday ?? undefined,
                   disabled: disableForm,
                 }}
               />

@@ -13,7 +13,10 @@ let profiler: Profiler
 
 export default function OpenReplayProvider(props: PropsWithChildren<Options>) {
   if (!tracker) {
-    tracker = new Tracker(props)
+    const config = { ...props }
+    if (process.env.NODE_ENV !== 'production')
+      config.__DISABLE_SECURE_MODE = true
+    tracker = new Tracker(config)
     tracker.use(trackerAxios())
     tracker.use(trackerAssist())
     profiler = tracker.use(trackerProfiler())
