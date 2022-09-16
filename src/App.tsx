@@ -33,6 +33,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { EventEditPage } from './pages/events/EventEditPage'
 import { EventPage } from './pages/events/EventPage'
 import { EventsPage } from './pages/events/EventsPage'
+import { FileManagerPage } from './pages/FileManagerPage'
 import { LoginPage } from './pages/login/LoginPage'
 import { LogoutPage } from './pages/login/LogoutPage'
 import { NotFound } from './pages/NotFound'
@@ -103,6 +104,7 @@ function App() {
                         <Route path="profile" element={<ProfileOwnPage />} />
                         <Route path="users" element={<UsersPage />} />
                         <Route path="users/:id" element={<UserPage />} />
+                        <Route path="files" element={<FileManagerPage />} />
                       </Route>
                     </SentryRoutes>
                     <ToastContainer position="top-center" />
