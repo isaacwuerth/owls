@@ -414,12 +414,10 @@ export function FileManagerPage() {
   const [expanded, setExpanded] = useState<string[]>(['3'])
   const [selected, setSelected] = useState<string[]>([])
   const [currentPath, setCurrentPath] = useState<string>('/')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentFolderView, setCurrentFolderView] = useState<FileFolder[]>(
     buildFolderFileList(getFolderFromPath(folder, currentPath))
   )
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [searchIndex, setSearchIndex] = useState<Map<number, Folder>>(
+  const [searchIndex] = useState<Map<number, Folder>>(
     getMapFromFolder(getFolderFromPath(folder, currentPath))
   )
 
