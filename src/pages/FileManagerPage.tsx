@@ -17,6 +17,7 @@ import { SvgIconProps } from '@mui/material/SvgIcon'
 import { styled } from '@mui/material/styles'
 import { DataGrid, GridCellParams } from '@mui/x-data-grid'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
+import { useSearchParams } from 'react-router-dom'
 
 declare module 'react' {
   interface CSSProperties {
@@ -411,6 +412,7 @@ function getMapFromFolder(rootFolder: Folder): Map<number, Folder> {
 }
 
 export function FileManagerPage() {
+  const [search, setSearch] = useSearchParams()
   const [expanded, setExpanded] = useState<string[]>(['3'])
   const [selected, setSelected] = useState<string[]>([])
   const [currentPath, setCurrentPath] = useState<string>('/')
@@ -440,9 +442,9 @@ export function FileManagerPage() {
       const selectedFolder = getFolderFromPath(folder, item.fullPath)
       setCurrentPath(selectedFolder.fullPath)
       setSelected([String(selectedFolder.id)])
-
       setExpanendFromPath(selectedFolder)
       setCurrentFolderView(buildFolderFileList(selectedFolder))
+      setSearch({ path: selectedFolder.fullPath })
     }
   }
 
@@ -451,10 +453,22 @@ export function FileManagerPage() {
     if (!folder) return
     setCurrentPath(folder.fullPath)
     setCurrentFolderView(buildFolderFileList(folder))
+    setSearch({ path: folder.fullPath })
   }, [selected])
 
   useEffect(() => {
+    const folderFound = getFolderFromPath(folder, currentPath)
+    if (!folderFound) return
+    setCurrentPath(folderFound.fullPath)
+    setCurrentFolderView(buildFolderFileList(folderFound))
+    setExpanendFromPath(folderFound)
+    setSelected([String(folderFound.id)])
+    setSearch({ path: folderFound.fullPath })
+  }, [currentPath])
+
+  useEffect(() => {
     setAllParents(folder)
+    setCurrentPath(search.get('path') ?? '/')
   }, [])
 
   return (
@@ -464,7 +478,7 @@ export function FileManagerPage() {
         <Grid xs={12} md={4}>
           <Card>
             <CardHeader title={'Hierarchie'} />
-            <CardContent>
+            <CardContent style={{ height: 600 }}>
               <Box sx={{ mb: 1 }}>
                 <Button onClick={handleExpandClick}>
                   {expanded.length === 0 ? 'Expand all' : 'Collapse all'}
@@ -488,6 +502,7 @@ export function FileManagerPage() {
         </Grid>
         <Grid xs={12} md={8}>
           <Card>
+            <CardHeader title={'Dateien'} />
             <CardContent style={{ height: 600 }}>
               <DataGrid
                 rows={currentFolderView}
