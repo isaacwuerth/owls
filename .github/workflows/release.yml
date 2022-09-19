@@ -43,9 +43,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Get package info
-        id: package
-        uses: codex-team/action-nodejs-package-info@v1
       - name: Cache node modules
         id: cache-nodemodules
         uses: actions/cache@v2
@@ -58,6 +55,10 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+
+      - name: Get package info
+        id: package
+        uses: codex-team/action-nodejs-package-info@v1
 
       - name: Set REACT_APP_NAME
         run: echo REACT_APP_NAME=${{ steps.package.outputs.name }} >> $GITHUB_ENV
