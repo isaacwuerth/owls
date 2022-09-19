@@ -22,6 +22,7 @@ import { FolderView } from '../components/FolderView/FolderView'
 import { useFirebase } from '../Context/FirebaseContext'
 import { Loading } from '../common/Loading'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 function helperGetFolderFromPath(folder: Folder, path: string[]): Folder {
   if (path.length === 0) {
@@ -127,6 +128,28 @@ export function FileManagerPage() {
       })
   }
 
+  const handleFolderDelete = async (folder: Folder) => {
+    try {
+      await filesRepository.delete(
+        filesRepository.createRelativePath(folder.fullPath + '/')
+      )
+      toast(`Deleted Folder ${folder.name}`, { type: 'success' })
+    } catch {
+      toast(`Failed to delete folder ${folder.name}`, { type: 'error' })
+    }
+  }
+
+  const handleFileDelete = async (file: File) => {
+    try {
+      await filesRepository.delete(
+        filesRepository.createRelativePath(file.fullPath)
+      )
+      toast(`Deleted File ${file.name}`, { type: 'success' })
+    } catch {
+      toast(`Failed to delete file ${file.name}`, { type: 'error' })
+    }
+  }
+
   useEffect(() => {
     const path = search.get('path')
     if (!path || !rootFolder) return
@@ -168,6 +191,8 @@ export function FileManagerPage() {
                 currentFolder={currentFolder}
                 onFolderClick={handleFolderClick}
                 onFileClick={handleFileClick}
+                onFolderDelete={handleFolderDelete}
+                onFileDelete={handleFileDelete}
               />
             </CardContent>
           </Card>

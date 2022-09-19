@@ -2,19 +2,27 @@ import { File, Folder } from '../../model/FileFolder'
 import { DataGrid, GridCellParams } from '@mui/x-data-grid'
 import { FolderViewFileRow } from './FolderViewFileRow'
 import { FolderViewFolderRow } from './FolderViewFolderRow'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FolderViewRow } from './FolderViewRow'
+import IconButton from '@mui/material/IconButton'
+import MoreIcon from '@mui/icons-material/MoreVert'
+import { ListItemIcon, Menu, MenuItem } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 export interface FolderViewProps {
   currentFolder: Folder
   onFolderClick: (folder: Folder) => void
   onFileClick: (file: File) => void
+  onFolderDelete: (folder: Folder) => void
+  onFileDelete: (file: File) => void
 }
 
 export function FolderView({
   currentFolder,
   onFolderClick,
   onFileClick,
+  onFileDelete,
+  onFolderDelete,
 }: FolderViewProps) {
   const [currentViewItem, setCurrentViewItem] = useState<FolderViewRow[]>([])
 
@@ -43,7 +51,8 @@ export function FolderView({
   return (
     <DataGrid
       rows={currentViewItem}
-      onRowClick={(params) => {
+      onCellClick={(params) => {
+        if (params.field !== 'name') return
         handleFolderClick(params.row)
       }}
       columns={[
@@ -58,7 +67,78 @@ export function FolderView({
               <FolderViewFileRow file={params.row.file} />
             ),
         },
+        {
+          field: 'actions',
+          headerName: '',
+          width: 60,
+          sortable: false,
+          renderCell: (params: GridCellParams) => (
+            <Action
+              row={params.row}
+              onFileDelete={onFileDelete}
+              onFolderDelete={onFolderDelete}
+            />
+          ),
+        },
       ]}
     />
+  )
+}
+
+interface ActionProp {
+  row: FolderViewRow
+  onFileDelete: (file: File) => void
+  onFolderDelete: (folder: Folder) => void
+}
+
+function Action({ row, onFileDelete, onFolderDelete }: ActionProp) {
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  )
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget)
+  }
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null)
+  }
+
+  const handleDelete = () => {
+    if (row.folder) onFolderDelete(row.folder)
+    if (row.file) onFileDelete(row.file)
+    handleCloseUserMenu()
+  }
+  return (
+    <>
+      <IconButton color="inherit" onClick={handleOpenUserMenu}>
+        <MoreIcon />
+      </IconButton>
+      <Menu
+        sx={{ mt: '45px' }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        <MenuItem
+          key={`folderview-item-${row.id}-delete`}
+          onClick={handleDelete}
+          disabled={Boolean(row.folder)}
+        >
+          <ListItemIcon>
+            <DeleteIcon />
+          </ListItemIcon>
+          Löschen
+        </MenuItem>
+      </Menu>
+    </>
   )
 }
