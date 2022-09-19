@@ -68,6 +68,7 @@ const firebaseContextConfig = {
   participantRepository: new ParticipantRepository(firestore),
   usersRepository: new UsersRepository(firestore),
   avatarFiles: new FileRepository(storage, 'avatar'),
+  filesRepository: new FileRepository(storage, 'exchange'),
 }
 
 const defaultConfig = {
