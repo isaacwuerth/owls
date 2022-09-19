@@ -2,9 +2,15 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   LinearProgress,
   LinearProgressProps,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
 import { Box } from '@mui/system'
 import { useEffect, useState } from 'react'
@@ -53,13 +59,37 @@ function LinearProgressWithLabel(
   )
 }
 
+interface DownloadDialogProps {
+  fileName: string
+  procentage: number
+  open: boolean
+}
+
+function DownloadDialog({ fileName, procentage, open }: DownloadDialogProps) {
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
+
+  return (
+    <Dialog fullScreen={fullScreen} open={open}>
+      <DialogTitle>Download {fileName}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          <Box sx={{ width: '100%' }}>
+            <LinearProgressWithLabel value={procentage} />
+          </Box>
+        </DialogContentText>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 export function FileManagerPage() {
   const [search, setSearch] = useSearchParams()
-  const [currentFolder, setCurrentFolder] = useState<Folder | undefined>(
-    undefined
-  )
+  const [currentFolder, setCurrentFolder] = useState<Folder | undefined>()
   const [rootFolder, setRootFolder] = useState<Folder | undefined>(undefined)
   const [presentageCompleted, setPrecentCompleted] = useState<number>(0)
+  const [downloadName, setDownloadName] = useState<string>('')
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
   const { filesRepository } = useFirebase()
 
   const handleFolderClick = (folder: Folder) => {
@@ -70,6 +100,9 @@ export function FileManagerPage() {
   const handleFileClick = async (file: File) => {
     const relativePath = filesRepository.createRelativePath(file.fullPath)
     const downloadUrl = await filesRepository.getDownloadUrl(relativePath)
+    setDownloadName(file.name)
+    setPrecentCompleted(0)
+    setDownloadDialogOpen(true)
     await axios({
       url: downloadUrl,
       method: 'GET',
@@ -87,6 +120,7 @@ export function FileManagerPage() {
         link.setAttribute('download', file.name) // or any other extension
         document.body.appendChild(link)
         link.click()
+        setDownloadDialogOpen(false)
       })
       .catch(() => {
         return []
@@ -114,11 +148,6 @@ export function FileManagerPage() {
     <Box style={{ marginTop: 20, marginRight: 20 }}>
       <Typography>{currentFolder.fullPath}</Typography>
       <Grid container spacing={2}>
-        <Grid xs={12} md={12}>
-          <Box sx={{ width: '100%' }}>
-            <LinearProgressWithLabel value={presentageCompleted} />
-          </Box>
-        </Grid>
         <Grid xs={12} md={4}>
           <Card>
             <CardHeader title={'Hierarchie'} />
@@ -144,6 +173,11 @@ export function FileManagerPage() {
           </Card>
         </Grid>
       </Grid>
+      <DownloadDialog
+        fileName={downloadName}
+        procentage={presentageCompleted}
+        open={downloadDialogOpen}
+      />
     </Box>
   )
 }
