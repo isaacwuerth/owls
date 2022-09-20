@@ -1,4 +1,4 @@
-import { File, Folder } from '../../model/FileFolder'
+import { FileOwls, FolderOwls } from '../../model/FileFolder'
 import { DataGrid, GridCellParams } from '@mui/x-data-grid'
 import { FolderViewFileRow } from './FolderViewFileRow'
 import { FolderViewFolderRow } from './FolderViewFolderRow'
@@ -10,11 +10,11 @@ import { ListItemIcon, Menu, MenuItem } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 
 export interface FolderViewProps {
-  currentFolder: Folder
-  onFolderClick: (folder: Folder) => void
-  onFileClick: (file: File) => void
-  onFolderDelete: (folder: Folder) => void
-  onFileDelete: (file: File) => void
+  currentFolder: FolderOwls
+  onFolderClick: (folder: FolderOwls) => void
+  onFileClick: (file: FileOwls) => void
+  onFolderDelete: (folder: FolderOwls) => void
+  onFileDelete: (file: FileOwls) => void
 }
 
 export function FolderView({
@@ -35,7 +35,7 @@ export function FolderView({
     setCurrentViewItem(buildFolderFileList(currentFolder))
   }, [currentFolder])
 
-  function buildFolderFileList(folder: Folder): FolderViewRow[] {
+  function buildFolderFileList(folder: FolderOwls): FolderViewRow[] {
     let counter = 0
     const files: FolderViewRow[] = folder.files.map((f) => ({
       id: counter++,
@@ -87,8 +87,8 @@ export function FolderView({
 
 interface ActionProp {
   row: FolderViewRow
-  onFileDelete: (file: File) => void
-  onFolderDelete: (folder: Folder) => void
+  onFileDelete: (file: FileOwls) => void
+  onFolderDelete: (folder: FolderOwls) => void
 }
 
 function Action({ row, onFileDelete, onFolderDelete }: ActionProp) {

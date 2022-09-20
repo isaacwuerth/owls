@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -17,14 +18,19 @@ import { useEffect, useState } from 'react'
 import Grid from '@mui/material/Unstable_Grid2'
 import { useSearchParams } from 'react-router-dom'
 import { FolderTree } from '../components/FolderTree/FolderTree'
-import { File, Folder } from '../model/FileFolder'
+import { FileOwls, FolderOwls } from '../model/FileFolder'
 import { FolderView } from '../components/FolderView/FolderView'
 import { useFirebase } from '../Context/FirebaseContext'
 import { Loading } from '../common/Loading'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { DropzoneDialog } from '../common/dropzone/DropzoneDialog'
 
-function helperGetFolderFromPath(folder: Folder, path: string[]): Folder {
+function helperGetFolderFromPath(
+  folder: FolderOwls,
+  path: string[]
+): FolderOwls {
   if (path.length === 0) {
     return folder
   }
@@ -36,7 +42,7 @@ function helperGetFolderFromPath(folder: Folder, path: string[]): Folder {
   throw new Error('Folder not found')
 }
 
-function getFolderFromPath(rootFolder: Folder, path: string): Folder {
+function getFolderFromPath(rootFolder: FolderOwls, path: string): FolderOwls {
   path = path.trim().replace(/^\/+/, '').replace(/\/+$/, '').replace(/\/+/, '/')
   const pathArray = path.split('/')
   if (pathArray.length === 1) return rootFolder
@@ -86,19 +92,22 @@ function DownloadDialog({ fileName, procentage, open }: DownloadDialogProps) {
 
 export function FileManagerPage() {
   const [search, setSearch] = useSearchParams()
-  const [currentFolder, setCurrentFolder] = useState<Folder | undefined>()
-  const [rootFolder, setRootFolder] = useState<Folder | undefined>(undefined)
+  const [currentFolder, setCurrentFolder] = useState<FolderOwls | undefined>()
+  const [rootFolder, setRootFolder] = useState<FolderOwls | undefined>(
+    undefined
+  )
   const [presentageCompleted, setPrecentCompleted] = useState<number>(0)
   const [downloadName, setDownloadName] = useState<string>('')
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false)
+  const [openUpload, setOpenUpload] = useState(false)
   const { filesRepository } = useFirebase()
 
-  const handleFolderClick = (folder: Folder) => {
+  const handleFolderClick = (folder: FolderOwls) => {
     setCurrentFolder(folder)
     setSearch({ path: folder.fullPath })
   }
 
-  const handleFileClick = async (file: File) => {
+  const handleFileClick = async (file: FileOwls) => {
     const relativePath = filesRepository.createRelativePath(file.fullPath)
     const downloadUrl = await filesRepository.getDownloadUrl(relativePath)
     setDownloadName(file.name)
@@ -128,10 +137,10 @@ export function FileManagerPage() {
       })
   }
 
-  const handleFolderDelete = async (folder: Folder) => {
+  const handleFolderDelete = async (folder: FolderOwls) => {
     try {
       await filesRepository.delete(
-        filesRepository.createRelativePath(folder.fullPath + '/')
+        filesRepository.createRelativePath(folder.fullPath)
       )
       toast(`Deleted Folder ${folder.name}`, { type: 'success' })
     } catch {
@@ -139,7 +148,7 @@ export function FileManagerPage() {
     }
   }
 
-  const handleFileDelete = async (file: File) => {
+  const handleFileDelete = async (file: FileOwls) => {
     try {
       await filesRepository.delete(
         filesRepository.createRelativePath(file.fullPath)
@@ -166,10 +175,19 @@ export function FileManagerPage() {
       .catch(console.error)
   }, [])
 
+  const handleUpload = (files: File[]) => {
+    setOpenUpload(false)
+    files.forEach(async (file) => {
+      await filesRepository.upload(file.name, file)
+    })
+    toast('Upload all files', { type: 'success' })
+  }
+
   if (!currentFolder || !rootFolder) return <Loading />
   return (
     <Box style={{ marginTop: 20, marginRight: 20 }}>
       <Typography>{currentFolder.fullPath}</Typography>
+      <DropzoneDialog onSave={handleUpload} open={openUpload} />
       <Grid container spacing={2}>
         <Grid xs={12} md={4}>
           <Card>
@@ -185,7 +203,18 @@ export function FileManagerPage() {
         </Grid>
         <Grid xs={12} md={8}>
           <Card>
-            <CardHeader title={'Dateien'} />
+            <CardHeader
+              title={'Dateien'}
+              action={
+                <Button
+                  variant="outlined"
+                  startIcon={<CloudUploadIcon />}
+                  onClick={() => setOpenUpload(true)}
+                >
+                  Hochladen
+                </Button>
+              }
+            />
             <CardContent style={{ height: 600 }}>
               <FolderView
                 currentFolder={currentFolder}

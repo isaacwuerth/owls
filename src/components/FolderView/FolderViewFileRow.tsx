@@ -1,10 +1,10 @@
-import { File } from '../../model/FileFolder'
+import { FileOwls } from '../../model/FileFolder'
 import { Box } from '@mui/system'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import { Typography } from '@mui/material'
 
 interface FolderViewFileRowProps {
-  file: File
+  file: FileOwls
 }
 
 export function FolderViewFileRow({ file }: FolderViewFileRowProps) {

@@ -7,7 +7,7 @@ import {
   listAll,
   ListResult,
 } from 'firebase/storage'
-import { Folder } from '../model/FileFolder'
+import { FolderOwls } from '../model/FileFolder'
 
 export class FileRepository {
   name: string = ''
@@ -40,14 +40,14 @@ export class FileRepository {
     return fullPath.replace(new RegExp(`^${this.basePath}`), '')
   }
 
-  async list(path?: string): Promise<Folder> {
+  async list(path?: string): Promise<FolderOwls> {
     // const metadata = await getMetadata(this.createRef(path ?? ''))
     const res = await listAll(this.createRef(path ?? ''))
     return this.convertItemToFolder(res)
   }
 
-  private convertItemToFolder(item: ListResult): Folder {
-    const folder: Folder = {
+  private convertItemToFolder(item: ListResult): FolderOwls {
+    const folder: FolderOwls = {
       name: this.basePath.split('/')[0],
       fullPath: this.basePath,
       files: [],

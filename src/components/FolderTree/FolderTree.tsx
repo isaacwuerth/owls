@@ -4,14 +4,14 @@ import { Button } from '@mui/material'
 import TreeView from '@mui/lab/TreeView'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { Folder, Parent } from '../../model/FileFolder'
+import { FolderOwls, Parent } from '../../model/FileFolder'
 import { FolderTreeRecursive } from './FolderTreeItem'
 import { Loading } from '../../common/Loading'
 
 interface FolderTreeProps {
-  folderRoot: Folder
-  onFolderClick: (folder: Folder) => void
-  currentFolder: Folder
+  folderRoot: FolderOwls
+  onFolderClick: (folder: FolderOwls) => void
+  currentFolder: FolderOwls
 }
 
 export function FolderTree({
@@ -21,24 +21,26 @@ export function FolderTree({
 }: FolderTreeProps) {
   const [expanded, setExpanded] = useState<string[]>([])
   const [selected, setSelected] = useState<string[]>([])
-  const [searchIndex, setSearchIndex] = useState<Map<number, Folder>>(new Map())
+  const [searchIndex, setSearchIndex] = useState<Map<number, FolderOwls>>(
+    new Map()
+  )
   const [loading, setLoading] = useState(true)
 
-  const setExpanendFolder = (folder: Folder) => {
+  const setExpanendFolder = (folder: FolderOwls) => {
     setExpanded((oldExpanded) => [...oldExpanded, String(folder.id)])
     if (!folder?.parent) return
-    setExpanendFolder(folder.parent as Folder)
+    setExpanendFolder(folder.parent as FolderOwls)
   }
 
-  function CreateIndex(rootFolder: Folder): Map<number, Folder> {
-    let map = new Map<number, Folder>()
+  function CreateIndex(rootFolder: FolderOwls): Map<number, FolderOwls> {
+    let map = new Map<number, FolderOwls>()
     if (!rootFolder.id) return map
     map.set(rootFolder.id, rootFolder)
     for (const folder of rootFolder.folders) {
       if (!folder.id) break
       map.set(folder.id, folder)
       const subMap = CreateIndex(folder)
-      map = new Map<number, Folder>([...map, ...subMap])
+      map = new Map<number, FolderOwls>([...map, ...subMap])
     }
     return map
   }
@@ -46,7 +48,7 @@ export function FolderTree({
   const setParent = function (child: Parent, parent: Parent) {
     child.parent = parent
   }
-  const setAllParents = function (rootFolder: Folder) {
+  const setAllParents = function (rootFolder: FolderOwls) {
     rootFolder.files.forEach((file) => setParent(file, rootFolder))
     rootFolder.folders.forEach((folder) => {
       setParent(folder, rootFolder)
@@ -54,7 +56,7 @@ export function FolderTree({
     })
   }
 
-  const setIds = (folder: Folder, id: number) => {
+  const setIds = (folder: FolderOwls, id: number) => {
     folder.id = id
     folder.folders.forEach((f) => setIds(f, ++id))
   }
@@ -75,7 +77,7 @@ export function FolderTree({
   const handleExpandClick = () => {
     if (expanded.length !== 0) setExpanded([])
 
-    function setExpandedAll(folder: Folder) {
+    function setExpandedAll(folder: FolderOwls) {
       setExpanded((oldExpanded) => [...oldExpanded, String(folder.id)])
       folder.folders
         .filter((folder) => folder.folders.length !== 0)

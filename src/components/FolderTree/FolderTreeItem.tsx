@@ -4,7 +4,7 @@ import TreeItem, { treeItemClasses, TreeItemProps } from '@mui/lab/TreeItem'
 import { SvgIconProps } from '@mui/material/SvgIcon'
 import { styled } from '@mui/material/styles'
 import * as React from 'react'
-import { Folder } from '../../model/FileFolder'
+import { FolderOwls } from '../../model/FileFolder'
 import FolderIcon from '@mui/icons-material/Folder'
 
 declare module 'react' {
@@ -89,7 +89,7 @@ function FolderTreeItem(props: FolderTreeItemProps) {
 }
 
 interface FolderTreeRootProps {
-  folder: Folder
+  folder: FolderOwls
 }
 
 export function FolderTreeRecursive({ folder }: FolderTreeRootProps) {

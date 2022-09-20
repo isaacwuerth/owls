@@ -2,15 +2,15 @@ export interface Parent {
   parent?: Parent
 }
 
-export interface Folder extends Parent {
+export interface FolderOwls extends Parent {
   id?: number
   name: string
   fullPath: string
-  files: File[]
-  folders: Folder[]
+  files: FileOwls[]
+  folders: FolderOwls[]
 }
 
-export interface File extends Parent {
+export interface FileOwls extends Parent {
   fullPath: string
   name: string
   size: number

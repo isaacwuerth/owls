@@ -1,10 +1,10 @@
-import { Folder } from '../../model/FileFolder'
+import { FolderOwls } from '../../model/FileFolder'
 import { Box } from '@mui/system'
 import FolderIcon from '@mui/icons-material/Folder'
 import { Typography } from '@mui/material'
 
 interface FolderViewFolderRowProps {
-  folder: Folder
+  folder: FolderOwls
 }
 
 export function FolderViewFolderRow({ folder }: FolderViewFolderRowProps) {

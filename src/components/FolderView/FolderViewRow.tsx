@@ -1,7 +1,7 @@
-import { File, Folder } from '../../model/FileFolder'
+import { FileOwls, FolderOwls } from '../../model/FileFolder'
 
 export interface FolderViewRow {
   id: number
-  file?: File
-  folder?: Folder
+  file?: FileOwls
+  folder?: FolderOwls
 }
