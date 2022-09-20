@@ -5,6 +5,12 @@
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@fullcalendar/daygrid": "^5.11.3",
+    "@fullcalendar/interaction": "^5.11.3",
+    "@fullcalendar/list": "^5.11.3",
+    "@fullcalendar/react": "^5.11.2",
+    "@fullcalendar/scrollgrid": "^5.11.3",
+    "@hookform/error-message": "^2.0.0",
     "@hookform/resolvers": "^2.9.7",
     "@mui/icons-material": "^5.10.3",
     "@mui/lab": "^5.0.0-alpha.99",
@@ -75,7 +81,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080",
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
