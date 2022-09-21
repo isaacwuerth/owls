@@ -1,1 +1,45 @@
-{}
+{
+  "parameters": {
+    "maintenanceMode": {
+      "defaultValue": {
+        "value": "off"
+      },
+      "description": "This value sets the mode of maintenance, its either 'off', 'permanent' or 'scheduled'.",
+      "valueType": "STRING"
+    },
+    "maintenanceEnd": {
+      "defaultValue": {
+        "value": "2022-09-05T14:56:00+02:00"
+      },
+      "description": "Sets the end of the maintenance window. The page gets reloaded on the project page.",
+      "valueType": "STRING"
+    },
+    "logoUrl": {
+      "defaultValue": {
+        "value": "/gin.svg"
+      },
+      "description": "Path to Logo",
+      "valueType": "STRING"
+    },
+    "name": {
+      "defaultValue": {
+        "value": "Owls Testing"
+      },
+      "description": "Name of the Website",
+      "valueType": "STRING"
+    },
+    "maintenanceMessage": {
+      "defaultValue": {
+        "value": "Wir sind bald wieder Online."
+      },
+      "description": "Maintenance message to display",
+      "valueType": "STRING"
+    },
+    "maintenanceTitle": {
+      "defaultValue": {
+        "value": "Wartungsarbeiten"
+      },
+      "valueType": "STRING"
+    }
+  }
+}
