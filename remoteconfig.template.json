@@ -40,6 +40,12 @@
         "value": "Wartungsarbeiten"
       },
       "valueType": "STRING"
+    },
+    "test": {
+      "defaultValue": {
+        "value": "test"
+      },
+      "valueType": "STRING"
     }
   }
 }
