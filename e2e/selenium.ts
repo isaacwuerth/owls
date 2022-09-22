@@ -77,12 +77,7 @@ function buildBrowserstackDriver() {
 }
 
 export function buildDriver() {
-  if (
-    process.env.BROWSERSTACK_BUILD_NAME &&
-    process.env.BROWSERSTACK_PROJECT_NAME &&
-    process.env.BROWSERSTACK_LOCAL_IDENTIFIER
-  )
-    return buildBrowserstackDriver()
+  if (process.env.BROWSERSTACK) return buildBrowserstackDriver()
   return buildLocalDriver()
 }
 

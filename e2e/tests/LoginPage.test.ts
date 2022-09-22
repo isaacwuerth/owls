@@ -5,7 +5,7 @@ import { buildDriver } from '../selenium'
 
 describe('Login Page', function () {
   let driver: ThenableWebDriver
-  const baseUrl = 'http://localhost:3000'
+  const baseUrl = `${process.env.BASE_URL ?? 'http://localhost:3000'}`
   let loginObject: LoginObject
   let loginModel: LoginModel
   const eMail: string = 'selenium@itsvc.ch'

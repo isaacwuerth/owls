@@ -13,6 +13,7 @@ env:
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
   REACT_APP_OPENREPLAY_PROJECTKEY: ${{ secrets.OPENREPLAY_PROJECTKEY }}
+  BASE_URL: 'http://localhost:8099'
 
 name: 'BrowserStack Test'
 on:
@@ -79,10 +80,10 @@ jobs:
         run: npm run build
 
       - name: 'Running application under test'
-        run: ./node_modules/.bin/http-server dist -p 3000 &
+        run: ./node_modules/.bin/http-server dist -p 8099 &
 
       - name: 'Running test on BrowserStack'
-        run: npm run test:e2e
+        run: npm run test:e2e:browserstack
 
       - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
         uses: browserstack/github-actions/setup-local@master
