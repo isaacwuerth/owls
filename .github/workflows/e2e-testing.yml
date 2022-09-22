@@ -29,6 +29,9 @@ jobs:
     name: 'BrowserStack Test on Ubuntu'
     runs-on: ubuntu-latest  # Can be self-hosted runner also
     steps:
+      - name: 'Checkout the repository'
+        uses: actions/checkout@v2
+
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -68,10 +71,6 @@ jobs:
         with:
           local-testing: start
           local-identifier: random
-
-      # The next 3 steps are for building the web application to be tested and starting the web server on the runner environment
-      - name: 'Checkout the repository'
-        uses: actions/checkout@v2
 
       - name: 'Installing Dependencies'
         run: npm install
