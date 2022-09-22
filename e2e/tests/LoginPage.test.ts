@@ -1,21 +1,18 @@
-import * as webdriver from 'selenium-webdriver'
-import { By, ThenableWebDriver, until, Key } from 'selenium-webdriver'
+import { ThenableWebDriver, until } from 'selenium-webdriver'
 import { LoginObject } from '../object/LoginObject'
 import { LoginModel } from '../model/LoginModel'
+import { buildDriver } from '../selenium'
 
 describe('Login Page', function () {
   let driver: ThenableWebDriver
-  const baseUrl = 'https://owlsinternal.web.app'
+  const baseUrl = 'http://localhost:3000'
   let loginObject: LoginObject
   let loginModel: LoginModel
   const eMail: string = 'selenium@itsvc.ch'
   const password: string = 'Selenium1234'
 
   beforeAll(function () {
-    driver = new webdriver.Builder()
-      .withCapabilities(webdriver.Capabilities.chrome())
-      .build()
-    void driver.manage().window().maximize()
+    driver = buildDriver()
 
     loginModel = new LoginModel(driver)
     loginObject = new LoginObject(loginModel, driver)
@@ -26,9 +23,11 @@ describe('Login Page', function () {
   })
 
   afterEach((done) => {
-    void driver.manage().deleteAllCookies()
-    void driver.get('chrome://settings/clearBrowserData')
-    void driver.findElement(By.xpath('//settings-ui')).sendKeys(Key.ENTER)
+    void driver.navigate().refresh()
+    void driver.executeScript(
+      'indexedDB.deleteDatabase("firebaseLocalStorageDb");'
+    )
+    void driver.sleep(1000)
     void driver.navigate().refresh()
     done()
   })

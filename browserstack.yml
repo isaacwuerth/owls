@@ -1,0 +1,22 @@
+userName: isaacwuerth_V3g4RQ
+accessKey: Py5YisGVFspkdCuZWsJD
+platforms:
+  - os: Windows
+    osVersion: 11
+    browserName: Chrome
+    browserVersion: 103.0
+  - os: Windows
+    osVersion: 10
+    browserName: Firefox
+    browserVersion: 102.0
+  - os: OS X
+    osVersion: Big Sur
+    browserName: Safari
+    browserVersion: 14.1
+parallelsPerPlatform: 2
+browserstackLocal: true
+buildName: browserstack-build-1
+projectName: Owls Internal
+debug: true
+networkLogs: true
+consoleLogs: warn
