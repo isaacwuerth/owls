@@ -5,7 +5,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "react-scripts test",
     "test:e2e": "jest --config=jest-e2e.config.json",
     "test:e2e:browserstack": "browserstack-node-sdk jest --config=jest-e2e.config.json",
     "eject": "react-scripts eject",
