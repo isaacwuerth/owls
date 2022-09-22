@@ -82,7 +82,7 @@ jobs:
         run: ./node_modules/.bin/http-server dist -p 3000 &
 
       - name: 'Running test on BrowserStack'
-        run: npm run test:e2e:browserstack
+        run: npm run test:e2e
 
       - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
         uses: browserstack/github-actions/setup-local@master
