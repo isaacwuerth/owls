@@ -76,7 +76,7 @@ jobs:
         run: npm install
 
       - name: 'Building web application to be tested'
-        run: npm build
+        run: npm run build
 
       - name: 'Running application under test'
         run: ./node_modules/.bin/http-server dist -p 3000 &
