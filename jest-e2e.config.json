@@ -1,6 +1,6 @@
 {
   "collectCoverage": false,
   "testMatch":[
-    "<rootDir>\\e2e\\**\\*.{spec,test}.{js,jsx,ts,tsx}"
+    "<rootDir>e2e\\**\\*.{spec,test}.{js,jsx,ts,tsx}"
   ]
 }
