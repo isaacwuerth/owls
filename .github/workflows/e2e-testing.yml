@@ -80,7 +80,7 @@ jobs:
         run: npm run build
 
       - name: 'Running application under test'
-        run: ./node_modules/.bin/http-server dist -p 8099 &
+        run: ./node_modules/.bin/serve -s build -l 8099 &
 
       - name: 'Running test on BrowserStack'
         run: npm run test:e2e:browserstack
