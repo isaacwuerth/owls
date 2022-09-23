@@ -6,7 +6,6 @@ export function LogoutPage() {
   useEffect(() => {
     async function signOut() {
       await firebase.apps.auth.signOut()
-      alert("You've been signed out")
     }
 
     signOut().catch((reason) => {
