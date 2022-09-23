@@ -84,15 +84,15 @@ function App() {
           <RecoilRoot>
             <RecoilNexus />
             <BrowserRouter>
-              <SentryRoutes>
-                <FirebaseProvider>
-                  <Route path="/logout" element={<LogoutPage />} />
-                  <Route path="/appinfo" element={<AppInfoPage />} />
-                  <Splashscreen>
-                    <MaintenancePage>
+              <FirebaseProvider>
+                <Splashscreen>
+                  <MaintenancePage>
+                    <SentryRoutes>
                       <Route path="*" element={<NotFound />} />
                       <Route path="/login" element={<LoginPage />} />
                       <Route path="/user-setup" element={<UserSetupPage />} />
+                      <Route path="/logout" element={<LogoutPage />} />
+                      <Route path="/appinfo" element={<AppInfoPage />} />
                       <Route element={<BasicLayout />}>
                         <Route index element={<DashboardPage />} />
                         <Route path="events/:eid" element={<EventPage />} />
@@ -106,11 +106,11 @@ function App() {
                         <Route path="users/:id" element={<UserPage />} />
                         <Route path="files" element={<FileManagerPage />} />
                       </Route>
-                      <ToastContainer position="top-center" />
-                    </MaintenancePage>
-                  </Splashscreen>
-                </FirebaseProvider>
-              </SentryRoutes>
+                    </SentryRoutes>
+                    <ToastContainer position="top-center" />
+                  </MaintenancePage>
+                </Splashscreen>
+              </FirebaseProvider>
             </BrowserRouter>
           </RecoilRoot>
         </LocalizationProvider>
