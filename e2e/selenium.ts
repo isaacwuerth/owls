@@ -59,7 +59,6 @@ function buildBrowserstackDriver() {
       localIdentifier,
       userName: username,
       accessKey,
-      seleniumVersion: '4.0.0',
     },
   }
 
