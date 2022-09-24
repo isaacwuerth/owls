@@ -1,3 +1,4 @@
+name: 'BrowserStack Test'
 env:
   REACT_APP_NAME: something
   REACT_APP_VERSION: 0.0.0
@@ -14,8 +15,9 @@ env:
   REACT_APP_SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
   REACT_APP_OPENREPLAY_PROJECTKEY: ${{ secrets.OPENREPLAY_PROJECTKEY }}
   BASE_URL: 'http://localhost:8099'
-
-name: 'BrowserStack Test'
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 on:
   push:
     branches:

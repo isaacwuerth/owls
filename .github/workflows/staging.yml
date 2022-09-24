@@ -17,6 +17,10 @@ env:
   REACT_APP_SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
   REACT_APP_OPENREPLAY_PROJECTKEY: ${{ secrets.OPENREPLAY_PROJECTKEY }}
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 name: Stage on PR
 on: pull_request
 jobs:
