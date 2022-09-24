@@ -90,8 +90,8 @@ jobs:
       - name: Generate config for browserstack
         run: |
           sed -i -r '/^(buildName|projectName|userName|accessKey|browserstackLocal|localIdentifier):.*$/d' browserstack.yml
-          echo "buildName: $BROWSERSTACK_BUILD_NAME" >> browserstack.yml
-          echo "projectName: $BROWSERSTACK_PROJECT_NAME" >> browserstack.yml
+          echo "buildName: '$BROWSERSTACK_BUILD_NAME'" >> browserstack.yml
+          echo "projectName: '$BROWSERSTACK_PROJECT_NAME'" >> browserstack.yml
           echo "userName: ${{ secrets.BROWSERSTACK_USERNAME }}" >> browserstack.yml
           echo "accessKey: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}" >> browserstack.yml
           echo "browserstackLocal: true" >> browserstack.yml
