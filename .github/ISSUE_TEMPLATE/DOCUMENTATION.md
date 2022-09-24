@@ -1,9 +1,10 @@
 ---
-name: '📚 Documentation'
+name: "\U0001F4DA Documentation"
 about: Suggest edits for the documentation
 title: ''
-labels: 'Documentation'
+labels: ''
 assignees: ''
+
 ---
 
 <!--
