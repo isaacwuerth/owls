@@ -17,8 +17,9 @@ env:
   REACT_APP_OPENREPLAY: false
   REACT_APP_OPENREPLAY_PROJECTKEY: R8C4sH0aQVI5ctsw6MfJ
   BASE_URL: 'http://localhost:8099'
+
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-end-to-end-testing
   cancel-in-progress: true
 on:
   push:
