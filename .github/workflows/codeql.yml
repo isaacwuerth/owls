@@ -11,7 +11,7 @@ on:
 jobs:
   CodeQL-Build:
     runs-on: ubuntu-latest
-
+    if: github.actor != 'dependabot[bot]'
     permissions:
       security-events: write
       actions: read
