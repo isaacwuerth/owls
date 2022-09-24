@@ -1,6 +1,6 @@
 name: Coverage
 
-on: 
+on:
   pull_request:
   push:
     branches:
@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
     strategy:
       matrix:
         node-version: [18.x]

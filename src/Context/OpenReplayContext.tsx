@@ -22,7 +22,7 @@ export default function OpenReplayProvider(props: PropsWithChildren<Options>) {
     profiler = tracker.use(trackerProfiler())
     // @ts-expect-error
     global.fetch = tracker.use(trackerFetch())
-    if (process.env.NODE_ENV === 'production') void tracker.start()
+    if (process.env.REACT_APP_OPENREPLAY === 'true') void tracker.start()
   }
   return (
     <OpenReplayContext.Provider value={tracker}>
