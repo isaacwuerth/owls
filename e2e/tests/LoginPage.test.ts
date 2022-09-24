@@ -18,10 +18,6 @@ describe('Login Page', function () {
     loginObject = new LoginObject(loginModel, driver)
   })
 
-  afterAll(function () {
-    void driver.quit()
-  })
-
   afterEach((done) => {
     void driver.navigate().refresh()
     void driver.executeScript(
