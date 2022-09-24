@@ -26,7 +26,7 @@ on:
       - main
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-release
   cancel-in-progress: true
 
 jobs:
