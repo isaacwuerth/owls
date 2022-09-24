@@ -18,8 +18,8 @@ describe('Login Page', function () {
     loginObject = new LoginObject(loginModel, driver)
   })
 
-  afterAll(function () {
-    void driver.quit()
+  afterAll(async function () {
+    await driver.quit()
   })
 
   afterEach((done) => {
