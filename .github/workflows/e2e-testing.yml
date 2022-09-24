@@ -98,9 +98,18 @@ jobs:
           echo "localIdentifier: $BROWSERSTACK_LOCAL_IDENTIFIER" >> browserstack.yml
 
       - name: 'Running test on BrowserStack'
-        run: npm run test:e2e:browserstack
+        continue-on-error: true
+        run: npm run test:e2e:browserstack -- --outputFile=jest-results.json --json
 
       - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
         uses: browserstack/github-actions/setup-local@master
         with:
           local-testing: stop
+
+      - name: Process jest results
+        id: process-jest
+        uses: im-open/process-jest-test-results@v2.0.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          results-file: 'jest-results.json'
+          report-name: 'Jest End-to-End Results'
