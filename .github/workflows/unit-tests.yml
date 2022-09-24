@@ -42,12 +42,4 @@ jobs:
       run: npm install
 
     - name: Run the tests
-      run: npm test -- --outputFile=jest-results.json --json
-
-    - name: Process jest results
-      id: process-jest
-      uses: im-open/process-jest-test-results@v2.0.6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        results-file: 'jest-results.json'
-        report-name: 'Jest Unit-Test Results'
+      run: npm test
