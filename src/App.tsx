@@ -66,8 +66,7 @@ Sentry.init({
   attachStacktrace: true,
   maxBreadcrumbs: 100,
   autoSessionTracking: true,
-  enabled:
-    process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test',
+  enabled: process.env.REACT_APP_SENTRY === 'true',
 })
 
 Sentry.setTag('rrweb.active', 'yes')
