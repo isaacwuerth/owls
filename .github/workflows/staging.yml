@@ -20,7 +20,7 @@ env:
   REACT_APP_OPENREPLAY_PROJECTKEY: R8C4sH0aQVI5ctsw6MfJ
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-pull-request
   cancel-in-progress: true
 
 name: Stage on PR
