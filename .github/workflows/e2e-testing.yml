@@ -87,10 +87,22 @@ jobs:
       - name: 'Running application under test'
         run: ./node_modules/.bin/serve -s build -l 8099 &
 
+      - name: Generate config for browserstack
+        run: |
+          sed -i -r '/^(buildName|projectName|userName|accessKey|browserstackLocal|localIdentifier):.*$/d' browserstack.yml
+          echo "buildName: '$BROWSERSTACK_BUILD_NAME'" >> browserstack.yml
+          echo "projectName: '$BROWSERSTACK_PROJECT_NAME'" >> browserstack.yml
+          echo "userName: ${{ secrets.BROWSERSTACK_USERNAME }}" >> browserstack.yml
+          echo "accessKey: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}" >> browserstack.yml
+          echo "browserstackLocal: true" >> browserstack.yml
+          echo "localIdentifier: $BROWSERSTACK_LOCAL_IDENTIFIER" >> browserstack.yml
+
       - name: 'Running test on BrowserStack'
+        continue-on-error: true
         run: npm run test:e2e:browserstack
 
       - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
         uses: browserstack/github-actions/setup-local@master
         with:
           local-testing: stop
+
