@@ -15,6 +15,7 @@ env:
   REACT_APP_SENTRY: true
   REACT_APP_SENTRY_ENVIRONMENT: prod
   REACT_APP_SENTRY_DSN: https://d171647c012c43a39dec2948de46cf2e@o1407901.ingest.sentry.io/6743125
+  REACT_APP_SENTRY_ORG: owls-q7
   REACT_APP_SENTRY_PROJECT: internal-frontend
   REACT_APP_OPENREPLAY: true
   REACT_APP_OPENREPLAY_PROJECTKEY: R8C4sH0aQVI5ctsw6MfJ
@@ -81,8 +82,8 @@ jobs:
         uses: tclindner/sentry-releases-action@v1.2.0
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_ORG: ${{ env.REACT_APP_SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ env.REACT_APP_SENTRY_PROJECT }}
         with:
           tagName: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
-          environment: ${{ secrets.SENTRY_ENVIRONMENT }}
+          environment: ${{ env.REACT_APP_SENTRY_ENVIRONMENT }}
