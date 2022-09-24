@@ -46,3 +46,10 @@ service-account-credentials.json
 **/pubsub-debug.log
 **/tsconfig-compile.json
 yarn.lock
+
+
+**/.run/*
+**/.idea/*
+/browserstack.err
+/local.log
+/log/usage.log

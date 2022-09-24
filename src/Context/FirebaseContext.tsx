@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getAnalytics } from 'firebase/analytics'
 import { getDatabase } from 'firebase/database'
 import { getFirestore } from 'firebase/firestore'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import * as firebaseui from 'firebaseui'
 import { useSetRecoilState } from 'recoil'
 import { profileAtom } from '../atoms/ProfileAtom'
@@ -96,6 +96,7 @@ function convertConfig(allConfigs: Record<string, any>): any {
 
 export default function FirebaseProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate()
+  const location = useLocation()
   const setProfile = useSetRecoilState(profileAtom)
   const setSiteConfig = useSetRecoilState(siteConfigAtom)
   const setApplicationState = useSetRecoilState(applicationStateAtom)
@@ -113,17 +114,15 @@ export default function FirebaseProvider({ children }: PropsWithChildren) {
     LoadConfigStartup().catch(() => {})
     onAuthStateChanged(firebaseContextConfig.apps.auth, async (user) => {
       if (user) {
+        if (location.pathname === '/logout') return
         const users = await firebaseContextConfig.usersRepository.findByUID(
           user.uid
         )
         if (users.length > 1)
           throw new Error('There are multiple users with the same UID')
-        if (users.length === 1) {
-          setProfile(users[0])
-          openreplay?.setUserID(user.email ?? 'nouser')
-        } else {
-          navigate('user-setup')
-        }
+        if (users.length !== 1) navigate('user-setup')
+        setProfile(users[0])
+        openreplay?.setUserID(user.email ?? 'nouser')
       } else {
         navigate('/login')
       }

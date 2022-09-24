@@ -91,8 +91,8 @@ function App() {
                       <Route path="*" element={<NotFound />} />
                       <Route path="/login" element={<LoginPage />} />
                       <Route path="/user-setup" element={<UserSetupPage />} />
-                      <Route path="/appinfo" element={<AppInfoPage />} />
                       <Route path="/logout" element={<LogoutPage />} />
+                      <Route path="/appinfo" element={<AppInfoPage />} />
                       <Route element={<BasicLayout />}>
                         <Route index element={<DashboardPage />} />
                         <Route path="events/:eid" element={<EventPage />} />
