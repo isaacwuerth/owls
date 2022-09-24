@@ -52,7 +52,7 @@ describe('Login Page', function () {
     await driver.get(`${Url}/login`)
     await driver.wait(
       until.elementLocated(loginModel.bySignInWithEmailButton),
-      3000
+      10000
     )
     await loginObject.Login(eMail, password)
     await driver.wait(
