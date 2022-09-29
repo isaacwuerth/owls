@@ -24,6 +24,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3.5.1
+      with:
+        distribution: 'microsoft'
+        java-version: '17'
+
     - name: Cache node modules
       id: cache-nodemodules
       uses: actions/cache@v2
@@ -59,3 +65,10 @@ jobs:
 
     - name: Run the tests
       run: npm run test:firestore:rules
+
+    - name: Print debug logs
+      if: failure()
+      run: |
+        java --version
+        ls -la
+        find . -type f -name "fire*-debug.log" | xargs cat
