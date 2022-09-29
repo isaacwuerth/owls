@@ -37,6 +37,10 @@ describe('Firestore security rules', () => {
         port: 8080,
         host: '127.0.0.1',
       },
+      hub: {
+        host: "127.0.0.1",
+        port: 4400,
+      },
     })
 
     player = testEnv
