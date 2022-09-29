@@ -1,4 +1,4 @@
-name: Unit-Tests
+name: Firebase Tests
 
 on:
   pull_request:
