@@ -54,3 +54,5 @@ yarn.lock
 /local.log
 /log/usage.log
 /jest-results.json
+
+**/*.log

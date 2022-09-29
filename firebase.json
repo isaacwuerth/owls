@@ -1,10 +1,11 @@
 {
-  "database": {
-    "rules": "database.rules.json"
-  },
   "hosting": {
     "public": "build",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [
       {
         "source": "**",
@@ -36,9 +37,17 @@
     },
     "ui": {
       "enabled": true
+    },
+    "firestore": {
+      "port": 8080,
+      "host": "127.0.0.1"
     }
   },
   "remoteconfig": {
     "template": "remoteconfig.template.json"
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }

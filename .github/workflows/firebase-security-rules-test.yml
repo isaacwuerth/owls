@@ -1,0 +1,61 @@
+name: Unit-Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache node modules
+      id: cache-nodemodules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Cache firebase emulators
+      id: cache-firebase-emulators
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-firebase-emulators
+      with:
+        path: ~/.cache/firebase/emulators
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/.cache/firebase/emulators/**') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Install dependencies
+      continue-on-error: true
+      run: npm install
+
+    - name: Install firebase-tools
+      run: npm install -g firebase-tools
+
+    - name: Run the tests
+      run: npm run test:firestore:rules

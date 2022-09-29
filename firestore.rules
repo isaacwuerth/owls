@@ -1,0 +1,54 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn () {
+      return request.auth != null;
+    }
+
+    function can(subject, action, scope) {
+      return subject + ':' + action + ':' + scope in request.auth.token.capabilities;
+    }
+
+    function canSimple(subject, action) {
+      return subject + ':' + action in request.auth.token.capabilities
+             || can(subject, action, 'all');
+    }
+
+    function isOwner() {
+      return request.auth.uid == resource.data.uid;
+    }
+
+    function hasAccess(subject, action) {
+      return isSignedIn() && (canSimple('all', 'manage')
+                              || canSimple(subject, 'manage')
+                              || canSimple(subject, action)
+                              || (can(subject, action, 'own') && isOwner()));
+    }
+
+    match/events/{eventId} {
+      allow list: if hasAccess('events', 'list');
+      allow get: if hasAccess('events', 'get');
+      allow create: if hasAccess('events', 'create');
+      allow update: if hasAccess('events', 'update');
+      allow delete: if hasAccess('events', 'delete');
+    }
+
+    match/users/{userId} {
+      allow list: if hasAccess('users', 'list');
+      allow get: if hasAccess('users', 'get');
+      allow create: if hasAccess('users', 'create');
+      allow update: if hasAccess('users', 'update');
+      allow delete: if hasAccess('users', 'delete');
+    }
+
+    match/userSecurity/{userSecurityId} {
+      allow list: if hasAccess('userSecurity', 'list');
+      allow get: if hasAccess('userSecurity', 'get');
+      allow create: if hasAccess('userSecurity', 'create');
+      allow update: if hasAccess('userSecurity', 'update');
+      allow delete: if hasAccess('userSecurity', 'delete');
+    }
+  }
+}
