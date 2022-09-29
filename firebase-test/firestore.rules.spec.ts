@@ -36,7 +36,7 @@ describe('Firestore security rules', () => {
         rules: fs.readFileSync('./firestore.rules', 'utf8'),
         port: 8080,
         host: '127.0.0.1',
-      }
+      },
     })
 
     player = testEnv
