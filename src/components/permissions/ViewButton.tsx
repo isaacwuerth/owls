@@ -3,7 +3,7 @@ import {
   permissionTableViews,
   permissionTableViewState,
 } from '../../atoms/PermissionTableViewState'
-import { IconButton } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
 
@@ -18,8 +18,10 @@ export function ViewButton() {
   }
 
   return (
-    <IconButton onClick={handleClick}>
-      {view === 'vertical' ? <TableRowsIcon /> : <ViewColumnIcon />}
-    </IconButton>
+    <Tooltip title="Ansicht verändern">
+      <IconButton onClick={handleClick}>
+        {view === 'vertical' ? <TableRowsIcon /> : <ViewColumnIcon />}
+      </IconButton>
+    </Tooltip>
   )
 }
