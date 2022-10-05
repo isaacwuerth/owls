@@ -76,10 +76,8 @@ export function RolesPage() {
             <Zoom in={hasRoleChanges && !isDesktop} unmountOnExit>
               <SavePermissionsButton />
             </Zoom>
-          </Box>
-          <Zoom in={!hasRoleChanges && !isDesktop} unmountOnExit>
             <AddRoleButton />
-          </Zoom>
+          </Box>
         </Box>
       </Box>
       <Grid2 container>

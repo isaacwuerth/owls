@@ -33,13 +33,7 @@ function AbortButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
           Reset
         </Button>
       ) : (
-        <Fab
-          ref={ref}
-          size="small"
-          aria-label="Reset"
-          onClick={handleAbort}
-          color="error"
-        >
+        <Fab ref={ref} aria-label="Reset" onClick={handleAbort} color="error">
           <ClearIcon />
         </Fab>
       )}

@@ -68,11 +68,6 @@ function AddRoleButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
           color="primary"
           onClick={handleClickCreate}
           aria-label="Erstellen"
-          sx={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-          }}
         >
           <AddIcon />
         </Fab>
