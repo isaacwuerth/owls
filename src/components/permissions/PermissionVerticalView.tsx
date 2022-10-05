@@ -1,6 +1,7 @@
 import { useRecoilValue } from 'recoil'
 import { rolesState } from '../../atoms/RoleCapabilitiesAtom'
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -17,6 +18,7 @@ interface PermissionVerticalRowProps {
   roles: Role[]
   action: Action
   actionIndex: number
+  actionsLength: number
 }
 
 function PermissionVerticalRow({
@@ -24,15 +26,33 @@ function PermissionVerticalRow({
   roles,
   action,
   actionIndex,
+  actionsLength,
 }: PermissionVerticalRowProps) {
   return (
     <TableRow>
       {actionIndex === 0 ? (
-        <TableCell>{subject}</TableCell>
-      ) : (
-        <TableCell></TableCell>
-      )}
-      <TableCell>{action}</TableCell>
+        <TableCell
+          rowSpan={actionsLength}
+          sx={{ borderRight: (theme) => `1px solid ${theme.palette.divider}` }}
+        >
+          <Box
+            sx={{
+              writingMode: actionsLength !== 1 ? 'tb-rl' : null,
+              transform: actionsLength !== 1 ? 'rotate(-180deg)' : null,
+            }}
+          >
+            {subject}
+          </Box>
+        </TableCell>
+      ) : null}
+      <TableCell
+        sx={{
+          width: '1px',
+          borderRight: (theme) => `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        {action}
+      </TableCell>
       {roles.map((role) => (
         <PermissionCell
           role={role.id as string}
@@ -48,7 +68,7 @@ export function PermissionVerticalView() {
   const roles = useRecoilValue(rolesState)
   return (
     <TableContainer sx={{ height: '500px' }}>
-      <Table>
+      <Table sx={{ borderCollapse: 'separate' }}>
         <TableHead
           sx={{
             position: 'sticky',
@@ -57,8 +77,16 @@ export function PermissionVerticalView() {
             backgroundColor: '#FFF',
           }}
         >
-          <TableRow sx={{ borderBottomStyle: 'solid' }}>
-            <TableCell></TableCell>
+          <TableRow
+            sx={{
+              borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <TableCell
+              sx={{
+                width: '18px',
+              }}
+            ></TableCell>
             <TableCell></TableCell>
             {roles.map((role) => (
               <TableCell>{role.friendlyName}</TableCell>
@@ -73,6 +101,7 @@ export function PermissionVerticalView() {
                 action={action}
                 actionIndex={actionIndex}
                 roles={roles}
+                actionsLength={appCapability.actions.length}
               />
             ))
           )}
