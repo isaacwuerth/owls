@@ -7,6 +7,7 @@ import {
   useMediaQuery,
   useTheme,
   CardHeader,
+  Grow,
 } from '@mui/material'
 import { useFirebase } from '../Context/FirebaseContext'
 import { useEffect } from 'react'
@@ -46,48 +47,56 @@ export function RolesPage() {
       <Box sx={{ display: 'flex' }}>
         <Typography variant="h2">Rollen</Typography>
         <Box sx={{ flexGrow: 1 }}></Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          {isDesktop && (
+        <Grow in={isDesktop} appear={isDesktop} unmountOnExit>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
             <>
               <AddRoleButton />
               <AbortButton />
               <SavePermissionsButton />
             </>
-          )}
-          <Box
-            sx={{
-              position: 'fixed',
-              bottom: 16,
-              right: 16,
-              zIndex: 1000,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 1,
-              alignItems: 'center',
-            }}
-          >
-            <Zoom in={hasRoleChanges && !isDesktop} unmountOnExit>
-              <Box>
-                <AbortButton />
-              </Box>
-            </Zoom>
-            <Zoom in={hasRoleChanges && !isDesktop} unmountOnExit>
-              <Box>
-                <SavePermissionsButton />
-              </Box>
-            </Zoom>
-            <Zoom in={!isDesktop} unmountOnExit>
-              <Box>
-                <AddRoleButton />
-              </Box>
-            </Zoom>
           </Box>
+        </Grow>
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            alignItems: 'center',
+          }}
+        >
+          <Zoom
+            in={hasRoleChanges && !isDesktop}
+            appear={!isDesktop}
+            unmountOnExit
+          >
+            <Box>
+              <AbortButton />
+            </Box>
+          </Zoom>
+          <Zoom
+            in={hasRoleChanges && !isDesktop}
+            appear={!isDesktop}
+            unmountOnExit
+          >
+            <Box>
+              <SavePermissionsButton />
+            </Box>
+          </Zoom>
+          <Zoom in={!isDesktop} unmountOnExit>
+            <Box>
+              <AddRoleButton />
+            </Box>
+          </Zoom>
         </Box>
       </Box>
       <Grid2 container>
