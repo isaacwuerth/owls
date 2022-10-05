@@ -122,26 +122,6 @@ function App() {
                         <Route path="*" element={<NotFound />} />
                       </SentryRoutes>
                     </FirebaseAuthorizationProvider>
-                    <SentryRoutes>
-                      <Route path="*" element={<NotFound />} />
-                      <Route path="/login" element={<LoginPage />} />
-                      <Route path="/user-setup" element={<UserSetupPage />} />
-                      <Route path="/logout" element={<LogoutPage />} />
-                      <Route path="/appinfo" element={<AppInfoPage />} />
-                      <Route element={<BasicLayout />}>
-                        <Route index element={<DashboardPage />} />
-                        <Route path="events/:eid" element={<EventPage />} />
-                        <Route
-                          path="events/:eid/edit"
-                          element={<EventEditPage />}
-                        />
-                        <Route path="events" element={<EventsPage />} />
-                        <Route path="profile" element={<ProfileOwnPage />} />
-                        <Route path="users" element={<UsersPage />} />
-                        <Route path="users/:id" element={<UserPage />} />
-                        <Route path="files" element={<FileManagerPage />} />
-                      </Route>
-                    </SentryRoutes>
                     <ToastContainer position="top-center" />
                   </MaintenancePage>
                 </Splashscreen>
