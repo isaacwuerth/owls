@@ -19,13 +19,21 @@ export function PermissionHorizontalView() {
   const theme = useTheme()
   return (
     <TableContainer>
-      <Table>
+      <Table sx={{ borderCollapse: 'separate' }}>
         <TableHead>
           <TableRow
             sx={{ position: 'sticky', top: theme.mixins.toolbar.height }}
           >
             <TableCell></TableCell>
-            <TableCell></TableCell>
+            <TableCell
+              sx={{
+                width: 120,
+                position: 'sticky',
+                left: 0,
+                zIndex: 1,
+                backgroundColor: (theme) => theme.palette.background.default,
+              }}
+            ></TableCell>
             {appCapabilities.map((capability) => (
               <TableCell
                 key={`header-${capability.subject}`}
@@ -37,7 +45,17 @@ export function PermissionHorizontalView() {
           </TableRow>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell>Rollen</TableCell>
+            <TableCell
+              sx={{
+                position: 'sticky',
+                left: 0,
+                zIndex: 1,
+                backgroundColor: (theme) => theme.palette.background.default,
+                borderRight: (theme) => `1px solid ${theme.palette.divider}`,
+              }}
+            >
+              Rollen
+            </TableCell>
             {appCapabilities.map((capability) =>
               capability.actions.map((action) => (
                 <TableCell
@@ -54,7 +72,17 @@ export function PermissionHorizontalView() {
           {roles.map((role, index) => (
             <TableRow key={`row-${index}`}>
               <DeleteButtonCell role={role} />
-              <RoleCell role={role} />
+              <TableCell
+                sx={{
+                  position: 'sticky',
+                  left: 0,
+                  zIndex: 1,
+                  backgroundColor: (theme) => theme.palette.background.default,
+                  borderRight: (theme) => `1px solid ${theme.palette.divider}`,
+                }}
+              >
+                <RoleCell role={role} />
+              </TableCell>
               {appCapabilities.map((capability) =>
                 capability.actions.map((action, index) => (
                   <PermissionCell

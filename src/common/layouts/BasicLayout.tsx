@@ -149,10 +149,7 @@ function BasicLayout() {
           </Toolbar>
         </Box>
       </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { sm: 0 } }}
-      >
+      <Box component="nav" sx={{ width: 0, flexShrink: { sm: 0 } }}>
         <Drawer
           open={open}
           anchor="left"
@@ -184,13 +181,20 @@ function BasicLayout() {
         </Drawer>
       </Box>
 
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, padding: 0 }}
-        // sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-      >
+      <Box>
         <SpacingBox />
-        <Outlet />
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            padding: 2,
+            width: (theme) => ` calc(100vw - ${theme.spacing(4)})`,
+          }}
+          // sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        >
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   )
