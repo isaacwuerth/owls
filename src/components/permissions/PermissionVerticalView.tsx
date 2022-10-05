@@ -55,6 +55,7 @@ function PermissionVerticalRow({
       </TableCell>
       {roles.map((role) => (
         <PermissionCell
+          key={`permission-${role.id as string}-${subject}-${action}`}
           role={role.id as string}
           subject={subject}
           action={action}
@@ -89,14 +90,21 @@ export function PermissionVerticalView() {
             ></TableCell>
             <TableCell></TableCell>
             {roles.map((role) => (
-              <TableCell>{role.friendlyName}</TableCell>
+              <TableCell
+                key={`permission-header-${role.id as string}`}
+                sx={{ width: '1px', textAlign: 'center' }}
+              >
+                {role.friendlyName}
+              </TableCell>
             ))}
+            <TableCell sx={{ flexGrow: 1 }}> </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {appCapabilities.map((appCapability) =>
             appCapability.actions.map((action, actionIndex) => (
               <PermissionVerticalRow
+                key={`${appCapability.subject}-${action}`}
                 subject={appCapability.subject}
                 action={action}
                 actionIndex={actionIndex}
