@@ -45,6 +45,7 @@ import {
   AuthenticationOutlet,
   FirebaseAuthorizationProvider,
 } from './Context/AuthorizationContext'
+import { RolesPage } from './pages/RolesPage'
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -109,6 +110,7 @@ function App() {
                               element={<ProfileOwnPage />}
                             />
                             <Route path="users" element={<UsersPage />} />
+                            <Route path="roles" element={<RolesPage />} />
                             <Route path="users/:id" element={<UserPage />} />
                             <Route path="files" element={<FileManagerPage />} />
                             <Route
