@@ -73,12 +73,20 @@ export function RolesPage() {
             }}
           >
             <Zoom in={hasRoleChanges && !isDesktop} unmountOnExit>
-              <AbortButton />
+              <Box>
+                <AbortButton />
+              </Box>
             </Zoom>
             <Zoom in={hasRoleChanges && !isDesktop} unmountOnExit>
-              <SavePermissionsButton />
+              <Box>
+                <SavePermissionsButton />
+              </Box>
             </Zoom>
-            <AddRoleButton />
+            <Zoom in={!isDesktop} unmountOnExit>
+              <Box>
+                <AddRoleButton />
+              </Box>
+            </Zoom>
           </Box>
         </Box>
       </Box>

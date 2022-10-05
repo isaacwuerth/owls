@@ -6,9 +6,8 @@ import {
 } from '../../atoms/RoleCapabilitiesAtom'
 import { Button, Fab, useMediaQuery, useTheme } from '@mui/material'
 import ClearIcon from '@mui/icons-material/Clear'
-import { ForwardedRef, forwardRef } from 'react'
 
-function AbortButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
+export function AbortButton() {
   const defaultRoles = useRecoilValue(rolesDefaultState)
   const setRoles = useSetRecoilState(rolesState)
   const hasRoleChanges = useRecoilValue(hasRolesChanges)
@@ -23,7 +22,6 @@ function AbortButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
     <>
       {isDesktop ? (
         <Button
-          ref={ref}
           disabled={!hasRoleChanges}
           variant="contained"
           onClick={handleAbort}
@@ -33,12 +31,10 @@ function AbortButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
           Reset
         </Button>
       ) : (
-        <Fab ref={ref} aria-label="Reset" onClick={handleAbort} color="error">
+        <Fab aria-label="Reset" onClick={handleAbort} color="error">
           <ClearIcon />
         </Fab>
       )}
     </>
   )
 }
-
-export const AbortButton = forwardRef(AbortButtonInner)

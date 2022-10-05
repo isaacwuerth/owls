@@ -9,12 +9,8 @@ import { getRecoil } from 'recoil-nexus'
 import { useFirebase } from '../../Context/FirebaseContext'
 import { Button, Fab, useMediaQuery, useTheme } from '@mui/material'
 import SaveIcon from '@mui/icons-material/Save'
-import { ForwardedRef, forwardRef } from 'react'
 
-function SavePermissionsButtonInner(
-  props: any,
-  ref: ForwardedRef<HTMLButtonElement>
-) {
+export function SavePermissionsButton() {
   const hasRoleChanges = useRecoilValue(hasRolesChanges)
   const roles = useRecoilValue(rolesState)
   const setDefaultRoles = useSetRecoilState(rolesDefaultState)
@@ -34,7 +30,6 @@ function SavePermissionsButtonInner(
     <>
       {isDesktop ? (
         <Button
-          ref={ref}
           disabled={!hasRoleChanges}
           variant="contained"
           onClick={handleSubmit}
@@ -44,17 +39,10 @@ function SavePermissionsButtonInner(
           Speichern
         </Button>
       ) : (
-        <Fab
-          ref={ref}
-          color="success"
-          onClick={handleSubmit}
-          aria-label="Speichern"
-        >
+        <Fab color="success" onClick={handleSubmit} aria-label="Speichern">
           <SaveIcon />
         </Fab>
       )}
     </>
   )
 }
-
-export const SavePermissionsButton = forwardRef(SavePermissionsButtonInner)

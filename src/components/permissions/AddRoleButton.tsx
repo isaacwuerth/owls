@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, useState } from 'react'
+import { useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { rolesDefaultState, rolesState } from '../../atoms/RoleCapabilitiesAtom'
 import { useFirebase } from '../../Context/FirebaseContext'
@@ -12,7 +12,7 @@ import { InputWrapper } from '../DynamicForm/InputWrapper'
 import { InputType } from '../DynamicForm/InputType'
 import AddIcon from '@mui/icons-material/Add'
 
-function AddRoleButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
+export function AddRoleButton() {
   const [popupOpen, setPopupOpen] = useState(false)
   const [roles, setRoles] = useRecoilState(rolesState)
   const [defaultRoles, setDefaultRoles] = useRecoilState(rolesDefaultState)
@@ -55,7 +55,6 @@ function AddRoleButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
     <>
       {isDesktop ? (
         <Button
-          ref={ref}
           onClick={handleClickCreate}
           variant="outlined"
           startIcon={<AddIcon />}
@@ -63,12 +62,7 @@ function AddRoleButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
           Erstellen
         </Button>
       ) : (
-        <Fab
-          ref={ref}
-          color="primary"
-          onClick={handleClickCreate}
-          aria-label="Erstellen"
-        >
+        <Fab color="primary" onClick={handleClickCreate} aria-label="Erstellen">
           <AddIcon />
         </Fab>
       )}
@@ -105,5 +99,3 @@ function AddRoleButtonInner(props: any, ref: ForwardedRef<HTMLButtonElement>) {
     </>
   )
 }
-
-export const AddRoleButton = forwardRef(AddRoleButtonInner)
