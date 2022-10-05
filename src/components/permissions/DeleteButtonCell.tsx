@@ -48,7 +48,10 @@ export function DeleteButtonCell({
 
   return (
     <TableCell>
-      <IconButton sx={{ color: 'red' }} onClick={handleDeleteConsent}>
+      <IconButton
+        sx={{ color: 'red', padding: 0 }}
+        onClick={handleDeleteConsent}
+      >
         <DeleteIcon />
       </IconButton>
       <Dialog open={open}>

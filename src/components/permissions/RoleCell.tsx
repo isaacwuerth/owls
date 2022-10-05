@@ -31,7 +31,11 @@ export function RoleCell({ role }: RoleCellProps) {
       }}
       InputProps={{
         disableUnderline: true,
-        style: { padding: 0, margin: 0 },
+        inputProps: {
+          sx: {
+            padding: 0,
+          },
+        },
       }}
     />
   )
