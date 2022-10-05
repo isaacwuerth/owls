@@ -42,7 +42,7 @@ export function RolesPage() {
   return (
     <>
       <Box sx={{ display: 'flex' }}>
-        <Typography variant="h2">Roles</Typography>
+        <Typography variant="h2">Rollen</Typography>
         <Box sx={{ flexGrow: 1 }}></Box>
         <Box
           sx={{
