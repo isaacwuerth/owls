@@ -1,0 +1,8 @@
+{
+  "include": [
+    ".eslintrc.js"
+  ],
+  "typeRoots": [
+    "node_modules/@types"
+  ]
+}
