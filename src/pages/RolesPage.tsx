@@ -55,11 +55,9 @@ export function RolesPage() {
               gap: 1,
             }}
           >
-            <>
-              <AddRoleButton />
-              <AbortButton />
-              <SavePermissionsButton />
-            </>
+            <AddRoleButton />
+            <AbortButton />
+            <SavePermissionsButton />
           </Box>
         </Grow>
         <Box
