@@ -25,7 +25,6 @@ export async function createAbility(user: User) {
   const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility)
   const idTokenResult = await user.getIdTokenResult(true)
   const { claims } = idTokenResult
-  console.log(claims)
   if (!claims.capabilities) throw new Error('No capabilities found')
   const capabilities = claims.capabilities as string[]
   capabilities.forEach((capability) => {
