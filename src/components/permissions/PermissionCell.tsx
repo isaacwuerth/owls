@@ -3,8 +3,8 @@ import { Action, Scopes, Subject } from '../../model/Role'
 import { Checkbox, TableCell, useTheme } from '@mui/material'
 import { useRecoilState } from 'recoil'
 import { capabilityState } from '../../atoms/RoleCapabilitiesAtom'
-import GroupsIcon from '@mui/icons-material/Groups'
-import PersonIcon from '@mui/icons-material/Person'
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
+import FeedIcon from '@mui/icons-material/Feed'
 
 interface CellStateProps {
   backgroundColor?: string
@@ -41,12 +41,12 @@ export function PermissionCell({
   useEffect(() => {
     const states = {
       all: {
-        checkboxIcon: <GroupsIcon />,
+        checkboxIcon: <DynamicFeedIcon />,
         backgroundColor: theme.palette.success.main,
         color: theme.palette.success.contrastText,
       },
       own: {
-        checkboxIcon: <PersonIcon />,
+        checkboxIcon: <FeedIcon />,
         backgroundColor: theme.palette.warning.main,
         color: theme.palette.warning.contrastText,
       },
