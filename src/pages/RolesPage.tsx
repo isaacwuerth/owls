@@ -1,0 +1,119 @@
+import {
+  Box,
+  Card,
+  CardContent,
+  Zoom,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  CardHeader,
+  Grow,
+} from '@mui/material'
+import { useFirebase } from '../Context/FirebaseContext'
+import { useEffect } from 'react'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import {
+  hasRolesChanges,
+  rolesDefaultState,
+  rolesState,
+} from '../atoms/RoleCapabilitiesAtom'
+import Grid2 from '@mui/material/Unstable_Grid2'
+import { permissionTableViewState } from '../atoms/PermissionTableViewState'
+import { SavePermissionsButton } from '../components/permissions/SavePermissionsButton'
+import { AbortButton } from '../components/permissions/AbortButton'
+import { AddRoleButton } from '../components/permissions/AddRoleButton'
+import { PermissionHorizontalView } from '../components/permissions/PermissionHorizontalView'
+import { PermissionVerticalView } from '../components/permissions/PermissionVerticalView'
+import { ViewButton } from '../components/permissions/ViewButton'
+
+export function RolesPage() {
+  const setRoles = useSetRecoilState(rolesState)
+  const setDefaultRoles = useSetRecoilState(rolesDefaultState)
+  const view = useRecoilValue(permissionTableViewState)
+  const theme = useTheme()
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'))
+  const hasRoleChanges = useRecoilValue(hasRolesChanges)
+  const { roleRepository } = useFirebase()
+
+  useEffect(() => {
+    void roleRepository.findAll().then((roles) => {
+      setRoles(roles)
+      setDefaultRoles(roles)
+    })
+  }, [])
+
+  return (
+    <>
+      <Box sx={{ display: 'flex' }}>
+        <Typography variant="h2">Rollen</Typography>
+        <Box sx={{ flexGrow: 1 }}></Box>
+        <Grow in={isDesktop} appear={isDesktop} unmountOnExit>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <AddRoleButton />
+            <AbortButton />
+            <SavePermissionsButton />
+          </Box>
+        </Grow>
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            alignItems: 'center',
+          }}
+        >
+          <Zoom
+            in={hasRoleChanges && !isDesktop}
+            appear={!isDesktop}
+            unmountOnExit
+          >
+            <Box>
+              <AbortButton />
+            </Box>
+          </Zoom>
+          <Zoom
+            in={hasRoleChanges && !isDesktop}
+            appear={!isDesktop}
+            unmountOnExit
+          >
+            <Box>
+              <SavePermissionsButton />
+            </Box>
+          </Zoom>
+          <Zoom in={!isDesktop} unmountOnExit>
+            <Box>
+              <AddRoleButton />
+            </Box>
+          </Zoom>
+        </Box>
+      </Box>
+      <Grid2 container>
+        <Grid2 xs={12}>
+          <Card>
+            <CardHeader
+              title="Berechtigungen bearbeiten"
+              action={<ViewButton />}
+            />
+            <CardContent>
+              {view === 'vertical' ? (
+                <PermissionHorizontalView />
+              ) : (
+                <PermissionVerticalView />
+              )}
+            </CardContent>
+          </Card>
+        </Grid2>
+      </Grid2>
+    </>
+  )
+}

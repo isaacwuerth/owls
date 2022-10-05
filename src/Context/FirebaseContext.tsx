@@ -4,7 +4,6 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getAnalytics } from 'firebase/analytics'
 import { getDatabase } from 'firebase/database'
 import { getFirestore } from 'firebase/firestore'
-import { useLocation, useNavigate } from 'react-router-dom'
 import * as firebaseui from 'firebaseui'
 import { useSetRecoilState } from 'recoil'
 import { profileAtom } from '../atoms/ProfileAtom'
@@ -23,6 +22,7 @@ import { UsersRepository } from '../repositories/UsersRepository'
 import { FileRepository } from '../repositories/FileRepository'
 import { applicationStateAtom } from '../atoms/ApplicationState'
 import { useOpenReplay } from './OpenReplayContext'
+import { RoleRepository } from '../repositories/RoleRepository'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -67,6 +67,7 @@ const firebaseContextConfig = {
   eventRepository: new EventRepository(firestore),
   participantRepository: new ParticipantRepository(firestore),
   usersRepository: new UsersRepository(firestore),
+  roleRepository: new RoleRepository(firestore),
   avatarFiles: new FileRepository(storage, 'avatar'),
   filesRepository: new FileRepository(storage, 'exchange'),
 }
@@ -95,8 +96,6 @@ function convertConfig(allConfigs: Record<string, any>): any {
 }
 
 export default function FirebaseProvider({ children }: PropsWithChildren) {
-  const navigate = useNavigate()
-  const location = useLocation()
   const setProfile = useSetRecoilState(profileAtom)
   const setSiteConfig = useSetRecoilState(siteConfigAtom)
   const setApplicationState = useSetRecoilState(applicationStateAtom)
@@ -114,17 +113,14 @@ export default function FirebaseProvider({ children }: PropsWithChildren) {
     LoadConfigStartup().catch(() => {})
     onAuthStateChanged(firebaseContextConfig.apps.auth, async (user) => {
       if (user) {
-        if (location.pathname === '/logout') return
+        openreplay?.setUserID(user.email ?? 'nouser')
         const users = await firebaseContextConfig.usersRepository.findByUID(
           user.uid
         )
         if (users.length > 1)
           throw new Error('There are multiple users with the same UID')
-        if (users.length !== 1) navigate('user-setup')
+        if (users.length !== 1) throw new Error('User not found in database')
         setProfile(users[0])
-        openreplay?.setUserID(user.email ?? 'nouser')
-      } else {
-        navigate('/login')
       }
       setApplicationState('running')
     })

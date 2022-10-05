@@ -22,17 +22,6 @@ import {
 } from 'firebase/firestore'
 import { z } from 'zod'
 
-const removeNullUndefined = (obj: any) => {
-  const objFiltered = { ...obj }
-  Object.keys(obj).forEach((key) => {
-    if (obj[key] == null) {
-      objFiltered[key] = deleteField()
-    }
-  })
-
-  return objFiltered
-}
-
 export const BasicEntitySchema = z.object({
   id: z.string().nullable().default(null).optional(),
   createdAt: z
@@ -115,11 +104,14 @@ export abstract class BaseRepository<T extends BasicEntity>
     return await Promise.all(functions)
   }
 
-  async update(id: string, newItem: T): Promise<string> {
-    newItem.updatedAt = serverTimestamp() as Timestamp
-    newItem.id = id
+  async update(id: string, newItem: Partial<T>): Promise<string> {
+    newItem = {
+      ...newItem,
+      updatedAt: serverTimestamp() as Timestamp,
+      id,
+    }
     delete newItem.createdAt
-    const filtered = removeNullUndefined(newItem)
+    const filtered = this.removeNullUndefined(newItem)
     const docRef = doc(this.db, `${this.collectionName}/${id}`).withConverter(
       this.postConverter
     )
@@ -179,5 +171,16 @@ export abstract class BaseRepository<T extends BasicEntity>
         snapshot.data(options)
       ) as T
     },
+  }
+
+  removeNullUndefined(obj: any) {
+    const objFiltered = { ...obj }
+    Object.keys(obj).forEach((key) => {
+      if (obj[key] == null) {
+        objFiltered[key] = deleteField()
+      }
+    })
+
+    return objFiltered
   }
 }

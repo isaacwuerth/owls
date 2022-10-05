@@ -1,16 +1,15 @@
 import { useFirebase } from '../../Context/FirebaseContext'
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function LogoutPage() {
   const firebase = useFirebase()
+  const navigate = useNavigate()
   useEffect(() => {
-    async function signOut() {
-      await firebase.apps.auth.signOut()
+    if (firebase.apps.auth.currentUser) {
+      void firebase.apps.auth.signOut()
     }
-
-    signOut().catch((reason) => {
-      throw new Error(reason)
-    })
+    navigate('/login')
   }, [])
   return null
 }

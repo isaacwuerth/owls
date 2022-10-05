@@ -1,0 +1,6 @@
+{
+  "collectCoverage": false,
+  "testMatch":[
+    "<rootDir>firebase-test\\**\\*.{spec,test}.{js,jsx,ts,tsx}"
+  ]
+}
