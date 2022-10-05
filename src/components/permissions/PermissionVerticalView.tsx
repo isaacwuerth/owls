@@ -12,6 +12,7 @@ import {
 import { PermissionCell } from './PermissionCell'
 import { Action, Role, Subject } from '../../model/Role'
 import { appCapabilities } from './AppCapabilities'
+import { ViewButton } from './ViewButton'
 
 interface PermissionVerticalRowProps {
   subject: Subject
@@ -87,7 +88,9 @@ export function PermissionVerticalView() {
               sx={{
                 width: '18px',
               }}
-            ></TableCell>
+            >
+              <ViewButton />
+            </TableCell>
             <TableCell></TableCell>
             {roles.map((role) => (
               <TableCell
