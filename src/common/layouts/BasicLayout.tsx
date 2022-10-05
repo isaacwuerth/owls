@@ -188,8 +188,8 @@ function BasicLayout() {
           sx={{
             flexGrow: 1,
             p: 3,
-            padding: 2,
-            width: (theme) => ` calc(100vw - ${theme.spacing(4)})`,
+            padding: 1,
+            width: (theme) => ` calc(100vw - ${theme.spacing(2)})`,
           }}
           // sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
         >
