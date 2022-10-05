@@ -6,6 +6,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  CardHeader,
 } from '@mui/material'
 import { useFirebase } from '../Context/FirebaseContext'
 import { useEffect } from 'react'
@@ -22,6 +23,7 @@ import { AbortButton } from '../components/permissions/AbortButton'
 import { AddRoleButton } from '../components/permissions/AddRoleButton'
 import { PermissionHorizontalView } from '../components/permissions/PermissionHorizontalView'
 import { PermissionVerticalView } from '../components/permissions/PermissionVerticalView'
+import { ViewButton } from '../components/permissions/ViewButton'
 
 export function RolesPage() {
   const setRoles = useSetRecoilState(rolesState)
@@ -83,6 +85,10 @@ export function RolesPage() {
       <Grid2 container>
         <Grid2 xs={12}>
           <Card>
+            <CardHeader
+              title="Berechtigungen bearbeiten"
+              action={<ViewButton />}
+            />
             <CardContent>
               {view === 'vertical' ? (
                 <PermissionHorizontalView />

@@ -13,22 +13,25 @@ import { DeleteButtonCell } from './DeleteButtonCell'
 import { RoleCell } from './RoleCell'
 import { PermissionCell } from './PermissionCell'
 import { appCapabilities } from './AppCapabilities'
-import { ViewButton } from './ViewButton'
 
 export function PermissionHorizontalView() {
   const roles = useRecoilValue(rolesState)
 
   const theme = useTheme()
   return (
-    <TableContainer>
-      <Table sx={{ borderCollapse: 'separate' }}>
+    <TableContainer
+      sx={{ border: (theme) => `1px solid ${theme.palette.divider}` }}
+    >
+      <Table
+        sx={{
+          borderCollapse: 'separate',
+        }}
+      >
         <TableHead>
           <TableRow
             sx={{ position: 'sticky', top: theme.mixins.toolbar.height }}
           >
-            <TableCell>
-              <ViewButton />
-            </TableCell>
+            <TableCell></TableCell>
             <TableCell
               sx={{
                 width: 120,

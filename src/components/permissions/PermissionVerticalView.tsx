@@ -12,7 +12,6 @@ import {
 import { PermissionCell } from './PermissionCell'
 import { Action, Role, Subject } from '../../model/Role'
 import { appCapabilities } from './AppCapabilities'
-import { ViewButton } from './ViewButton'
 
 interface PermissionVerticalRowProps {
   subject: Subject
@@ -69,7 +68,12 @@ function PermissionVerticalRow({
 export function PermissionVerticalView() {
   const roles = useRecoilValue(rolesState)
   return (
-    <TableContainer sx={{ height: '500px' }}>
+    <TableContainer
+      sx={{
+        height: '500px',
+        border: (theme) => `1px solid ${theme.palette.divider} `,
+      }}
+    >
       <Table sx={{ borderCollapse: 'separate' }}>
         <TableHead
           sx={{
@@ -88,9 +92,7 @@ export function PermissionVerticalView() {
               sx={{
                 width: '18px',
               }}
-            >
-              <ViewButton />
-            </TableCell>
+            ></TableCell>
             <TableCell></TableCell>
             {roles.map((role) => (
               <TableCell
