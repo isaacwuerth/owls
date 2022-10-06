@@ -14,6 +14,9 @@ import { InputType } from '../components/DynamicForm/InputType'
 import { AvatarUpload } from '../components/Profile/AvatarUpload'
 import { useFirebase } from '../Context/FirebaseContext'
 import { Profile, ProfileSchema } from '../model/Profil'
+import { useAbility } from '../Context/AuthorizationContext'
+import { subject } from '@casl/ability'
+import _ from 'lodash'
 
 export function ProfileForm() {
   const [user, setUser] = useRecoilState(editUserAtom)
@@ -24,6 +27,14 @@ export function ProfileForm() {
     resolver: zodResolver(ProfileSchema),
     defaultValues: user,
   })
+  const ability = useAbility()
+
+  useEffect(() => {
+    if (!user?.uid) return
+    if (ability.can('update', subject('users', _.cloneDeep(user))))
+      setDisableForm(false)
+    else setDisableForm(true)
+  }, [user])
 
   const { handleSubmit, reset } = form
   const {
@@ -62,7 +73,7 @@ export function ProfileForm() {
         <Box component={'form'} onSubmit={handleSubmit(onSubmit)}>
           <Grid container direction="column" spacing={3}>
             <Grid item columnSpacing={3}>
-              <AvatarUpload />
+              <AvatarUpload disabled={disableForm} />
             </Grid>
             <Grid item>
               <Input

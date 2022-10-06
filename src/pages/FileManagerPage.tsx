@@ -26,6 +26,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { DropzoneDialog } from '../common/dropzone/DropzoneDialog'
+import { ProtectedRoute } from '../Context/AuthorizationContext'
 
 function helperGetFolderFromPath(
   folder: FolderOwls,
@@ -90,7 +91,7 @@ function DownloadDialog({ fileName, procentage, open }: DownloadDialogProps) {
   )
 }
 
-export function FileManagerPage() {
+export function FileManagerPageInner() {
   const [search, setSearch] = useSearchParams()
   const [currentFolder, setCurrentFolder] = useState<FolderOwls | undefined>()
   const [rootFolder, setRootFolder] = useState<FolderOwls | undefined>(
@@ -233,5 +234,13 @@ export function FileManagerPage() {
         open={downloadDialogOpen}
       />
     </Box>
+  )
+}
+
+export function FileManagerPage() {
+  return (
+    <ProtectedRoute subject="files">
+      <FileManagerPageInner />
+    </ProtectedRoute>
   )
 }

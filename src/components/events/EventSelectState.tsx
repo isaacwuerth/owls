@@ -2,27 +2,51 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { Chip, SelectChangeEvent } from '@mui/material'
 import { ParticipantState } from '../../model/enum/ParticipantState'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { generalErrorHandler } from '../../utils/generalErrorHandler'
 import { useFirebase } from '../../Context/FirebaseContext'
+import { Participant } from '../../model/Participant'
 
 interface EventSelectStateProps {
-  value: ParticipantState
-  uid: string
-  eid: string
+  participant: Participant
+  disabled?: boolean
 }
 
-export function EventSelectState({ value, eid, uid }: EventSelectStateProps) {
-  const [state, setState] = useState<ParticipantState>(value)
+export function EventSelectState({
+  participant,
+  disabled,
+}: EventSelectStateProps) {
+  const [state, setState] = useState<ParticipantState>(participant.state)
   const { participantRepository } = useFirebase()
   async function handleSelect(event: SelectChangeEvent) {
     const state = event.target.value as ParticipantState
+    participant.state = state
     await participantRepository
-      .updateUserState(eid, uid, state)
+      .update(participant.id as string, participant)
       .catch(generalErrorHandler)
     setState(state)
   }
 
+  const states = {
+    [ParticipantState.COMMITMENT]: (
+      <Chip color="success" size="small" label={'Zusage'} />
+    ),
+    [ParticipantState.OUTSTANDING]: (
+      <Chip color="info" size="small" label={'Ausstehend'} />
+    ),
+    [ParticipantState.REJECTED]: (
+      <Chip color="error" size="small" label={'Abgelehnt'} />
+    ),
+    [ParticipantState.WITHRESERVATION]: (
+      <Chip color="warning" size="small" label={'Mit Vorbehalt'} />
+    ),
+  }
+
+  useEffect(() => {
+    setState(participant.state)
+  }, [participant.state])
+
+  if (disabled) return states[state]
   return (
     <Select
       value={state}
@@ -31,18 +55,11 @@ export function EventSelectState({ value, eid, uid }: EventSelectStateProps) {
       size="small"
       sx={{ height: 1 }}
     >
-      <MenuItem value={'commitment'}>
-        <Chip color="success" size="small" label={'Zusage'} />
-      </MenuItem>
-      <MenuItem value={'rejected'}>
-        <Chip color="error" size="small" label={'Abgelehnt'} />
-      </MenuItem>
-      <MenuItem value={'withreservation'}>
-        <Chip color="warning" size="small" label={'Mit Vorbehalt'} />
-      </MenuItem>
-      <MenuItem value={'outstanding'}>
-        <Chip color="info" size="small" label={'Ausstehend'} />
-      </MenuItem>
+      {Object.entries(states).map(([key, value]) => (
+        <MenuItem key={key} value={key} disabled={disabled}>
+          {value}
+        </MenuItem>
+      ))}
     </Select>
   )
 }

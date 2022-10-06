@@ -4,6 +4,7 @@ import * as functions from "firebase-functions";
 const capabilitiesUsersUidRoles = "capabilitiesUsers/{uid}";
 const firestoreRoles = "capabilitiesRoles/";
 const firestoreUserSpecificCapabilities = "capabilitiesUsers/{uid}";
+const firestoreUserContext = "userContext/{uid}";
 
 type CRUD = "list" | "get" | "create" | "update" | "delete" | "manage";
 type Scope = "all" | "own"
@@ -84,6 +85,10 @@ export const getUserCapabilities = async (uid: string) => {
 export const syncUserCapabilities = async (uid: string) => {
   const capabilities = await getUserCapabilities(uid);
   await admin.auth().setCustomUserClaims(uid, {capabilities});
+  await admin.firestore()
+      .doc(firestoreUserContext.replace("{uid}", uid))
+      .update({lastPermissionUpdate:
+          admin.firestore.FieldValue.serverTimestamp()});
 };
 
 export const syncAllUsersCapabilities = async () => {

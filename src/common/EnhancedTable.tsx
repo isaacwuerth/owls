@@ -176,8 +176,8 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 }
 
 interface EnhancedTableProps<T> {
-  setSelected: (selected: string[]) => void
-  selected: string[]
+  setSelected: (selected: T[]) => void
+  selected: T[]
   rowsPerPage: number
   rows: T[]
   columns: Array<HeadCell<T>>
@@ -206,19 +206,18 @@ export default function EnhancedTable<T extends BasicRow>({
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id)
-      setSelected(newSelected)
+      setSelected(rows)
       return
     }
     setSelected([])
   }
 
-  function handleRowClick(event: MouseEvent<unknown>, id: string) {
-    const selectedIndex = selected.indexOf(id)
-    let newSelected: string[] = []
+  function handleRowClick(event: MouseEvent<unknown>, row: T) {
+    const selectedIndex = selected.indexOf(row)
+    let newSelected: T[] = []
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id)
+      newSelected = newSelected.concat(selected, row)
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1))
     } else if (selectedIndex === selected.length - 1) {
@@ -245,7 +244,7 @@ export default function EnhancedTable<T extends BasicRow>({
     setDense(event.target.checked)
   }
 
-  const isSelected = (id: string) => selected.includes(id)
+  const isSelected = (row: T) => selected.includes(row)
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * acuelRowsPerPage - rows.length) : 0
@@ -270,13 +269,13 @@ export default function EnhancedTable<T extends BasicRow>({
                 .sort(getComparator(order, orderBy))
                 .slice(page * acuelRowsPerPage, (page + 1) * acuelRowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.id)
+                  const isItemSelected = isSelected(row)
                   const labelId = `enhanced-table-checkbox-${index}`
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleRowClick(event, row.id)}
+                      onClick={(event) => handleRowClick(event, row)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}

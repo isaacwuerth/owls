@@ -1,5 +1,10 @@
 import { User } from '@firebase/auth'
-import { AbilityBuilder, createMongoAbility, MongoAbility } from '@casl/ability'
+import {
+  AbilityBuilder,
+  createMongoAbility,
+  MongoAbility,
+  subject,
+} from '@casl/ability'
 import React, {
   createContext,
   PropsWithChildren,
@@ -13,12 +18,14 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { AccessDenied } from '../pages/app/AccessDenied'
 import { requestedRouteAtom } from '../atoms/RequestedRouteAtom'
 import { useRecoilState } from 'recoil'
+import _ from 'lodash'
+import { Action, Actions, Scope, Subject } from '../model/Role'
 
-type CRUD = 'list' | 'get' | 'create' | 'update' | 'delete'
-type Subject = 'users' | 'events'
-type Scope = 'all' | 'own' | null | undefined
-type Abilities = [CRUD, 'users'] | [CRUD, 'events'] | [CRUD, { uid: string }]
-type AbilitiesWithScrope = [CRUD, 'users', Scope] | [CRUD, 'events', Scope]
+type Abilities =
+  | [Action, 'users']
+  | [Action, 'events']
+  | [Action, { uid: string }]
+type AbilitiesWithScrope = [Action, 'users', Scope] | [Action, 'events', Scope]
 export type AppAbility = MongoAbility<Abilities>
 
 export async function createAbility(user: User) {
@@ -31,7 +38,7 @@ export async function createAbility(user: User) {
     const [action, subject, scope] = capability.split(
       ':'
     ) as AbilitiesWithScrope
-    if (!scope ?? scope === 'all') {
+    if (scope === 'all') {
       can(action, subject)
     } else {
       if (!user.uid) throw new Error('No user id found')
@@ -55,6 +62,14 @@ export function FirebaseAuthorizationProvider({ children }: PropsWithChildren) {
     return auth.onAuthStateChanged(async (user) => {
       if (user) {
         setAbility(await createAbility(user))
+
+        // userContextRepository.onDocUpdate(user?.uid, async (userContext) => {
+        //   if (userContext?.lastPermissionUpdate > lastPermissionUpdate) {
+        //     setAbility(await createAbility(user))
+        //     setLastPermissionUpdate(userContext.lastPermissionUpdate)
+        //     console.log('Permissions updated')
+        //   }
+        // })
       } else {
         setAbility(createMongoAbility())
       }
@@ -80,32 +95,57 @@ export function useAbility() {
   return abilityContext
 }
 
-interface ProtectedProps {
-  action?: CRUD
+interface ProtectedBasisProps {
+  action?: Action | Action[]
   subject?: Subject
   scope?: Scope
+  this?: object
 }
 
-export function ProtectedRoute({
+interface ProtectedProps {
+  denied?: React.ReactNode
+}
+
+export function Protected({
   action,
-  subject,
+  subject: subjectToAccess,
   children,
-}: PropsWithChildren<ProtectedProps>) {
+  this: obj,
+  denied,
+}: PropsWithChildren<ProtectedBasisProps & ProtectedProps>) {
   const ability = useAbility()
-  if (!action || !subject) return <Outlet />
-  if (!ability.can(action, subject)) {
-    return <AccessDenied />
-  }
-  return children
+  let access = true
+  if (!subjectToAccess) return <>{children}</>
+
+  if (action && !Array.isArray(action) && obj)
+    access = ability.can(
+      action as string,
+      subject(subjectToAccess, _.cloneDeep(obj))
+    )
+
+  if (!action && !Array.isArray(action) && !obj)
+    access = Actions.some((a) => ability.can(a, subjectToAccess))
+
+  if (Array.isArray(action) && !obj)
+    access = action.some((a) => ability.can(a, subjectToAccess))
+
+  if (Array.isArray(action) && obj)
+    access = action.some((a) =>
+      ability.can(a, subject(subjectToAccess, _.cloneDeep(obj)))
+    )
+
+  console.log()
+  if (!access) return <>{denied}</>
+
+  return <>{children}</>
 }
 
-export function ProtectedOutlet({ action, subject }: ProtectedProps) {
-  const ability = useAbility()
-  if (!action || !subject) return <Outlet />
-  if (!ability.can(action, subject)) {
-    return <AccessDenied />
-  }
-  return <Outlet />
+export function ProtectedRoute(props: PropsWithChildren<ProtectedBasisProps>) {
+  return <Protected {...props} denied={<AccessDenied />} />
+}
+
+export function ProtectedOutlet(props: ProtectedBasisProps) {
+  return <Protected {...props} denied={<Outlet />} />
 }
 
 export function AuthenticationOutlet() {

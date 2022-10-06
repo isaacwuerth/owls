@@ -13,6 +13,7 @@ import { DeleteButtonCell } from './DeleteButtonCell'
 import { RoleCell } from './RoleCell'
 import { PermissionCell } from './PermissionCell'
 import { appCapabilities } from './AppCapabilities'
+import { Can } from '../../Context/AuthorizationContext'
 
 export function PermissionHorizontalView() {
   const roles = useRecoilValue(rolesState)
@@ -31,7 +32,9 @@ export function PermissionHorizontalView() {
           <TableRow
             sx={{ position: 'sticky', top: theme.mixins.toolbar.height }}
           >
-            <TableCell></TableCell>
+            <Can I="delete" a="role">
+              <TableCell></TableCell>
+            </Can>
             <TableCell
               sx={{
                 width: 120,
@@ -51,7 +54,9 @@ export function PermissionHorizontalView() {
             ))}
           </TableRow>
           <TableRow>
-            <TableCell></TableCell>
+            <Can I="delete" a="role">
+              <TableCell> </TableCell>
+            </Can>
             <TableCell
               sx={{
                 position: 'sticky',
@@ -78,7 +83,9 @@ export function PermissionHorizontalView() {
         <TableBody>
           {roles.map((role, index) => (
             <TableRow key={`row-${index}`}>
-              <DeleteButtonCell role={role} />
+              <Can I="delete" a="role">
+                <DeleteButtonCell role={role} />
+              </Can>
               <TableCell
                 sx={{
                   position: 'sticky',

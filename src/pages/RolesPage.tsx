@@ -25,8 +25,9 @@ import { AddRoleButton } from '../components/permissions/AddRoleButton'
 import { PermissionHorizontalView } from '../components/permissions/PermissionHorizontalView'
 import { PermissionVerticalView } from '../components/permissions/PermissionVerticalView'
 import { ViewButton } from '../components/permissions/ViewButton'
+import { Can, ProtectedRoute } from '../Context/AuthorizationContext'
 
-export function RolesPage() {
+export function RolesPageInner() {
   const setRoles = useSetRecoilState(rolesState)
   const setDefaultRoles = useSetRecoilState(rolesDefaultState)
   const view = useRecoilValue(permissionTableViewState)
@@ -55,9 +56,13 @@ export function RolesPage() {
               gap: 1,
             }}
           >
-            <AddRoleButton />
-            <AbortButton />
-            <SavePermissionsButton />
+            <Can I="create" a="role">
+              <AddRoleButton />
+            </Can>
+            <Can I="update" a="role">
+              <AbortButton />
+              <SavePermissionsButton />
+            </Can>
           </Box>
         </Grow>
         <Box
@@ -72,29 +77,33 @@ export function RolesPage() {
             alignItems: 'center',
           }}
         >
-          <Zoom
-            in={hasRoleChanges && !isDesktop}
-            appear={!isDesktop}
-            unmountOnExit
-          >
-            <Box>
-              <AbortButton />
-            </Box>
-          </Zoom>
-          <Zoom
-            in={hasRoleChanges && !isDesktop}
-            appear={!isDesktop}
-            unmountOnExit
-          >
-            <Box>
-              <SavePermissionsButton />
-            </Box>
-          </Zoom>
-          <Zoom in={!isDesktop} unmountOnExit>
-            <Box>
-              <AddRoleButton />
-            </Box>
-          </Zoom>
+          <Can I="update" a="role">
+            <Zoom
+              in={hasRoleChanges && !isDesktop}
+              appear={!isDesktop}
+              unmountOnExit
+            >
+              <Box>
+                <AbortButton />
+              </Box>
+            </Zoom>
+            <Zoom
+              in={hasRoleChanges && !isDesktop}
+              appear={!isDesktop}
+              unmountOnExit
+            >
+              <Box>
+                <SavePermissionsButton />
+              </Box>
+            </Zoom>
+          </Can>
+          <Can I="create" a="role">
+            <Zoom in={!isDesktop} unmountOnExit>
+              <Box>
+                <AddRoleButton />
+              </Box>
+            </Zoom>
+          </Can>
         </Box>
       </Box>
       <Grid2 container>
@@ -115,5 +124,13 @@ export function RolesPage() {
         </Grid2>
       </Grid2>
     </>
+  )
+}
+
+export function RolesPage() {
+  return (
+    <ProtectedRoute subject="roles" action={['list', 'get']}>
+      <RolesPageInner />
+    </ProtectedRoute>
   )
 }
