@@ -6,6 +6,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useNavigate } from 'react-router-dom'
 import IconButton from '@mui/material/IconButton'
 import { GeneralEvent } from '../../model/GeneralEvent'
+import { Can } from '../../Context/AuthorizationContext'
+import { subject } from '@casl/ability'
+import _ from 'lodash'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', hide: true },
@@ -54,21 +57,27 @@ export default function EventsList({ events, onDelete }: EventListProps) {
   columns[5].renderCell = (params) => {
     return (
       <>
-        <IconButton
-          aria-label="View"
-          onClick={() => navigate(String(params.row.id))}
-        >
-          <VisibilityIcon />
-        </IconButton>
-        <IconButton
-          aria-label="Edit"
-          onClick={() => navigate(String(params.row.id) + '/edit')}
-        >
-          <EditIcon />
-        </IconButton>
-        <IconButton aria-label="Edit" onClick={() => onDelete(params.row.id)}>
-          <DeleteIcon />
-        </IconButton>
+        <Can I="get" this={subject('events', _.cloneDeep(params.row))}>
+          <IconButton
+            aria-label="View"
+            onClick={() => navigate(String(params.row.id))}
+          >
+            <VisibilityIcon />
+          </IconButton>
+        </Can>
+        <Can I="update" this={subject('events', _.cloneDeep(params.row))}>
+          <IconButton
+            aria-label="Edit"
+            onClick={() => navigate(String(params.row.id) + '/edit')}
+          >
+            <EditIcon />
+          </IconButton>
+        </Can>
+        <Can I="delete" this={subject('events', _.cloneDeep(params.row))}>
+          <IconButton aria-label="Edit" onClick={() => onDelete(params.row.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </Can>
       </>
     )
   }

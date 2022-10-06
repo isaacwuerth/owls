@@ -5,8 +5,9 @@ import { useFirebase } from '../../Context/FirebaseContext'
 import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { AvatarProfile } from '../../components/Profile/AvatarCurrentUser'
+import { ProtectedRoute } from '../../Context/AuthorizationContext'
 
-export function UsersPage() {
+export function UsersPageInner() {
   const [users, setUsers] = useState<Profile[]>([])
   const { usersRepository } = useFirebase()
 
@@ -51,5 +52,13 @@ export function UsersPage() {
         />
       </CardContent>
     </Card>
+  )
+}
+
+export function UsersPage() {
+  return (
+    <ProtectedRoute subject="users" action={['list']}>
+      <UsersPageInner />
+    </ProtectedRoute>
   )
 }

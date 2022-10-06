@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil'
 import { capabilityState } from '../../atoms/RoleCapabilitiesAtom'
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
 import FeedIcon from '@mui/icons-material/Feed'
+import { useAbility } from '../../Context/AuthorizationContext'
 
 interface CellStateProps {
   backgroundColor?: string
@@ -24,6 +25,7 @@ export function PermissionCell({
   action,
 }: PermissionCellProps): ReactElement {
   const theme = useTheme()
+  const ability = useAbility()
   const [scope, setScope] = useRecoilState(
     capabilityState({ role, subject, action })
   )
@@ -65,9 +67,7 @@ export function PermissionCell({
       style={{
         backgroundColor: checkboxState.backgroundColor,
         padding: 0,
-        cursor: 'pointer',
       }}
-      onClick={handleCheckboxClick}
     >
       <Checkbox
         key={`checkbox-${role}-${subject}-${action}`}
@@ -75,6 +75,7 @@ export function PermissionCell({
         checked={Boolean(checkboxState.checkboxIcon)}
         onClick={handleCheckboxClick}
         style={{ color: checkboxState.color, padding: 0 }}
+        disabled={!ability.can('edit', 'roles')}
       />
     </TableCell>
   )

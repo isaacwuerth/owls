@@ -8,7 +8,6 @@ import {
   Unsubscribe,
   where,
 } from 'firebase/firestore'
-import { ParticipantState } from '../model/enum/ParticipantState'
 import { Participant } from '../model/Participant'
 
 export class ParticipantRepository extends BaseRepository<Participant> {
@@ -70,21 +69,6 @@ export class ParticipantRepository extends BaseRepository<Participant> {
     return await getDocs(q).then((value) =>
       value.docs.map((doc) => doc.data() as Participant)
     )
-  }
-
-  async updateUserState(
-    eid: string,
-    uid: string,
-    state: ParticipantState
-  ): Promise<string> {
-    const participants = await this.findByEventAndUser(eid, uid)
-    if (participants.length > 0) {
-      const participant = participants[0]
-      participant.state = state
-      return await this.update(participant.id as string, participant)
-    } else {
-      return ''
-    }
   }
 
   onEventParticipantsChange(

@@ -1,6 +1,5 @@
 import { Box, Button, Card, Tab, Tabs, Typography } from '@mui/material'
 import { PropsWithChildren, SyntheticEvent, useEffect, useState } from 'react'
-import { ParticipantState } from '../../model/enum/ParticipantState'
 import { GeneralEvent } from '../../model/GeneralEvent'
 import Grid2 from '@mui/material/Unstable_Grid2'
 import { useParams } from 'react-router-dom'
@@ -15,6 +14,8 @@ import { Participant } from '../../model/Participant'
 import { generalErrorHandler } from '../../utils/generalErrorHandler'
 import { useRecoilValue } from 'recoil'
 import { profileAtom } from '../../atoms/ProfileAtom'
+import { Can, ProtectedRoute } from '../../Context/AuthorizationContext'
+import { subject } from '@casl/ability'
 
 interface TabPanelProps {
   index: number
@@ -50,7 +51,9 @@ export function EventPage() {
   const [event, setEvent] = useState<GeneralEvent | null>(null)
   const [participants, setParticipants] = useState<Participant[]>([])
   const [value, setValue] = useState(0)
-  const [ownState, setOwnState] = useState<ParticipantState | null>(null)
+  const [ownParticipation, setownParticipation] = useState<
+    Participant | undefined
+  >(undefined)
 
   const {
     apps: { firestore },
@@ -69,10 +72,7 @@ export function EventPage() {
       eid,
       (participants) => {
         setParticipants(participants)
-        setOwnState(
-          participants.find((p) => p.uid === profile.id)?.state ??
-            ParticipantState.OUTSTANDING
-        )
+        setownParticipation(participants.find((p) => p.uid === profile.uid))
       }
     )
 
@@ -106,17 +106,26 @@ export function EventPage() {
     { label: 'Ende', value: String(event.end.toLocaleString()) },
     {
       label: 'Meine Teilnahme',
-      value: (
-        <EventSelectState
-          eid={eid}
-          uid={profile.id ?? ''}
-          value={ownState ?? ParticipantState.OUTSTANDING}
-        />
+      value: ownParticipation ? (
+        <Can
+          I="update"
+          this={subject('eventparticipants', ownParticipation)}
+          passThrough
+        >
+          {(allowed) => (
+            <EventSelectState
+              participant={ownParticipation}
+              disabled={!allowed}
+            />
+          )}
+        </Can>
+      ) : (
+        'Sie nehmen nicht teil'
       ),
     },
   ]
   return (
-    <>
+    <ProtectedRoute subject="events" action="get" this={event}>
       <Box
         style={{
           display: 'flex',
@@ -139,20 +148,28 @@ export function EventPage() {
                 justifyContent: 'center',
               }}
             >
-              <Button variant="contained">Bearbeiten</Button>
+              <Can I="update" this={subject('events', event)}>
+                <Button variant="contained">Bearbeiten</Button>
+              </Can>
             </Box>
           </Grid2>
         </Grid2>
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label="Details" {...a11yProps(0)} />
-          <Tab label="Teilnehmer" {...a11yProps(1)} />
-        </Tabs>
+        <Can I="list" a="eventparticipants">
+          {(allowedToShowParticipants) => (
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              <Tab label="Details " {...a11yProps(0)} />
+              {allowedToShowParticipants && (
+                <Tab label="Teilnehmer" {...a11yProps(1)} />
+              )}
+            </Tabs>
+          )}
+        </Can>
       </Box>
       <TabPanel value={value} index={0}>
         <Grid2 container spacing={2}>
@@ -173,6 +190,6 @@ export function EventPage() {
           </Box>
         </Card>
       </TabPanel>
-    </>
+    </ProtectedRoute>
   )
 }

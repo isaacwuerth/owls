@@ -6,6 +6,7 @@ export const LocationSchema = z.object({
   city: z.string(),
   street: z.string(),
   country: z.string(),
+  uid: z.string(),
 })
 
 export const GeneralEventSchema = z

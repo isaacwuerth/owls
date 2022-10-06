@@ -17,6 +17,7 @@ import { ProfileSchema } from '../../model/Profil'
 import './EventsPage.scss'
 import { z } from 'zod'
 import { generalErrorHandler } from '../../utils/generalErrorHandler'
+import { Can, ProtectedRoute } from '../../Context/AuthorizationContext'
 
 const ProfileWithIdSchema = ProfileSchema.omit({ id: true }).extend({
   id: z.string(),
@@ -24,13 +25,17 @@ const ProfileWithIdSchema = ProfileSchema.omit({ id: true }).extend({
 
 type ProfileWithId = z.infer<typeof ProfileWithIdSchema>
 
-export function EventsPage() {
+export function EventsPageInner() {
   const [events, setEvents] = useState<GeneralEvent[]>([])
   const [showPopup, setShowPopup] = useState<boolean>(false)
   const [users, setUsers] = useState<ProfileWithId[]>([])
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
-  const { eventRepository, usersRepository, participantRepository } =
-    useFirebase()
+  const [selectedUsers, setSelectedUsers] = useState<ProfileWithId[]>([])
+  const {
+    eventRepository,
+    usersRepository,
+    participantRepository,
+    apps: { auth },
+  } = useFirebase()
 
   const methods = useForm<GeneralEvent>({
     resolver: zodResolver(GeneralEventSchema),
@@ -38,18 +43,19 @@ export function EventsPage() {
   const { handleSubmit, reset } = methods
 
   async function crateParticipants(eid: string) {
-    const participants: Participant[] = selectedUsers.map((uid) => {
+    const participants: Participant[] = selectedUsers.map((profile) => {
       return {
         eid,
-        uid,
+        uid: profile.uid,
         state: ParticipantState.OUTSTANDING,
-        fullname: uid,
+        fullname: profile.firstName + ' ' + profile.lastName,
       }
     })
     await participantRepository.createFromArray(participants)
   }
 
   function onSubmit(eventEdited: GeneralEvent) {
+    eventEdited.uid = auth.currentUser?.uid ?? ''
     eventRepository
       .create(eventEdited)
       .then(async (eid) => {
@@ -77,9 +83,11 @@ export function EventsPage() {
   }, [])
   return (
     <>
-      <Button variant="outlined" onClick={() => setShowPopup(true)}>
-        Erstellen
-      </Button>
+      <Can I="create" a="events">
+        <Button variant="outlined" onClick={() => setShowPopup(true)}>
+          Erstellen
+        </Button>
+      </Can>
       <EventsList events={events} onDelete={handleDelete} />
       <Popup
         title="Event erstellen"
@@ -122,12 +130,20 @@ export function EventsPage() {
                 defaultOrderBy="firstName"
               />
             </HorizontalLinearStep>
-            <HorizontalLinearStep title={'Übersicht'}>
+            <HorizontalLinearStep title={'Übersicht '}>
               <Typography title="Test">Finished</Typography>
             </HorizontalLinearStep>
           </HorizontalLinearStepper>
         </Box>
       </Popup>
     </>
+  )
+}
+
+export function EventsPage() {
+  return (
+    <ProtectedRoute subject="events">
+      <EventsPageInner />
+    </ProtectedRoute>
   )
 }

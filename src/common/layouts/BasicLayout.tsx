@@ -33,6 +33,7 @@ import { AvatarCurrentUser } from '../../components/Profile/AvatarCurrentUser'
 import { useRecoilValue } from 'recoil'
 import { siteConfigAtom } from '../../atoms/SiteConfigAtom'
 import { Logo } from '../Logo'
+import { Protected } from '../../Context/AuthorizationContext'
 
 const drawerWidth = 240
 
@@ -169,13 +170,18 @@ function BasicLayout() {
           </DrawerHeader>
           <Divider />
           <List>
-            {NavItems.map((text) => (
-              <ListItem key={text.key} disablePadding>
-                <ListItemButton component={Link} to={text.uri}>
-                  <ListItemIcon>{text.icon}</ListItemIcon>
-                  <ListItemText primary={text.name} />
-                </ListItemButton>
-              </ListItem>
+            {NavItems.map((navItem) => (
+              <Protected
+                key={navItem.key}
+                subject={navItem.permission?.subject}
+              >
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to={navItem.uri}>
+                    <ListItemIcon>{navItem.icon}</ListItemIcon>
+                    <ListItemText primary={navItem.name} />
+                  </ListItemButton>
+                </ListItem>
+              </Protected>
             ))}
           </List>
         </Drawer>

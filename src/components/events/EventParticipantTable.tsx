@@ -2,6 +2,8 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { EventSelectState } from './EventSelectState'
 import { ParticipantState } from '../../model/enum/ParticipantState'
 import { Participant } from '../../model/Participant'
+import { subject } from '@casl/ability'
+import { Can } from '../../Context/AuthorizationContext'
 
 const columns: GridColDef[] = [
   {
@@ -18,11 +20,18 @@ const columns: GridColDef[] = [
     valueOptions: Object.values(ParticipantState),
     flex: 1,
     renderCell: (params) => (
-      <EventSelectState
-        value={params.value}
-        eid={params.row.eid}
-        uid={params.row.uid}
-      />
+      <Can
+        I="update"
+        this={subject('eventparticipants', params.row)}
+        passThrough
+      >
+        {(allowed) => (
+          <EventSelectState
+            participant={params.row as Participant}
+            disabled={!allowed}
+          />
+        )}
+      </Can>
     ),
   },
 ]

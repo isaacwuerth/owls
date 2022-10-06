@@ -5,6 +5,7 @@ import { editUserAtom } from '../../atoms/EditUser'
 import { Loading } from '../../common/Loading'
 import { useFirebase } from '../../Context/FirebaseContext'
 import { ProfileForm } from '../ProfilForm'
+import { ProtectedRoute } from '../../Context/AuthorizationContext'
 
 function UserPage() {
   const { id } = useParams()
@@ -19,7 +20,11 @@ function UserPage() {
   }, [])
 
   if (!user) return <Loading />
-  return <ProfileForm />
+  return (
+    <ProtectedRoute subject="users" action="get" this={user}>
+      <ProfileForm />
+    </ProtectedRoute>
+  )
 }
 
 export default UserPage

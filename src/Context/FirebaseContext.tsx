@@ -23,6 +23,8 @@ import { FileRepository } from '../repositories/FileRepository'
 import { applicationStateAtom } from '../atoms/ApplicationState'
 import { useOpenReplay } from './OpenReplayContext'
 import { RoleRepository } from '../repositories/RoleRepository'
+import { UserSecurityRepository } from '../repositories/UserSecurityRepository'
+import { UserContextRepository } from '../repositories/UserContextRepository'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -68,6 +70,8 @@ const firebaseContextConfig = {
   participantRepository: new ParticipantRepository(firestore),
   usersRepository: new UsersRepository(firestore),
   roleRepository: new RoleRepository(firestore),
+  userSecurityRepository: new UserSecurityRepository(firestore),
+  userContextRepository: new UserContextRepository(firestore),
   avatarFiles: new FileRepository(storage, 'avatar'),
   filesRepository: new FileRepository(storage, 'exchange'),
 }
