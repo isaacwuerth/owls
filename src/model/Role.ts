@@ -7,6 +7,7 @@ export const Subjects = [
   'users',
   'eventparticipants',
   'roles',
+  'files',
 ] as const
 export const SubjectSchema = z.enum(Subjects)
 export type Subject = z.infer<typeof SubjectSchema>
