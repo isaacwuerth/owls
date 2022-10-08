@@ -80,7 +80,9 @@ export function PermissionVerticalView() {
             position: 'sticky',
             top: 0,
             zIndex: 100,
-            backgroundColor: '#FFF',
+            backgroundColor: (theme) => theme.palette.background.default,
+            backgroundImage:
+              'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
           }}
         >
           <TableRow
