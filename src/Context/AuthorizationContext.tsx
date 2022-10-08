@@ -134,7 +134,6 @@ export function Protected({
       ability.can(a, subject(subjectToAccess, _.cloneDeep(obj)))
     )
 
-  console.log()
   if (!access) return <>{denied}</>
 
   return <>{children}</>
