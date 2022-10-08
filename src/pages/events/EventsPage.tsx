@@ -2,7 +2,7 @@ import EventsList from '../../components/events/EventsList'
 import { useEffect, useState } from 'react'
 import { GeneralEvent, GeneralEventSchema } from '../../model/GeneralEvent'
 import { useFirebase } from '../../Context/FirebaseContext'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Card, Typography } from '@mui/material'
 import { Popup } from '../../common/Popup'
 import { EventForm } from '../../components/events/EventForm'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -88,9 +88,11 @@ export function EventsPageInner() {
           Erstellen
         </Button>
       </Can>
-      <EventsList events={events} onDelete={handleDelete} />
+      <Card>
+        <EventsList events={events} onDelete={handleDelete} />
+      </Card>
       <Popup
-        title="Event erstellen"
+        title="Event erstellen "
         open={showPopup}
         handleClose={() => setShowPopup(false)}
         handleSave={handleSubmit(onSubmit)}
