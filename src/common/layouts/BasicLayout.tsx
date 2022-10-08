@@ -40,6 +40,7 @@ import { Drawer } from './Drawer'
 import { MainContent } from './MainContent'
 import { useWidth } from '../../hooks/useWidth'
 import { drawerOpen } from '../../atoms/LayoutAtom'
+import { ThemeSelectorButton } from './ThemeSelectorButton'
 
 const drawerWidth = 240
 
@@ -149,10 +150,14 @@ function BasicLayout() {
               {siteConfig.name}
             </Typography>
             <Box sx={{ flex: 1 }} />
+
             <Box>
+              <ThemeSelectorButton />
               <Tooltip title="Open settings ">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <AvatarCurrentUser />
+                <IconButton onClick={handleOpenUserMenu}>
+                  <AvatarCurrentUser
+                    sx={{ width: 24, height: 24, fontSize: 14 }}
+                  />
                 </IconButton>
               </Tooltip>
               <Menu

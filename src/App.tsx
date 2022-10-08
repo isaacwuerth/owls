@@ -46,6 +46,7 @@ import {
   FirebaseAuthorizationProvider,
 } from './Context/AuthorizationContext'
 import { RolesPage } from './pages/RolesPage'
+import LayoutProvider from './Context/LayoutContext'
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -89,42 +90,50 @@ function App() {
             <RecoilNexus />
             <BrowserRouter>
               <FirebaseProvider>
-                <Splashscreen>
-                  <MaintenancePage>
-                    <FirebaseAuthorizationProvider>
-                      <SentryRoutes>
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/logout" element={<LogoutPage />} />
-                        <Route path="/appinfo" element={<AppInfoPage />} />
-                        <Route element={<AuthenticationOutlet />}>
-                          <Route element={<BasicLayout />}>
-                            <Route index element={<DashboardPage />} />
-                            <Route path="events/:eid" element={<EventPage />} />
-                            <Route
-                              path="events/:eid/edit"
-                              element={<EventEditPage />}
-                            />
-                            <Route path="events" element={<EventsPage />} />
-                            <Route
-                              path="profile"
-                              element={<ProfileOwnPage />}
-                            />
-                            <Route path="users" element={<UsersPage />} />
-                            <Route path="roles" element={<RolesPage />} />
-                            <Route path="users/:id" element={<UserPage />} />
-                            <Route path="files" element={<FileManagerPage />} />
-                            <Route
-                              path="/user-setup"
-                              element={<UserSetupPage />}
-                            />
+                <LayoutProvider>
+                  <Splashscreen>
+                    <MaintenancePage>
+                      <FirebaseAuthorizationProvider>
+                        <SentryRoutes>
+                          <Route path="/login" element={<LoginPage />} />
+                          <Route path="/logout" element={<LogoutPage />} />
+                          <Route path="/appinfo" element={<AppInfoPage />} />
+                          <Route element={<AuthenticationOutlet />}>
+                            <Route element={<BasicLayout />}>
+                              <Route index element={<DashboardPage />} />
+                              <Route
+                                path="events/:eid"
+                                element={<EventPage />}
+                              />
+                              <Route
+                                path="events/:eid/edit"
+                                element={<EventEditPage />}
+                              />
+                              <Route path="events" element={<EventsPage />} />
+                              <Route
+                                path="profile"
+                                element={<ProfileOwnPage />}
+                              />
+                              <Route path="users" element={<UsersPage />} />
+                              <Route path="roles" element={<RolesPage />} />
+                              <Route path="users/:id" element={<UserPage />} />
+                              <Route
+                                path="files"
+                                element={<FileManagerPage />}
+                              />
+                              <Route
+                                path="/user-setup"
+                                element={<UserSetupPage />}
+                              />
+                            </Route>
                           </Route>
-                        </Route>
-                        <Route path="*" element={<NotFound />} />
-                      </SentryRoutes>
-                    </FirebaseAuthorizationProvider>
-                    <ToastContainer position="top-center" />
-                  </MaintenancePage>
-                </Splashscreen>
+                          <Route path="*" element={<NotFound />} />
+                        </SentryRoutes>
+                      </FirebaseAuthorizationProvider>
+                      <ToastContainer position="top-center" />
+                    </MaintenancePage>
+                  </Splashscreen>
+                </LayoutProvider>
               </FirebaseProvider>
             </BrowserRouter>
           </RecoilRoot>
