@@ -42,6 +42,8 @@ export function PermissionHorizontalView() {
                 left: 0,
                 zIndex: 1,
                 backgroundColor: (theme) => theme.palette.background.default,
+                backgroundImage:
+                  'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
               }}
             ></TableCell>
             {appCapabilities.map((capability) => (
@@ -62,8 +64,10 @@ export function PermissionHorizontalView() {
                 position: 'sticky',
                 left: 0,
                 zIndex: 1,
-                backgroundColor: (theme) => theme.palette.background.default,
                 borderRight: (theme) => `1px solid ${theme.palette.divider}`,
+                backgroundColor: (theme) => theme.palette.background.default,
+                backgroundImage:
+                  'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
               }}
             >
               Rollen
@@ -91,8 +95,10 @@ export function PermissionHorizontalView() {
                   position: 'sticky',
                   left: 0,
                   zIndex: 1,
-                  backgroundColor: (theme) => theme.palette.background.default,
                   borderRight: (theme) => `1px solid ${theme.palette.divider}`,
+                  backgroundColor: (theme) => theme.palette.background.default,
+                  backgroundImage:
+                    'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
                 }}
               >
                 <RoleCell role={role} />
