@@ -110,6 +110,10 @@ export function PermissionHorizontalView() {
                     role={role.id as string}
                     subject={capability.subject}
                     action={action}
+                    sx={{
+                      borderRight: (theme) =>
+                        `1px solid ${theme.palette.divider}`,
+                    }}
                   />
                 ))
               )}

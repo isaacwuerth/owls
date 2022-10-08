@@ -6,6 +6,8 @@ import { capabilityState } from '../../atoms/RoleCapabilitiesAtom'
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
 import FeedIcon from '@mui/icons-material/Feed'
 import { useAbility } from '../../Context/AuthorizationContext'
+import { SxProps } from '@mui/system'
+import { Theme } from '@mui/material/styles'
 
 interface CellStateProps {
   backgroundColor?: string
@@ -17,12 +19,14 @@ interface PermissionCellProps {
   role: string
   subject: Subject
   action: Action
+  sx?: SxProps<Theme>
 }
 
 export function PermissionCell({
   role,
   subject,
   action,
+  sx,
 }: PermissionCellProps): ReactElement {
   const theme = useTheme()
   const ability = useAbility()
@@ -68,6 +72,7 @@ export function PermissionCell({
         backgroundColor: checkboxState.backgroundColor,
         padding: 0,
       }}
+      sx={sx}
     >
       <Checkbox
         key={`checkbox-${role}-${subject}-${action}`}
