@@ -52,7 +52,7 @@ interface EventListProps {
   onDelete: (id: string) => void
 }
 
-export default function EventsList({ events, onDelete }: EventListProps) {
+export default function EventsTable({ events, onDelete }: EventListProps) {
   const navigate = useNavigate()
   columns[5].renderCell = (params) => {
     return (
