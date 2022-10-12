@@ -113,7 +113,13 @@ export function RolesPageInner() {
               title="Berechtigungen bearbeiten"
               action={<ViewButton />}
             />
-            <CardContent>
+            <CardContent
+              sx={{
+                backgroundColor: 'inherit',
+                backgroundImage:
+                  'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+              }}
+            >
               {view === 'vertical' ? (
                 <PermissionHorizontalView />
               ) : (
