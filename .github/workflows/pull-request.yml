@@ -37,6 +37,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-eslint-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-eslint
+
       - name: Install ESLint
         run: |
           npm install eslint@8.10.0
