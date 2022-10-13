@@ -21,16 +21,33 @@ export function PermissionHorizontalView() {
   const theme = useTheme()
   return (
     <TableContainer
-      sx={{ border: (theme) => `1px solid ${theme.palette.divider}` }}
+      sx={{
+        border: (theme) => `1px solid ${theme.palette.divider}`,
+        backgroundColor: 'inherit',
+        backgroundImage:
+          'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+      }}
     >
       <Table
         sx={{
           borderCollapse: 'separate',
+          backgroundColor: 'inherit',
+          backgroundImage: 'inherit',
         }}
       >
-        <TableHead>
+        <TableHead
+          sx={{
+            backgroundColor: 'inherit',
+            backgroundImage: 'inherit',
+          }}
+        >
           <TableRow
-            sx={{ position: 'sticky', top: theme.mixins.toolbar.height }}
+            sx={{
+              position: 'sticky',
+              top: theme.mixins.toolbar.height,
+              backgroundColor: 'inherit',
+              backgroundImage: 'inherit',
+            }}
           >
             <Can I="delete" a="role">
               <TableCell></TableCell>
@@ -41,9 +58,8 @@ export function PermissionHorizontalView() {
                 position: 'sticky',
                 left: 0,
                 zIndex: 1,
-                backgroundColor: (theme) => theme.palette.background.default,
-                backgroundImage:
-                  'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+                backgroundColor: 'inherit',
+                backgroundImage: 'inherit',
               }}
             ></TableCell>
             {appCapabilities.map((capability) => (
@@ -55,7 +71,9 @@ export function PermissionHorizontalView() {
               </TableCell>
             ))}
           </TableRow>
-          <TableRow>
+          <TableRow
+            sx={{ backgroundColor: 'inherit', backgroundImage: 'inherit' }}
+          >
             <Can I="delete" a="role">
               <TableCell> </TableCell>
             </Can>
@@ -65,9 +83,8 @@ export function PermissionHorizontalView() {
                 left: 0,
                 zIndex: 1,
                 borderRight: (theme) => `1px solid ${theme.palette.divider}`,
-                backgroundColor: (theme) => theme.palette.background.default,
-                backgroundImage:
-                  'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+                backgroundColor: 'inherit',
+                backgroundImage: 'inherit',
               }}
             >
               Rollen
@@ -84,9 +101,17 @@ export function PermissionHorizontalView() {
             )}
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody
+          sx={{ backgroundColor: 'inherit', backgroundImage: 'inherit' }}
+        >
           {roles.map((role, index) => (
-            <TableRow key={`row-${index}`}>
+            <TableRow
+              key={`row-${index}`}
+              sx={{
+                backgroundColor: 'inherit',
+                backgroundImage: 'inherit',
+              }}
+            >
               <Can I="delete" a="role">
                 <DeleteButtonCell role={role} />
               </Can>
@@ -96,9 +121,8 @@ export function PermissionHorizontalView() {
                   left: 0,
                   zIndex: 1,
                   borderRight: (theme) => `1px solid ${theme.palette.divider}`,
-                  backgroundColor: (theme) => theme.palette.background.default,
-                  backgroundImage:
-                    'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+                  backgroundColor: 'inherit',
+                  backgroundImage: 'inherit',
                 }}
               >
                 <RoleCell role={role} />

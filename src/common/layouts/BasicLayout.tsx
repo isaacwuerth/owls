@@ -3,7 +3,6 @@ import {
   Box,
   Breakpoint,
   Collapse,
-  Divider,
   List,
   ListItem,
   ListItemButton,
@@ -150,7 +149,6 @@ function BasicLayout() {
               {siteConfig.name}
             </Typography>
             <Box sx={{ flex: 1 }} />
-
             <Box>
               <ThemeSelectorButton />
               <Tooltip title="Open settings ">
@@ -204,7 +202,6 @@ function BasicLayout() {
             {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </DrawerHeader>
-        <Divider />
         <List>
           {NavItems.map((navItem) => (
             <Protected key={navItem.key} subject={navItem.permission?.subject}>
