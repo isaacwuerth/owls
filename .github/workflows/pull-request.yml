@@ -140,7 +140,7 @@ jobs:
       - name: Set REACT_APP_VERSION
         run: echo REACT_APP_VERSION=${{ steps.package.outputs.version }} >> $GITHUB_ENV
 
-      - run: npm ci
+      - run: npm run build
 
       - name: Upload build files
         uses: actions/upload-artifact@v3
