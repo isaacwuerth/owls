@@ -137,6 +137,7 @@ export function DynamicCountry(props: DynamicBaseInputProps): JSX.Element {
         <TextField
           {...params}
           label={label}
+          variant="filled"
           fullWidth={fullWidth ?? false}
           InputProps={{
             ...params.InputProps,
