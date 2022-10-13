@@ -8,7 +8,7 @@ interface MainContentProps {
 
 export const MainContent = styled('main')<MainContentProps>(
   ({ theme, padding: p, open, drawerWidth }) => ({
-    width: `calc(100vw - ${theme.spacing(p * 2)})`,
+    width: `calc(100vw)`,
     padding: theme.spacing(p),
     flexGrow: 1,
     [theme.breakpoints.only('xs')]: {
@@ -17,10 +17,10 @@ export const MainContent = styled('main')<MainContentProps>(
     [theme.breakpoints.between('sm', 'lg')]: {
       width: open
         ? `calc(100vw - ${theme.spacing(p * 2)} - ${drawerWidth}px )`
-        : `calc(100vw - ${theme.spacing(p * 2)} - ${theme.spacing(8)} - 1px)`,
+        : `calc(100vw - ${theme.spacing(p * 2)} - ${theme.spacing(7)} - 1px)`,
     },
     [theme.breakpoints.up('lg')]: {
-      width: `calc(100vw - ${theme.spacing(p * 2)} - ${drawerWidth}px )`,
+      width: `calc(100vw - ${drawerWidth}px )`,
     },
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,

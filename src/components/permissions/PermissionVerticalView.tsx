@@ -75,17 +75,26 @@ export function PermissionVerticalView() {
       sx={{
         height: '500px',
         border: (theme) => `1px solid ${theme.palette.divider} `,
+        backgroundColor: 'inherit',
+        backgroundImage:
+          'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
       }}
     >
-      <Table sx={{ borderCollapse: 'separate' }}>
+      <Table
+        sx={{
+          borderCollapse: 'separate',
+          backgroundColor: 'inherit',
+          backgroundImage:
+            'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+        }}
+      >
         <TableHead
           sx={{
             position: 'sticky',
             top: 0,
             zIndex: 100,
-            backgroundColor: (theme) => theme.palette.background.default,
-            backgroundImage:
-              'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+            backgroundColor: 'inherit',
+            backgroundImage: 'inherit',
           }}
         >
           <TableRow
