@@ -154,6 +154,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
