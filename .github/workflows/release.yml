@@ -264,19 +264,6 @@ jobs:
           ls -la
           find . -type f -name "fire*-debug.log" | xargs cat
 
-  scanner-snyk:
-    name: Snyk scanner
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@master
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: monitor
-
   deploy:
     name: Deploy to Firebase
     runs-on: ubuntu-latest
@@ -285,7 +272,6 @@ jobs:
       - test-e2e
       - test-firebase-rules
       - scanner-CodeQL
-      - scanner-snyk
     strategy:
       matrix:
         node-version: [ 18.x ]
