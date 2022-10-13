@@ -32,6 +32,7 @@ export function DynamicInputText(props: DynamicBaseInputProps): JSX.Element {
       onBlur={onBlur}
       helperText={error ? errorMessage : helperText}
       disabled={disabled}
+      variant="filled"
     />
   )
 }
