@@ -269,6 +269,15 @@ jobs:
           path: ~/.cache/firebase/emulators
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/.cache/firebase/emulators/**') }}
 
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
       - name: Download build
         uses: actions/download-artifact@v3
         with:
