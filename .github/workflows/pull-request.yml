@@ -292,11 +292,25 @@ jobs:
           local-testing: stop
 
 
+  scanner-snyk:
+    name: Snyk scanner
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+
   dependabot:
     name: 'Dependabot auto merge'
     runs-on: ubuntu-latest
     needs:
       - scanner-CodeQL
+      - scanner-snyk
       - test-unit-coverage
       - test-firebase-rules
     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}}
@@ -314,6 +328,7 @@ jobs:
       - test-unit-coverage
       - test-firebase-rules
       - test-e2e
+      - scanner-snyk
       - scanner-CodeQL
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
