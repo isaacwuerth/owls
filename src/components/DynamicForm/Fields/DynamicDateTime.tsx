@@ -27,6 +27,7 @@ export function DynamicDateTime(props: DynamicBaseInputProps): JSX.Element {
       renderInput={(params) => (
         <TextField
           {...params}
+          variant="filled"
           fullWidth={fullWidth ?? false}
           style={{ width: width100 ? '100%' : undefined }}
           name={name}
