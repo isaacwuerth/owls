@@ -65,15 +65,11 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - eslint
-    strategy:
-      matrix:
-        node-version: [ 18.x ]
-
     steps:
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -148,15 +144,11 @@ jobs:
   test-unit-coverage:
     runs-on: ubuntu-latest
     needs: build
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -230,17 +222,14 @@ jobs:
   test-firebase-rules:
     runs-on: ubuntu-latest
     needs: build
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Setup Java JDK
         uses: actions/setup-java@v3.5.1
