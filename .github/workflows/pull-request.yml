@@ -37,33 +37,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache node modules
-        id: cache-nodemodules
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-eslint-node-modules
+      - uses: sibiraj-s/action-eslint@v2
         with:
-          path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-eslint
-
-      - name: Install ESLint
-        run: |
-          npm install eslint@8.25.0
-          npm install @microsoft/eslint-formatter-sarif@3.0.0
-
-      - name: Run ESLint
-        run: npx eslint .
-          --config .eslintrc.json
-          --ext .js,.jsx,.ts,.tsx
-          --format @microsoft/eslint-formatter-sarif
-          --output-file eslint-results.sarif
-        continue-on-error: true
-
-      - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: eslint-results.sarif
-          wait-for-processing: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          eslint-args: '--ignore-path=.gitignore --quiet'
+          extensions: 'js,jsx,ts,tsx'
+          annotations: true
 
   dependency-review:
     name: Dependency review
@@ -102,7 +81,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
   build:
     name: Build
