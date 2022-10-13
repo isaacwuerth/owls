@@ -152,11 +152,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download build
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
 
@@ -180,6 +175,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
+          path: build
 
       - name: Cache node modules
         id: cache-nodemodules
@@ -282,6 +278,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
+          path: build
 
       - name: 'Running application under test'
         run: ./node_modules/.bin/serve -s build -l 8099 &
@@ -363,6 +360,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
+          path: build
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
