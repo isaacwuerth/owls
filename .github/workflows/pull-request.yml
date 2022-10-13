@@ -295,12 +295,8 @@ jobs:
           local-testing: start
           local-identifier: random
 
-      - name: Serve Files
-        uses: Eun/http-server-action@v1
-        with:
-          directory: build
-          port: 8099
-          no-cache: false
+      - name: 'Running application under test'
+        run: ./node_modules/.bin/serve -s build -l 8099 &
 
       - name: Generate config for browserstack
         run: |
@@ -348,6 +344,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Download build
         uses: actions/download-artifact@v3
