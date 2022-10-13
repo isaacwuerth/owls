@@ -74,6 +74,17 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v2
 
+  scanner-gitleaks:
+    name: Scanning for secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   download-dependencies:
     name: Download dependencies
     runs-on: ubuntu-latest
@@ -100,6 +111,7 @@ jobs:
       - eslint
       - dependency-review
       - download-dependencies
+      - scanner-gitleaks
     steps:
       - name: Set up Node.js 18
         uses: actions/setup-node@v1
@@ -135,6 +147,7 @@ jobs:
         with:
           name: build-artifacts
           path: build
+          retention-days: 1
 
   scanner-snyk:
     name: Snyk scanner
