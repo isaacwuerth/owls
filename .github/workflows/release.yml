@@ -120,6 +120,23 @@ jobs:
             build
             browserstack.yml
 
+  scanner-snyk:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+
+
   scanner-CodeQL:
     runs-on: ubuntu-latest
     needs: build
@@ -277,6 +294,8 @@ jobs:
       - test-unit-coverage
       - test-e2e
       - test-firebase-rules
+      - scanner-CodeQL
+      - scanner-snyk
     strategy:
       matrix:
         node-version: [ 18.x ]
