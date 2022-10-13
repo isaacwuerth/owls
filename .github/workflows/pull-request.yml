@@ -283,6 +283,9 @@ jobs:
         with:
           name: build-artifacts
 
+      - name: 'Running application under test'
+        run: ./node_modules/.bin/serve -s build -l 8099 &
+
       - name: 'BrowserStack Env Setup'
         uses: browserstack/github-actions/setup-env@master
         with:
@@ -294,9 +297,6 @@ jobs:
         with:
           local-testing: start
           local-identifier: random
-
-      - name: 'Running application under test'
-        run: ./node_modules/.bin/serve -s build -l 8099 &
 
       - name: Generate config for browserstack
         run: |
