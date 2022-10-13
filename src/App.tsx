@@ -57,6 +57,7 @@ Sentry.init({
         useLocation,
         useNavigationType,
         createRoutesFromChildren,
+        // @ts-expect-error
         matchRoutes
       ),
     }),
