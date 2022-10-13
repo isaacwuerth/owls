@@ -176,6 +176,10 @@ jobs:
         with:
           name: build-artifacts
 
+      - uses: snyk/actions/setup@master
+
+      - run: npm install
+
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
