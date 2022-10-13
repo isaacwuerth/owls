@@ -52,23 +52,6 @@ export class SessionStorage<T> implements Storage<T> {
   }
 }
 
-export class MemoryStorage<T> implements Storage<T> {
-  private storage: Record<string, T> = {}
-
-  set(key: string, value: T) {
-    this.storage[key] = value
-  }
-
-  get(key: string) {
-    return this.storage[key] ?? null
-  }
-
-  delete(key: string) {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete this.storage[key]
-  }
-}
-
 export class IndexedDBStorage<T> implements Storage<T> {
   private db: IDBDatabase | undefined
   private readonly request
@@ -153,35 +136,12 @@ export class CookieStorage<T> implements Storage<T> {
   }
 }
 
-export class WindowNameStorage<T> implements Storage<T> {
-  set(key: string, value: T) {
-    if (window.name === '') window.name = '{}'
-    const windowName = JSON.parse(window.name)
-    windowName[key] = value
-    window.name = JSON.stringify(windowName)
-  }
-
-  get(key: string) {
-    const windowName = JSON.parse(window.name)
-    return windowName[key]
-  }
-
-  delete(key: string) {
-    const windowName = JSON.parse(window.name)
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete windowName[key]
-    window.name = JSON.stringify(windowName)
-  }
-}
-
 export class AnywhereStorage<T> implements Storage<T> {
   localStore: LocalStorage<T> = new LocalStorage<T>()
   sessionStorage: SessionStorage<T> = new SessionStorage<T>()
-  memoryStore: MemoryStorage<T> = new MemoryStorage<T>()
   indexDB: IndexedDBStorage<T>
   cache: CacheStorage<T>
   cookieStorage: CookieStorage<T> = new CookieStorage<T>()
-  windowNameStorage: WindowNameStorage<T> = new WindowNameStorage()
 
   constructor(name: string) {
     this.indexDB = new IndexedDBStorage(name, name)
@@ -191,11 +151,9 @@ export class AnywhereStorage<T> implements Storage<T> {
   delete(key: string): void {
     if (localStorage) this.localStore.delete(key)
     if (sessionStorage) this.sessionStorage.delete(key)
-    this.memoryStore.delete(key)
     if (indexedDB) this.indexDB.delete(key)
     if (caches) this.cache.delete(key)
     if (document.cookie) this.cookieStorage.delete(key)
-    if (window.name) this.windowNameStorage.delete(key)
   }
 
   get(key: string): T | null {
@@ -204,8 +162,6 @@ export class AnywhereStorage<T> implements Storage<T> {
 
     let sessionStorageValue: T | null = null
     if (sessionStorage) sessionStorageValue = this.sessionStorage.get(key)
-
-    const memoryStorageValue = this.memoryStore.get(key)
 
     let indexDBValue: T | null = null
     if (indexedDB) indexDBValue = this.indexDB.get(key)
@@ -216,17 +172,12 @@ export class AnywhereStorage<T> implements Storage<T> {
     let cookieValue: T | null = null
     if (document.cookie) cookieValue = this.cookieStorage.get(key)
 
-    let windowNameValue: T | null = null
-    if (window.name) windowNameValue = this.windowNameStorage.get(key)
-
     const all = [
       localStorageValue,
       sessionStorageValue,
-      memoryStorageValue,
       indexDBValue,
       cacheValue,
       cookieValue,
-      windowNameValue,
     ]
     return all.find((value) => value !== null) ?? null
   }
@@ -234,10 +185,8 @@ export class AnywhereStorage<T> implements Storage<T> {
   set(key: string, value: T): void {
     if (localStorage) this.localStore.set(key, value)
     if (sessionStorage) this.sessionStorage.set(key, value)
-    this.memoryStore.set(key, value)
     if (indexedDB) this.indexDB.set(key, value)
     if (caches) this.cache.set(key, value)
     if (document.cookie) this.cookieStorage.set(key, value)
-    if (window.name) this.windowNameStorage.set(key, value)
   }
 }

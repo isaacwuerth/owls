@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import VisibilityIcon from '@mui/icons-material/Visibility'
@@ -34,9 +34,10 @@ const columns: GridColDef[] = [
     headerName: 'Ort',
     flex: 1,
     type: 'dateTime',
-    valueGetter: (params) => {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      return `${params.row.postcode} ${params.row.city}, ${params.row.street}`
+    valueGetter: (params: GridValueGetterParams<string, GeneralEvent>) => {
+      return `${params.row.postcode as string} ${params.row.city as string}, ${
+        params.row.street as string
+      }`
     },
   },
   {
