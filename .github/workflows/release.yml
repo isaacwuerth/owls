@@ -61,14 +61,6 @@ jobs:
           sarif_file: eslint-results.sarif
           wait-for-processing: true
 
-  dependency-review:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Checkout Repository'
-        uses: actions/checkout@v3
-      - name: 'Dependency Review'
-        uses: actions/dependency-review-action@v2
-
   scanner-snyk:
     runs-on: ubuntu-latest
     steps:
@@ -84,7 +76,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - eslint
-      - dependency-review
       - scanner-snyk
     strategy:
       matrix:
