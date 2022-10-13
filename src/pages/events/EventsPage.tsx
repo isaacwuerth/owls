@@ -1,4 +1,4 @@
-import EventsList from '../../components/events/EventsList'
+import EventsTable from '../../components/events/EventsTable'
 import { useEffect, useState } from 'react'
 import { GeneralEvent, GeneralEventSchema } from '../../model/GeneralEvent'
 import { useFirebase } from '../../Context/FirebaseContext'
@@ -18,6 +18,7 @@ import './EventsPage.scss'
 import { z } from 'zod'
 import { generalErrorHandler } from '../../utils/generalErrorHandler'
 import { Can, ProtectedRoute } from '../../Context/AuthorizationContext'
+import { EventList } from '../../components/events/EventList'
 
 const ProfileWithIdSchema = ProfileSchema.omit({ id: true }).extend({
   id: z.string(),
@@ -89,7 +90,8 @@ export function EventsPageInner() {
         </Button>
       </Can>
       <Card>
-        <EventsList events={events} onDelete={handleDelete} />
+        <EventList events={events} onDelete={handleDelete} />
+        <EventsTable events={events} onDelete={handleDelete} />
       </Card>
       <Popup
         title="Event erstellen "
@@ -132,7 +134,7 @@ export function EventsPageInner() {
                 defaultOrderBy="firstName"
               />
             </HorizontalLinearStep>
-            <HorizontalLinearStep title={'Übersicht '}>
+            <HorizontalLinearStep title={'Übersicht'}>
               <Typography title="Test">Finished</Typography>
             </HorizontalLinearStep>
           </HorizontalLinearStepper>
