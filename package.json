@@ -43,7 +43,7 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "browserstack-node-sdk": "^1.2.8",
-    "chromedriver": "^105.0.1",
+    "chromedriver": "^106.0.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
@@ -116,7 +116,7 @@
     "recoil-nexus": "^0.4.0",
     "rrweb": "^1.1.3",
     "sass": "^1.54.8",
-    "web-vitals": "^2.1.4",
+    "web-vitals": "^3.0.3",
     "zod": "^3.18.0"
   }
 }
