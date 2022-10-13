@@ -134,9 +134,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
-          path: |
-            build
-            browserstack.yml
+          path: build
 
   scanner-snyk:
     name: Snyk scanner
@@ -146,8 +144,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download all workflow run artifacts
+      - name: Download build
         uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
@@ -168,8 +168,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download all workflow run artifacts
+      - name: Download build
         uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -190,8 +192,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download all workflow run artifacts
+      - name: Download build
         uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
 
       - name: Cache node modules
         id: cache-nodemodules
@@ -264,8 +268,13 @@ jobs:
     needs: build
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
-      - name: Download all workflow run artifacts
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download build
         uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
 
       - name: 'BrowserStack Env Setup'
         uses: browserstack/github-actions/setup-env@master
@@ -336,8 +345,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download all workflow run artifacts
+      - name: Download build
         uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
