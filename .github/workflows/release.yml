@@ -345,7 +345,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
-          path: build
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
