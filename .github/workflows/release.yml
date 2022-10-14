@@ -364,15 +364,11 @@ jobs:
       - name: Create SA key
         run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_OWLSINTERNAL }}' > $HOME/gcloud.json
 
-      - name: Create .firebaserc
-        id: firebaserc
-        uses: jsdaniell/create-json@1.1.2
-        with:
-          name: .firebaserc
-          json: '{"projects": {"default": "${{ env.REACT_APP_FIREBASE_PROJECT_ID }}"}}'
-
       - name: Deploy Cloud Functions
-        run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json && npx firebase-tools deploy --only functions --json
+        run: |
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
+          npx firebase-tools use ${{ env.REACT_APP_FIREBASE_PROJECT_ID }}
+          npx firebase-tools deploy --only functions --json
 
   deploy_rules_firestore:
     name: Deploy to Firebase Firestore Rules
@@ -411,7 +407,10 @@ jobs:
           json: '{"projects": {"default": "${{ env.REACT_APP_FIREBASE_PROJECT_ID }}"}}'
 
       - name: Deploy Cloud Functions
-        run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json && npx firebase-tools deploy --only firestore:rules --json
+        run: |
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
+          npx firebase-tools use ${{ env.REACT_APP_FIREBASE_PROJECT_ID }}
+          npx firebase-tools deploy --only firestore:rules --json
 
   deploy_remoteconfig:
     name: Deploy to Firebase Remoteconfig
@@ -442,15 +441,11 @@ jobs:
       - name: Create SA key
         run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_OWLSINTERNAL }}' > $HOME/gcloud.json
 
-      - name: Create .firebaserc
-        id: firebaserc
-        uses: jsdaniell/create-json@1.1.2
-        with:
-          name: .firebaserc
-          json: '{"projects": {"default": "${{ env.REACT_APP_FIREBASE_PROJECT_ID }}"}}'
-
       - name: Deploy Cloud Functions
-        run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json && npx firebase-tools deploy --only remoteconfig --json
+        run: |
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
+          npx firebase-tools use ${{ env.REACT_APP_FIREBASE_PROJECT_ID }}
+          npx firebase-tools deploy --only remoteconfig --json
 
   sentry-release:
     name: Create Sentry release
