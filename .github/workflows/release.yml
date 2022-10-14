@@ -296,7 +296,7 @@ jobs:
           ls -la
           find . -type f -name "fire*-debug.log" | xargs cat
 
-  deploy:
+  deploy_hosting:
     name: Deploy to Firebase
     runs-on: ubuntu-latest
     needs:
@@ -334,6 +334,102 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_OWLSINTERNAL }}
           channelId: live
           projectId: owlsinternal
+
+  deploy_functions:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    needs:
+      - test-unit-coverage
+      - test-e2e
+      - test-firebase-rules
+      - scanner-CodeQL
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Create SA key
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/gcloud.json
+
+      - name: Deploy Cloud Functions
+        run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json && npx firebase-tools deploy --only functions --json
+
+  deploy_rules_firestore:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    needs:
+      - test-unit-coverage
+      - test-e2e
+      - test-firebase-rules
+      - scanner-CodeQL
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Create SA key
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/gcloud.json
+
+      - name: Deploy Cloud Functions
+        run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json && npx firebase-tools deploy --only firestore:rules --json
+
+  deploy_remoteconfig:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    needs:
+      - test-unit-coverage
+      - test-e2e
+      - test-firebase-rules
+      - scanner-CodeQL
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Create SA key
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/gcloud.json
+
+      - name: Deploy Cloud Functions
+        run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json && npx firebase-tools deploy --only remoteconfig --json
 
   sentry-release:
     name: Create Sentry release
