@@ -32,7 +32,7 @@ concurrency:
 
 jobs:
   eslint:
-    name: Run eslint scanning
+    name: ESLint scanning
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -61,40 +61,28 @@ jobs:
           sarif_file: eslint-results.sarif
           wait-for-processing: true
 
-  dependency-review:
+  scanner-gitleaks:
+    name: Scanning for secrets
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout Repository'
-        uses: actions/checkout@v3
-      - name: 'Dependency Review'
-        uses: actions/dependency-review-action@v2
-
-  scanner-snyk:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - uses: actions/checkout@v3
         with:
-          command: monitor
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
+    name: Build project
     runs-on: ubuntu-latest
     needs:
       - eslint
-      - dependency-review
-      - scanner-snyk
-    strategy:
-      matrix:
-        node-version: [ 18.x ]
-
+      - scanner-gitleaks
     steps:
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -130,6 +118,7 @@ jobs:
             browserstack.yml
 
   scanner-CodeQL:
+    name: CodeQL Scanner
     runs-on: ubuntu-latest
     needs: build
     permissions:
@@ -150,17 +139,14 @@ jobs:
         uses: github/codeql-action/analyze@v2
 
   test-unit-coverage:
+    name: Unit tests with coverage
     runs-on: ubuntu-latest
     needs: build
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -189,9 +175,38 @@ jobs:
     name: 'BrowserStack test'
     runs-on: ubuntu-latest
     needs: build
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
-      - name: Download all workflow run artifacts
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Cache firebase emulators
+        id: cache-firebase-emulators
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-firebase-emulators
+        with:
+          path: ~/.cache/firebase/emulators
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/.cache/firebase/emulators/**') }}
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Download build
         uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
 
       - name: 'BrowserStack Env Setup'
         uses: browserstack/github-actions/setup-env@master
@@ -205,12 +220,8 @@ jobs:
           local-testing: start
           local-identifier: random
 
-      - name: Serve Files
-        uses: Eun/http-server-action@v1
-        with:
-          directory: build
-          port: 8099
-          no-cache: false
+      - name: 'Running application under test'
+        run: ./node_modules/.bin/serve -s build -l 8099 &
 
       - name: Generate config for browserstack
         run: |
@@ -232,19 +243,17 @@ jobs:
           local-testing: stop
 
   test-firebase-rules:
+    name: 'Firebase rules test'
     runs-on: ubuntu-latest
     needs: build
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Setup Java JDK
         uses: actions/setup-java@v3.5.1
@@ -281,17 +290,33 @@ jobs:
           find . -type f -name "fire*-debug.log" | xargs cat
 
   deploy:
+    name: Deploy to Firebase
     runs-on: ubuntu-latest
     needs:
       - test-unit-coverage
       - test-e2e
       - test-firebase-rules
+      - scanner-CodeQL
     strategy:
       matrix:
         node-version: [ 18.x ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
@@ -304,6 +329,7 @@ jobs:
           projectId: owlsinternal
 
   sentry-release:
+    name: Create Sentry release
     runs-on: ubuntu-latest
     needs:
       - deploy

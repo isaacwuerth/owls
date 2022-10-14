@@ -27,7 +27,7 @@ name: Stage on PR
 on: pull_request
 jobs:
   eslint:
-    name: Run eslint scanning
+    name: ESLint scanning
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -57,6 +57,7 @@ jobs:
           wait-for-processing: true
 
   dependency-review:
+    name: Dependency review
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout Repository'
@@ -64,39 +65,56 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v2
 
-  scanner-snyk:
+  scanner-gitleaks:
+    name: Scanning for secrets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - uses: actions/checkout@v3
         with:
-          command: monitor
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  download-dependencies:
+    name: Download dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm install
 
   build:
+    name: Build
     runs-on: ubuntu-latest
     needs:
       - eslint
       - dependency-review
-      - scanner-snyk
-    strategy:
-      matrix:
-        node-version: [ 18.x ]
-
+      - download-dependencies
+      - scanner-gitleaks
     steps:
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Cache node modules
         id: cache-nodemodules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
         with:
@@ -113,18 +131,17 @@ jobs:
       - name: Set REACT_APP_VERSION
         run: echo REACT_APP_VERSION=${{ steps.package.outputs.version }} >> $GITHUB_ENV
 
-      - run: npm ci
       - run: npm run build
 
       - name: Upload build files
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
-          path: |
-            build
-            browserstack.yml
+          path: build/
+          retention-days: 1
 
   scanner-CodeQL:
+    name: CodeQL scanner
     runs-on: ubuntu-latest
     needs: build
     permissions:
@@ -135,9 +152,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v3
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
 
@@ -145,27 +159,27 @@ jobs:
         uses: github/codeql-action/analyze@v2
 
   test-unit-coverage:
+    name: Unit tests with coverage
     runs-on: ubuntu-latest
     needs: build
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download all workflow run artifacts
+      - name: Download build
         uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: build
 
       - name: Cache node modules
         id: cache-nodemodules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
         with:
@@ -182,19 +196,17 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   test-firebase-rules:
+    name: Firebase rules tests
     runs-on: ubuntu-latest
     needs: build
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
       - name: Setup Java JDK
         uses: actions/setup-java@v3.5.1
@@ -204,7 +216,7 @@ jobs:
 
       - name: Cache node modules
         id: cache-nodemodules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
         with:
@@ -213,7 +225,7 @@ jobs:
 
       - name: Cache firebase emulators
         id: cache-firebase-emulators
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-firebase-emulators
         with:
@@ -230,8 +242,80 @@ jobs:
           ls -la
           find . -type f -name "fire*-debug.log" | xargs cat
 
+  test-e2e:
+    name: 'BrowserStack test'
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    steps:
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Cache firebase emulators
+        id: cache-firebase-emulators
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-firebase-emulators
+        with:
+          path: ~/.cache/firebase/emulators
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('~/.cache/firebase/emulators/**') }}
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: build
+
+      - name: 'Running application under test'
+        run: ./node_modules/.bin/serve -s build -l 8099 &
+
+      - name: 'BrowserStack Env Setup'
+        uses: browserstack/github-actions/setup-env@master
+        with:
+          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: 'BrowserStack Local Tunnel Setup'
+        uses: browserstack/github-actions/setup-local@master
+        with:
+          local-testing: start
+          local-identifier: random
+
+      - name: Generate config for browserstack
+        run: |
+          sed -i -r '/^(buildName|projectName|userName|accessKey|browserstackLocal|localIdentifier):.*$/d' browserstack.yml
+          echo "buildName: '$BROWSERSTACK_BUILD_NAME'" >> browserstack.yml
+          echo "projectName: '$BROWSERSTACK_PROJECT_NAME'" >> browserstack.yml
+          echo "userName: ${{ secrets.BROWSERSTACK_USERNAME }}" >> browserstack.yml
+          echo "accessKey: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}" >> browserstack.yml
+          echo "browserstackLocal: true" >> browserstack.yml
+          echo "localIdentifier: $BROWSERSTACK_LOCAL_IDENTIFIER" >> browserstack.yml
+
+      - name: 'Running test on BrowserStack'
+        continue-on-error: true
+        run: npm run test:e2e:browserstack
+
+      - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
+        uses: browserstack/github-actions/setup-local@master
+        with:
+          local-testing: stop
+
   dependabot:
-    name: 'Dependabot'
+    name: 'Dependabot auto merge'
     runs-on: ubuntu-latest
     needs:
       - scanner-CodeQL
@@ -246,21 +330,37 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   staging:
+    name: 'Deploy to PR staging'
     runs-on: ubuntu-latest
     needs:
       - test-unit-coverage
-      - test-e2e
       - test-firebase-rules
+      - test-e2e
+      - scanner-CodeQL
     if: ${{ github.actor != 'dependabot[bot]' }}
-    strategy:
-      matrix:
-        node-version: [ 18.x ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download all workflow run artifacts
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Download build
         uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: build
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
