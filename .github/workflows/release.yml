@@ -362,7 +362,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Create SA key
-        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_OWLSINTERNAL }}' > $HOME/gcloud.json
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ADMIN }}' > $HOME/gcloud.json
 
       - name: Deploy Cloud Functions
         run: |
@@ -397,14 +397,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Create SA key
-        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_OWLSINTERNAL }}' > $HOME/gcloud.json
-
-      - name: Create .firebaserc
-        id: firebaserc
-        uses: jsdaniell/create-json@1.1.2
-        with:
-          name: .firebaserc
-          json: '{"projects": {"default": "${{ env.REACT_APP_FIREBASE_PROJECT_ID }}"}}'
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ADMIN }}' > $HOME/gcloud.json
 
       - name: Deploy Cloud Functions
         run: |
@@ -439,7 +432,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Create SA key
-        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_OWLSINTERNAL }}' > $HOME/gcloud.json
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ADMIN }}' > $HOME/gcloud.json
 
       - name: Deploy Cloud Functions
         run: |

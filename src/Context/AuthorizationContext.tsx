@@ -25,17 +25,18 @@ type Abilities =
   | [Action, 'users']
   | [Action, 'events']
   | [Action, { uid: string }]
-type AbilitiesWithScrope = [Action, 'users', Scope] | [Action, 'events', Scope]
+type AbilitiesWithScrope = ['users', Action, Scope] | ['events', Action, Scope]
 export type AppAbility = MongoAbility<Abilities>
 
 export async function createAbility(user: User) {
   const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility)
   const idTokenResult = await user.getIdTokenResult(true)
   const { claims } = idTokenResult
+  console.log(claims)
   if (!claims.capabilities) throw new Error('No capabilities found')
   const capabilities = claims.capabilities as string[]
   capabilities.forEach((capability) => {
-    const [action, subject, scope] = capability.split(
+    const [subject, action, scope] = capability.split(
       ':'
     ) as AbilitiesWithScrope
     if (scope === 'all') {

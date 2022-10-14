@@ -57,7 +57,7 @@ const getUserSpecificCapabilities = (uid: string) => {
 
 const factoryCapability = (capability: Capability) => {
   const scope = capability.scope ?? "all";
-  return `${capability.action}:${capability.subject}:${scope}`;
+  return `${capability.subject}:${capability.action}:${scope}`;
 };
 
 export const getUserCapabilities = async (uid: string) => {

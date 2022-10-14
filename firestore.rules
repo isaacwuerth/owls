@@ -50,5 +50,37 @@ service cloud.firestore {
       allow update: if hasAccess('userSecurity', 'update');
       allow delete: if hasAccess('userSecurity', 'delete');
     }
+
+    match/eventparticipants/{eventparticipantsId} {
+      allow list: if hasAccess('eventparticipants', 'list');
+      allow get: if hasAccess('eventparticipants', 'get');
+      allow create: if hasAccess('eventparticipants', 'create');
+      allow update: if hasAccess('eventparticipants', 'update');
+      allow delete: if hasAccess('eventparticipants', 'delete');
+    }
+
+    match/roles/{roleId} {
+      allow list: if hasAccess('roles', 'list');
+      allow get: if hasAccess('roles', 'get');
+      allow create: if hasAccess('roles', 'create');
+      allow update: if hasAccess('roles', 'update');
+      allow delete: if hasAccess('roles', 'delete');
+    }
+
+    match/userContext/{userId} {
+      allow list: if hasAccess('userContext', 'list');
+      allow get: if hasAccess('userContext', 'get');
+      allow create: if hasAccess('userContext', 'create');
+      allow update: if hasAccess('userContext', 'update');
+      allow delete: if hasAccess('userContext', 'delete');
+    }
+
+    match/capabilitiesRoles/{roleId} {
+      allow list: if hasAccess('capabilitiesRoles', 'list');
+      allow get: if hasAccess('capabilitiesRoles', 'get');
+      allow create: if hasAccess('capabilitiesRoles', 'create');
+      allow update: if hasAccess('capabilitiesRoles', 'update');
+      allow delete: if hasAccess('capabilitiesRoles', 'delete');
+    }
   }
 }
