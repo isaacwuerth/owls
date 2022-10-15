@@ -177,7 +177,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
-          path: build
 
       - name: Cache node modules
         id: cache-nodemodules
@@ -232,7 +231,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
-          path: build
 
       - name: 'Running application under test'
         run: ./node_modules/.bin/serve -s build -l 8099 &
