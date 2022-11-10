@@ -23,6 +23,10 @@ concurrency:
   group: ${{ github.ref }}-pull-request
   cancel-in-progress: true
 
+permissions:
+  pull-requests: write
+  contents: write
+
 name: Stage on PR
 on: pull_request
 jobs:
