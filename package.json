@@ -43,7 +43,7 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "browserstack-node-sdk": "^1.2.9",
-    "chromedriver": "^106.0.1",
+    "chromedriver": "^107.0.3",
     "cross-env": "^7.0.3",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
