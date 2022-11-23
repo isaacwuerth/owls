@@ -59,7 +59,7 @@
     "prettier": "2.7.1",
     "selenium-webdriver": "^4.4.0",
     "serve": "^14.1.1",
-    "typescript": "^4.8.2"
+    "typescript": "^4.9.3"
   },
   "dependencies": {
     "@casl/ability": "^6.3.1",
