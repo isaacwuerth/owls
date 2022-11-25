@@ -71,7 +71,7 @@
     "@fullcalendar/list": "^5.11.3",
     "@fullcalendar/react": "^5.11.2",
     "@fullcalendar/scrollgrid": "^5.11.3",
-    "@hookform/error-message": "^2.0.0",
+    "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^2.9.10",
     "@mui/icons-material": "^5.10.3",
     "@mui/lab": "^5.0.0-alpha.109",
