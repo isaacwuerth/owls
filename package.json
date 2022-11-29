@@ -73,7 +73,7 @@
     "@fullcalendar/scrollgrid": "^5.11.3",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^2.9.10",
-    "@mui/icons-material": "^5.10.15",
+    "@mui/icons-material": "^5.10.16",
     "@mui/lab": "^5.0.0-alpha.109",
     "@mui/material": "^5.10.15",
     "@mui/x-data-grid": "^5.17.13",
