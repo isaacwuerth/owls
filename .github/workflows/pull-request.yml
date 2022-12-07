@@ -73,7 +73,6 @@ jobs:
   scanner-gitleaks:
     name: Scanning for secrets
     runs-on: ubuntu-latest
-    if: false
     steps:
       - uses: actions/checkout@v3
         with:
