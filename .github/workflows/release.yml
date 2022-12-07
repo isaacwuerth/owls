@@ -12,12 +12,12 @@ env:
  VITE_FIREBASE_MESSAGING_SENDER_ID: 73057071136
  VITE_FIREBASE_APP_ID: 1:73057071136:web:3c7d4c53730e020b620c45
  VITE_FIREBASE_MEASUREMENT_ID: G-RB4FJWXLZK
- VITE_SENTRY: true
+ VITE_SENTRY_ENABLED: true
  VITE_SENTRY_ENVIRONMENT: prod
  VITE_SENTRY_DSN: https://d171647c012c43a39dec2948de46cf2e@o1407901.ingest.sentry.io/6743125
  VITE_SENTRY_ORG: owls-q7
  VITE_SENTRY_PROJECT: internal-frontend
- VITE_OPENREPLAY: true
+ VITE_OPENREPLAY_ENABLED: true
  VITE_OPENREPLAY_PROJECTKEY: R8C4sH0aQVI5ctsw6MfJ
 
 name: Release
@@ -108,11 +108,11 @@ jobs:
         id: package
         uses: codex-team/action-nodejs-package-info@v1
 
-      - name: SetVITE_NAME
-        run: echoVITE_NAME=${{ steps.package.outputs.name }} >> $GITHUB_ENV
+      - name: Set VITE_NAME
+        run: echo VITE_NAME=${{ steps.package.outputs.name }} >> $GITHUB_ENV
 
       - name: SetVITE_VERSION
-        run: echoVITE_VERSION=${{ steps.package.outputs.version }} >> $GITHUB_ENV
+        run: echo VITE_VERSION=${{ steps.package.outputs.version }} >> $GITHUB_ENV
 
       - run: npm run build
 
@@ -372,7 +372,7 @@ jobs:
       - name: Deploy Cloud Functions
         run: |
           export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
-          npx firebase-tools use ${{ env.REACT_APP_FIREBASE_PROJECT_ID }}
+          npx firebase-tools use ${{ env.VITE_FIREBASE_PROJECT_ID }}
           npx firebase-tools deploy --only functions --json
 
   deploy_rules_firestore:
@@ -408,7 +408,7 @@ jobs:
       - name: Deploy Cloud Functions
         run: |
           export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
-          npx firebase-tools use ${{ env.REACT_APP_FIREBASE_PROJECT_ID }}
+          npx firebase-tools use ${{ env.VITE_FIREBASE_PROJECT_ID }}
           npx firebase-tools deploy --only firestore:rules --json
 
   deploy_remoteconfig:
@@ -444,7 +444,7 @@ jobs:
       - name: Deploy Cloud Functions
         run: |
           export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json
-          npx firebase-tools use ${{ env.REACT_APP_FIREBASE_PROJECT_ID }}
+          npx firebase-tools use ${{ env.VITE_FIREBASE_PROJECT_ID }}
           npx firebase-tools deploy --only remoteconfig --json
 
   sentry-release:
@@ -467,8 +467,8 @@ jobs:
         uses: tclindner/sentry-releases-action@v1.2.0
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ env.REACT_APP_SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ env.REACT_APP_SENTRY_PROJECT }}
+          SENTRY_ORG: ${{ env.VITE_SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ env.VITE_SENTRY_PROJECT }}
         with:
           tagName: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
-          environment: ${{ env.REACT_APP_SENTRY_ENVIRONMENT }}
+          environment: ${{ env.VITE_SENTRY_ENVIRONMENT }}
