@@ -3,51 +3,52 @@ import { Card, Typography } from '@mui/material'
 import { useRecoilValue } from 'recoil'
 import { siteConfigAtom } from '../../atoms/SiteConfigAtom'
 import { profileAtom } from '../../atoms/ProfileAtom'
+import ENV from '../../env'
 
 const table: InfoTableRow[] = [
-  { label: 'NODE_ENV', value: process.env.NODE_ENV },
-  { label: 'REACT_APP_NAME', value: process.env.REACT_APP_NAME },
-  { label: 'REACT_APP_VERSION', value: process.env.REACT_APP_VERSION },
+  { label: 'NODE_ENV', value: ENV.MODE },
+  { label: 'REACT_APP_NAME', value: ENV.VITE_NAME },
+  { label: 'REACT_APP_VERSION', value: ENV.VITE_VERSION },
   {
     label: 'REACT_APP_FIREBASE_API_KEY',
-    value: process.env.REACT_APP_FIREBASE_API_KEY,
+    value: ENV.VITE_FIREBASE_API_KEY,
   },
   {
     label: 'REACT_APP_FIREBASE_AUTH_DOMAIN',
-    value: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    value: ENV.VITE_FIREBASE_AUTH_DOMAIN,
   },
   {
     label: 'REACT_APP_FIREBASE_DATABASE_URL',
-    value: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+    value: ENV.VITE_FIREBASE_DATABASE_URL,
   },
   {
     label: 'REACT_APP_FIREBASE_PROJECT_ID',
-    value: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    value: ENV.VITE_FIREBASE_PROJECT_ID,
   },
   {
     label: 'REACT_APP_FIREBASE_STORAGE_BUCKET',
-    value: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    value: ENV.VITE_FIREBASE_STORAGE_BUCKET,
   },
   {
     label: 'REACT_APP_FIREBASE_MESSAGING_SENDER_ID',
-    value: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    value: ENV.VITE_FIREBASE_MESSAGING_SENDER_ID,
   },
   {
     label: 'REACT_APP_FIREBASE_APP_ID',
-    value: process.env.REACT_APP_FIREBASE_APP_ID,
+    value: ENV.VITE_FIREBASE_APP_ID,
   },
   {
     label: 'REACT_APP_FIREBASE_MEASUREMENT_ID',
-    value: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+    value: ENV.VITE_FIREBASE_MEASUREMENT_ID,
   },
   {
     label: 'REACT_APP_SENTRY_ENVIRONMENT',
-    value: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+    value: ENV.VITE_SENTRY_ENVIRONMENT,
   },
-  { label: 'REACT_APP_SENTRY_DSN', value: process.env.REACT_APP_SENTRY_DSN },
+  { label: 'REACT_APP_SENTRY_DSN', value: ENV.VITE_SENTRY_DSN },
   {
     label: 'REACT_APP_OPENREPLAY_PROJECTKEY',
-    value: process.env.REACT_APP_OPENREPLAY_PROJECTKEY,
+    value: ENV.VITE_OPENREPLAY_PROJECTKEY,
   },
 ]
 

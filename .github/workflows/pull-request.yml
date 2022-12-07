@@ -2,22 +2,22 @@
 # https://github.com/firebase/firebase-tools
 
 env:
-  REACT_APP_NAME: something
-  REACT_APP_VERSION: 0.0.0
-  REACT_APP_FIREBASE_API_KEY: AIzaSyCloNU1l5Otyv6xvt8i24n1EZHu2QsLybs
-  REACT_APP_FIREBASE_AUTH_DOMAIN: owlsinternal.firebaseapp.com
-  REACT_APP_FIREBASE_DATABASE_URL: https://owlsinternal-default-rtdb.europe-west1.firebasedatabase.app
-  REACT_APP_FIREBASE_PROJECT_ID: owlsinternal
-  REACT_APP_FIREBASE_STORAGE_BUCKET: owlsinternal.appspot.com
-  REACT_APP_FIREBASE_MESSAGING_SENDER_ID: 73057071136
-  REACT_APP_FIREBASE_APP_ID: 1:73057071136:web:3c7d4c53730e020b620c45
-  REACT_APP_FIREBASE_MEASUREMENT_ID: G-RB4FJWXLZK
-  REACT_APP_SENTRY: false
-  REACT_APP_SENTRY_ENVIRONMENT: prod
-  REACT_APP_SENTRY_DSN: https://d171647c012c43a39dec2948de46cf2e@o1407901.ingest.sentry.io/6743125
-  REACT_APP_SENTRY_PROJECT: internal-frontend
-  REACT_APP_OPENREPLAY: false
-  REACT_APP_OPENREPLAY_PROJECTKEY: R8C4sH0aQVI5ctsw6MfJ
+ VITE_NAME: something
+ VITE_VERSION: 0.0.0
+ VITE_FIREBASE_API_KEY: AIzaSyCloNU1l5Otyv6xvt8i24n1EZHu2QsLybs
+ VITE_FIREBASE_AUTH_DOMAIN: owlsinternal.firebaseapp.com
+ VITE_FIREBASE_DATABASE_URL: https://owlsinternal-default-rtdb.europe-west1.firebasedatabase.app
+ VITE_FIREBASE_PROJECT_ID: owlsinternal
+ VITE_FIREBASE_STORAGE_BUCKET: owlsinternal.appspot.com
+ VITE_FIREBASE_MESSAGING_SENDER_ID: 73057071136
+ VITE_FIREBASE_APP_ID: 1:73057071136:web:3c7d4c53730e020b620c45
+ VITE_FIREBASE_MEASUREMENT_ID: G-RB4FJWXLZK
+ VITE_SENTRY_ENABLED: false
+ VITE_SENTRY_ENVIRONMENT: prod
+ VITE_SENTRY_DSN: https://d171647c012c43a39dec2948de46cf2e@o1407901.ingest.sentry.io/6743125
+ VITE_SENTRY_PROJECT: internal-frontend
+ VITE_OPENREPLAY_ENABLED: false
+ VITE_OPENREPLAY_PROJECTKEY: R8C4sH0aQVI5ctsw6MfJ
 
 concurrency:
   group: ${{ github.ref }}-pull-request
@@ -70,17 +70,6 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v2
 
-  scanner-gitleaks:
-    name: Scanning for secrets
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   download-dependencies:
     name: Download dependencies
     runs-on: ubuntu-latest
@@ -107,7 +96,6 @@ jobs:
       - eslint
       - dependency-review
       - download-dependencies
-      - scanner-gitleaks
     steps:
       - name: Set up Node.js 18
         uses: actions/setup-node@v1
@@ -130,11 +118,11 @@ jobs:
         id: package
         uses: codex-team/action-nodejs-package-info@v1
 
-      - name: Set REACT_APP_NAME
-        run: echo REACT_APP_NAME=${{ steps.package.outputs.name }} >> $GITHUB_ENV
+      - name: SetVITE_NAME
+        run: echoVITE_NAME=${{ steps.package.outputs.name }} >> $GITHUB_ENV
 
-      - name: Set REACT_APP_VERSION
-        run: echo REACT_APP_VERSION=${{ steps.package.outputs.version }} >> $GITHUB_ENV
+      - name: SetVITE_VERSION
+        run: echoVITE_VERSION=${{ steps.package.outputs.version }} >> $GITHUB_ENV
 
       - run: npm run build
 
@@ -286,7 +274,7 @@ jobs:
           path: build
 
       - name: 'Running application under test'
-        run: ./node_modules/.bin/serve -s build -l 8099 &
+        run: ./node_modules/.bin/serve -s build -l 3000 &
 
       - name: 'BrowserStack Env Setup'
         uses: browserstack/github-actions/setup-env@master
