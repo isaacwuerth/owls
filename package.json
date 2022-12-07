@@ -8,7 +8,7 @@
     "serve": "vite preview",
     "test": "cross-env BASE_URL=http://localhost:3000 jest",
     "test:e2e": "cross-env BASE_URL=http://localhost:3000 jest --outputFile=jest-results.json --json --config=jest-e2e.config.json",
-    "test:e2e:browserstack": "cross-env BASE_URL=http://localhost:8099  BROWSERSTACK=true browserstack-node-sdk jest --outputFile=jest-results.json --json --config=jest-e2e.config.json  ",
+    "test:e2e:browserstack": "cross-env BASE_URL=http://localhost:3000  BROWSERSTACK=true browserstack-node-sdk jest --outputFile=jest-results.json --json --config=jest-e2e.config.json  ",
     "test:firestore:rules": "firebase emulators:exec --only firestore \"npm run test:firestore:rules:run \"",
     "test:firestore:rules:run": "jest --detectOpenHandles --forceExit --config=firebase.jest.config.json",
     "lint": "eslint src/**/*.ts{,x}",

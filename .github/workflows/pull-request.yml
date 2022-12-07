@@ -274,7 +274,7 @@ jobs:
           path: build
 
       - name: 'Running application under test'
-        run: ./node_modules/.bin/serve -s build -l 8099 &
+        run: ./node_modules/.bin/serve -s build -l 3000 &
 
       - name: 'BrowserStack Env Setup'
         uses: browserstack/github-actions/setup-env@master
