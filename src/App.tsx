@@ -47,9 +47,10 @@ import {
 } from './Context/AuthorizationContext'
 import { RolesPage } from './pages/RolesPage'
 import LayoutProvider from './Context/LayoutContext'
+import ENV from './env'
 
 Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
+  dsn: ENV.VITE_SENTRY_DSN,
   integrations: [
     new BrowserTracing({
       routingInstrumentation: Sentry.reactRouterV6Instrumentation(
@@ -66,13 +67,13 @@ Sentry.init({
     new ReportingObserverIntegration(),
   ],
   tracesSampleRate: 1.0,
-  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+  environment: ENV.VITE_SENTRY_ENVIRONMENT,
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  release: `${process.env.REACT_APP_NAME}@${process.env.REACT_APP_VERSION}`,
+  release: `${ENV.VITE_NAME}@${ENV.VITE_VERSION}`,
   attachStacktrace: true,
   maxBreadcrumbs: 100,
   autoSessionTracking: true,
-  enabled: process.env.REACT_APP_SENTRY === 'true',
+  enabled: ENV.VITE_SENTRY_ENABLED,
 })
 
 Sentry.setTag('rrweb.active', 'yes')
@@ -82,9 +83,7 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
 function App() {
   return (
     <Sentry.ErrorBoundary fallback={<ErrorBoundary />} showDialog>
-      <OpenReplayProvider
-        projectKey={process.env.REACT_APP_OPENREPLAY_PROJECTKEY ?? ''}
-      >
+      <OpenReplayProvider projectKey={ENV.VITE_OPENREPLAY_PROJECTKEY ?? ''}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <RecoilRoot>
             <RecoilNexus />
