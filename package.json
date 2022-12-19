@@ -43,7 +43,7 @@
     "@types/selenium-webdriver": "^4.1.9",
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
-    "@vitejs/plugin-react": "^2.2.0",
+    "@vitejs/plugin-react": "^3.0.0",
     "browserstack-node-sdk": "^1.4.0",
     "chromedriver": "^108.0.0",
     "cross-env": "^7.0.3",
@@ -62,7 +62,7 @@
     "selenium-webdriver": "^4.7.1",
     "serve": "^14.1.2",
     "typescript": "^4.9.3",
-    "vite": "^3.2.5",
+    "vite": "^4.0.2",
     "vite-plugin-svgr": "^2.4.0",
     "vite-tsconfig-paths": "^4.0.2"
   },
