@@ -115,7 +115,7 @@
     "react-apexcharts": "^1.4.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.2",
-    "react-hook-form": "^7.41.0",
+    "react-hook-form": "^7.41.1",
     "react-router-dom": "^6.6.0",
     "react-toastify": "^9.1.1",
     "recoil": "^0.7.6",
