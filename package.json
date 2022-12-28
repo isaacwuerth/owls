@@ -73,7 +73,7 @@
     "@emotion/styled": "^11.10.5",
     "@fullcalendar/daygrid": "^6.0.0",
     "@fullcalendar/interaction": "^5.11.3",
-    "@fullcalendar/list": "^6.0.1",
+    "@fullcalendar/list": "^6.0.2",
     "@fullcalendar/react": "^6.0.1",
     "@fullcalendar/scrollgrid": "^6.0.1",
     "@hookform/error-message": "^2.0.1",
