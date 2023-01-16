@@ -80,7 +80,7 @@
     "@hookform/resolvers": "^2.9.10",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.115",
-    "@mui/material": "^5.11.3",
+    "@mui/material": "^5.11.4",
     "@mui/x-data-grid": "^5.17.18",
     "@mui/x-date-pickers": "^5.0.13",
     "@openreplay/tracker": "^4.1.9",
