@@ -71,7 +71,7 @@
     "@casl/react": "^3.1.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@fullcalendar/daygrid": "^6.0.3",
+    "@fullcalendar/daygrid": "^6.1.5",
     "@fullcalendar/interaction": "^6.0.3",
     "@fullcalendar/list": "^6.0.3",
     "@fullcalendar/react": "^6.0.4",
