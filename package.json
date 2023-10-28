@@ -99,7 +99,7 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "apexcharts": "^3.36.3",
-    "axios": "^0.27.2",
+    "axios": "^1.6.0",
     "axios-retry": "^3.4.0",
     "date-fns": "^2.29.2",
     "envalid": "^7.3.1",
